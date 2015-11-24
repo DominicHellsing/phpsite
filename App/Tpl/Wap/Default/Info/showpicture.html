@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$InfoTitle}</title>
+<include file="Public:meta" />
+</head>
+<body>
+    <include file="Public:header" />
+    <div  id="content">
+        <div class="picture">
+            <ul class="wxlist">
+                <li>
+                    <h1>{$InfoTitle}</h1>
+                    <div class="InfoTime">{$InfoTime}</div>
+                    <notempty name="InfoPicture">
+                    	<div class="InfoPicture"><img src="{$InfoPicture}"  alt="{$InfoTitle}" /></div>
+                    </notempty>
+                    <div class="InfoContent">{$InfoContent}</div>
+                </li>
+            </ul>
+            <include file="Public:comment" />
+        </div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

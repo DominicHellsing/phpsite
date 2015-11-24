@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">模板管理</dd><!--导航-->
+            		    <dd class="link">手机模板管理</dd><!--导航-->
+                        <dd class="link">模板选择</dd>
+            		</dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+//删除模板
+function Del(name){
+	if( !confirm("确定删除模板吗?") ) return false;
+	url = "{$Url}del/tname/"+name;
+	$.get(url, {}, DelComplete, "json");
+	return true;
+}
+
+//回调函数
+function DelComplete(data, textStatus){
+	if (data.status == 1){
+		$(data.data).css("display","none");
+		SucceedBox(data.info);
+	}else{
+		//删除失败
+		ErrorBox(data.info);
+	}
+}
+	
+//备份模板
+function Backup(name){
+	if( !confirm("确定备份模板吗?") ) return false;
+	url = "{$Url}backup/tname/"+name;
+	location.href = url;
+	//备份不能使用ajax提交
+	//$.get(url, {}, BackupComplete, "json");
+	return true;
+}
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmTpl').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+				location.href = "{$Url}pick";
+            }else{ //添加频道失败
+				ErrorBox(data.info);
+			}
+		};
+		
+		$('#frmTpl').submit(function(){
+	       return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	    });
+	});
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            <form enctype="multipart/form-data" method="post" action="{$Url}uploadTemplate" id="frmTpl" >
+                  <div class="table">                    
+                    <div style="vertical-align:middle;height:32px; line-height:32px;">
+                    <li class="toolbar"><b>模板压缩包(zip格式):</b></li>
+                    <li class="toolbar" style="padding-bottom:2px">
+                    <input type="file"  name="TplFile" id="TplFile" style="width:500px; height:26px; line-height:26px;"  class='textinput'  size="70"  accept="application/x-zip-compressed" align="absmiddle" />
+                    </li>
+                    <li class="toolbar">
+                    <input type="hidden" value="0" name="ishome"  />
+                    <input type="submit" name="btnSubmit" id="btnSubmit"  align="absmiddle"  value="安装模板"  />
+                    </li>
+                 </div>
+<table class="admin-tb" id="js_data_source">
+<tr >
+    <th width="180px" >模板名称</th>
+    <th width="120px" >模板目录</th>
+    <th width="170px" >缩略图</th>
+    <th style="text-align:left;padding-left:20px">操作</th>
+</tr>
+<notempty name="TplList">
+    <volist name="TplList" id="t">
+    <tr  id="t{$t.dirname}" <eq name="t.IsUse" value="1">style='background-color:#F3F3F3'</eq>>
+    	<td>
+        <eq name="t.IsUse" value="1">
+        <span style="color:red;font-weight:bold">{$t.name}</span>
+        <else/>
+        {$t.name}
+        </eq>
+        </td>
+        <td>
+        <eq name="t.IsUse" value="1">
+        <b style="color:red">{$t.dirname}</b>
+        <else/>
+        <b style="color:blue">{$t.dirname}</b>
+        </eq>
+        </td>
+        <td><img src="{$t.thumbnail}" width="175" height="200"></td>
+        <td style="text-align:left;padding-left:5px">
+        <eq name="t.IsUse" value="1">
+        <span style="font-weight:bold;color:red; display:block">当前模板</span>
+        <else/>
+<a style="float:left" href="{$t.Url}" target="_self" id="btnSave" name="btnSave" >设为当前模板</a>
+        </eq>
+        <div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del('{$t.dirname}')" class="btnDel"  title="删除当前模板">删除</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Backup('{$t.dirname}')" id="btnBackup" title="备份当前模板到本地">备份</a>
+        </td>
+    </tr>
+    </eq>
+    </volist>
+<else/>
+	<tr><td colspan="3" style="color:red;font-weight:bold;text-align:left;padding-left:10px">没有文件或文件夹!</td></tr>
+</notempty>                               
+    </table>
+         <div class="th">
+			<div class="form"  id="notice">
+            <b>说明：</b>点击“设置为当前模板”按钮切换系统模板，红色模板名为当前正在使用的模板！<span style="color:#00F">更多模板下载，请访问官方模板中心<a href="{$CompanyUrl1}" target="_blank">[点击访问]</a></span>
+            </div>
+         </div>
+                </div>
+			</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

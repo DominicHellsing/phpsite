@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">管理首页</dd>
+                <dd class="link">系统设置</dd>
+                <dd class="link">邮箱设置</dd>
+            </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmConfig').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}
+		};
+		
+		 //保存提交
+		 $('#btnSubmit').click(function(){
+		 	$('#frmConfig').attr('action','{$Action}');
+	     });
+		 
+		 
+		 $('#frmConfig').submit(function(){
+	     	return false;
+	     });
+	});
+</script>
+<script type="text/javascript">
+	function TestMail(){
+		//GET方式在IE6.0下提交中文参数会出现乱码
+		msg = "<img src='{$WebPublic}Images/loading/9.gif' border='0' align='absmiddle'/>";
+		msg += "邮件发送测试中，请稍后...";
+		$("#tip").html(msg);
+		$.post("{$Url}testEmail",{
+			EmailSender:$('#EmailSender').val(),
+			EmailAccount:$('#EmailAccount').val(),
+			EmailSmtp:$('#EmailSmtp').val(),
+			EmailPassword:$('#EmailPassword').val() },
+			MailComplete, 
+			"json"
+		);
+		return true;
+	}
+	//回调函数
+	function MailComplete(data, textStatus){
+		if (data.status == 1){
+			$("#tip").html("发送测试邮件成功，邮箱配置正确！");
+		}else{ 
+			$("#tip").html("<b style='color:red'>发送测试邮件失败，邮箱配置错误！</b>");
+		}
+	}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green">
+                <form id="frmConfig" method="post" action="{$Action}"  enctype="multipart/form-data">    
+                <div class="box-header">
+                    <h4>邮箱设置</h4>
+                </div>
+                <div class="box-content">
+<table class="table-font">
+    <tr>
+        <th class="w120">发件人名称</th>
+        <td><input type="text" class="textinput w360" id="EmailSender" name="EMAIL_SENDER" value="{$EmailSender}" />
+        <span class="Caution">在收件方显示的名称</span>
+        </td>
+    </tr>
+    <tr>
+        <th>发件人邮箱帐号</th>
+        <td><input type="text" class="textinput w360" id="EmailAccount" name="EMAIL_ACCOUNT" value="{$EmailAccount}"  />
+        <span class="Caution">用于发送邮件的邮箱帐号</span>
+        </td>
+    </tr>
+     <tr>
+        <th class="w120">邮件SMTP服务器</th>
+        <td><input type="text" class="textinput w360" id="EmailSmtp" name="EMAIL_SMTP" value="{$EmailSmtp}" />
+        <span class="Caution">如：qq邮箱为：smtp.qq.com、163邮箱为：smtp.163.com</span>
+        </td>
+    </tr>
+    <tr>
+        <th class="w120">邮箱密码</th>
+        <td><input type="password" class="textinput w360" id="EmailPassword" name="EMAIL_PASSWORD" value="{$EmailPassword}" />
+        <span class="Caution">用于发送邮件的邮箱密码</span>
+        </td>
+    </tr>
+    <tr>
+        <th class="w120">邮件发送测试</th>
+        <td><a style="float:left" onclick="TestMail()" id="btnPick" target="_blank">邮件发送测试</a>
+        &nbsp;<span id="tip"></span>
+        </td>
+    </tr>
+    <tr style="color:#F00">
+    	<th class="w120">注意事项：</th>
+        <td>设置完成后，请点击“邮件发送测试”按钮测试邮箱设置是否正确，如果测试失败，请检查：(1)邮箱帐号和密码是否正确&nbsp;&nbsp;(2)邮件SMTP服务器是否正确&nbsp;&nbsp;(3)邮箱是否开启SMTP服务。
+        </td>
+    </tr>
+</table>
+                </div>
+                
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit"  type="submit" value="保存设置" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

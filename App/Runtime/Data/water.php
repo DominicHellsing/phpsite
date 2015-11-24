@@ -1,0 +1,2 @@
+<?php
+return array ( 'WATER_PIC' => '', 'WATER_OFFSET_X' => '0', 'WATER_OFFSET_Y' => '0', 'WATER_TRANS' => '60', 'WATER_ENABLE' => '0', 'WATER_TYPE' => '2', 'WATER_TEXT' => '', 'WATER_FONT' => 'simkai.ttf', 'WATER_TEXT_SIZE' => '12', 'WATER_TEXT_COLOR' => '#FF0000', 'WATER_TEXT_ANGLE' => '0', 'WATER_POSITION' => '9', ); ?>

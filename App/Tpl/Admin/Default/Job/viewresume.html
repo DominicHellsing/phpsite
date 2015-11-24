@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$Js}common.js"></script>
+<style>
+.resume{padding:10px; text-align:center}
+.resume h4{font-size:14px;}
+.resume table{width:700px; border:2px solid #87A34D}
+.resume td { color:#000; border:1px solid #87A34D; text-align:center; padding:5px;}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">内容管理</dd>
+        <dd class="link">查看简历详情</dd><!--导航-->
+        </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<div class="wrap">
+    <div class="container">
+         <div id="main">
+            <div class="con box-green">
+                    <div class="resume">
+                应聘岗位：<span style="color:red;font-weight:bold">{$Resume.JobName}</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;投递时间：<span style="color:red;font-weight:bold">{$Resume.Time}</span>
+                </h4>
+  <table align="center">
+    <tr>
+      <td style="width:100px; "><b>姓名</b></td>
+      <td style="width:150px;">
+      {$Resume.GuestName}<neq name="Resume.GuestID" value="0"><span style="color:red">[会员]</span></neq>
+      </td>
+      <td style="width:100px;"><b>性别</b></td>
+      <td style="width:150px;">{$Resume.Gender}</td>
+      <td style="width:120px;" rowspan="5"></td>
+    </tr>
+    <tr>
+       <td><b>出生年月</b></td><td>{$Resume.Birthday}</td>
+       <td><b>民族</b></td><td>{$Resume.Ethnic}</td>
+    </tr>
+    <tr>
+      <td><b>籍贯</b></td><td>{$Resume.Birthplace}</td>
+      <td><b>政治面貌</b></td><td>{$Resume.Political}</td>
+    </tr>
+    <tr>
+      <td><b>毕业院校</b></td><td>{$Resume.School}</td>
+      <td><b>所学专业</b></td><td>{$Resume.Specialty}</td>
+    </tr>
+    <tr>
+      <td><b>电子邮件</b></td><td>{$Resume.Email}</td>
+      <td><b>最高学历</b></td><td>{$Resume.Education}</td>
+    </tr>
+    <tr>
+      <td><b>联系电话</b></td><td>{$Resume.Telephone}</td>
+      <td><b>待遇要求</b></td><td colspan="2">{$Resume.Salary}</td>
+    </tr>
+    <tr>
+       <td><b>住址</b></td><td colspan="4">{$Resume.Address}</td>
+    </tr>
+   <tr>
+      <td  style="text-align:left;padding-left:28px" colspan="5"><b>详细介绍</b></td>
+    </tr>
+    <tr>
+      <td  colspan="5" style="line-height:22px; height:200px;word-break: break-all;word-wrap:break-word;text-align:left">
+      {$Resume.Detail}
+      </td>
+    </tr>
+  </table>
+                    </div> 
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    <input  id="btnSubmit"  type="button" onclick="javascript:window.print();" value="打印简历" />&nbsp;&nbsp;
+                    <input  id="btnSubmit"  type="button" onclick="javascript:history.go(-1);" value="返回" />
+                    </div>
+                </div>
+            </div><!--/ con-->
+            
+        </div>    
+    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

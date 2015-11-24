@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$Title}-{$WebName}</title>
+    <include file="Public:meta" />
+</head>
+<body class="body_index">
+	<include file="Public:header" />
+    <!--主体内容 开始-->
+    <div class="index">
+    	  <!--左侧区域 开始-->
+       	  <div id="right">
+                  <!--公司简介 开始--> 
+                  <div class="ChannelContent">
+                         {$T3|ChannelContent|strip_tags='<img><a><b><strong>'}
+                         <a  href="{$T3|ChannelUrl}" target="_blank" >【{$Think.lang.More}】</a>
+                  </div>
+                  <!--公司简介 结束-->
+         
+                  <!--产品 开始-->
+                  <div class="right_title">
+                           <span class="more" ><a href="{$T4|ChannelUrl}" target="_blank">{$Think.lang.More}...</a></span>
+                           <h2>{$T4|ChannelName}</h2>
+                   </div>
+                   <div class="right_body">
+                        <ul class="gridlist">
+                               <!--循环开始-->   
+                               <infolist id="f" channelid='$T4' top="8" timeformat="Y-m-d"  infotime="5" >       
+                                   <li>
+                                       <a href="{$f.InfoUrl}" target="_blank">
+                                            <img src="{$f.InfoPicture|DefaultPicture}" title="{$f.InfoTitle}" alt="{$f.InfoTitle}" />
+                                       </a><br />
+                                      <a href="{$f.InfoUrl}" target="_blank" title="{$f.InfoTitle}">{$f.InfoSTitle}</a>
+                                  </li>
+                              </infolist>
+                              <!--循环结束-->
+                         </ul>            
+                   </div>
+                   <div class="right_bottom"></div>
+                   <!--产品 结束-->
+    	  </div>
+          <!--左侧区域 结束-->
+          
+          <!--右侧区域 开始-->
+    	  <div id="left"> 
+                <!--案例 开始-->    
+                <div class="left_title">     
+                    <span class="more" ><a href="{$T5|ChannelUrl}" target="_blank">{$Think.lang.More}...</a></span>
+                    <h2>{$T5|ChannelName}</h2>
+                </div>
+                <div class="left_body">
+                    <banner1 width="225" height="225" ChannelID="$T5" showtext="1" />
+                </div>
+                <div class="left_bottom"></div>
+                <!--案例 结束-->
+				<include file="Public:search" />
+                <!--新闻 开始--> 
+                <div class="left_title2">
+                	<span class="more" ><a href="{$T6|ChannelUrl}" target="_blank">{$Think.lang.More}...</a></span>
+                    <h2>{$T6|ChannelName}</h2>
+                </div>
+                <div class="left_body2">
+                    <ul class="textlist">
+                            <!--循环开始-->
+                            <infolist id="f" channelid='$T6' top="8" empty="$Think.lang.NoInformation">
+                            	<li><a href="{$f.InfoUrl}" target="_blank" title="{$f.InfoTitle}">{$f.InfoSTitle}</a></li>
+                            </infolist>
+                            <!--循环结束-->
+                    </ul>
+                </div>
+                <div class="left_bottom2"></div>
+                <!--新闻 结束--> 
+          </div>
+          <!--右侧区域 结束-->
+          <div class="clear"></div>
+	</div>
+    <!--主体内容 结束-->
+    <include file="Public:footer" />
+</body>
+</html>

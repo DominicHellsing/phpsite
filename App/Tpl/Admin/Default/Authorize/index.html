@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<style>
+#InfoHit{
+	color:#00F;
+	font-weight:bold;
+}
+label{
+	color:#00F; 
+	line-height:21px; 
+	font-weight:bold; 
+	height:21px; 
+	vertical-align:middle;
+	font-size:12px;
+}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">系统管理</dd><!--导航-->
+                <dd class="link">授权管理</dd><!--导航-->
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+	//查询
+	function Search(){
+		$('#frm').attr("action", "__URL__/index");
+		$('#frm').submit();
+		return true;
+	}
+	
+	function Authorize(value, id){
+		if( value == 1 ){
+			if( !confirm("确定授权吗?") ) return false;
+			$('#frm').attr("action", "{$Url}Authorize/Authorize/1/CustomerID/"+id);
+		}else{
+			if( !confirm("确定取消授权吗?") ) return false;
+			$('#frm').attr("action", "{$Url}Authorize/Authorize/0/CustomerID/"+id);
+		}
+		$('#frm').submit();
+		return true;
+	}
+	
+			//批量审核
+	function BatchAuthorize(bCheck){
+		//先必须选中记录==============================================
+		var arrChk = $("input[name='CustomerID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		//=========================================================
+		if( bCheck == 1 ){
+			if( !confirm("确定授权吗?") ) return false;
+			$('#frm').attr("action", "{$Url}batchAuthorize/Authorize/1");
+		}else{
+			if( !confirm("确定取消授权吗?") ) return false;
+			$('#frm').attr("action", "{$Url}batchAuthorize/Authorize/0");
+		}
+		
+		$('#frm').submit();
+		return true;
+	}
+	
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}Del/CustomerID/"+id);
+		$('#frm').submit();
+		return true;
+	}
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+
+</script>
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		//选中操作
+		$("#Host").attr("value",'{$Host}');
+		$("#IsAuthorize").attr("value",'{$IsAuthorize}');
+	});
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data"  method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+
+                  <div class="table">
+<div style="padding:0px; height:28px;">
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="btnCheck" onclick="BatchAuthorize(1)" title="授权">授权</a></li>
+<li class="toolbar"><a id="btnUnCheck" onclick="BatchAuthorize(0)" title="取消授权">取消授权</a></li>
+<li>
+&nbsp;&nbsp;&nbsp;<label>域名</label><input type="text" class='textinput' name="Host" style="width:150px" value="{$Host}" id="Host"/>&nbsp;
+<label>是否授权</label><select name="IsAuthorize" id="IsAuthorize">
+<option value="-1">全部</option>
+<option value="1">已授权</option>
+<option value="0">未授权</option>
+</select>&nbsp;
+<input id="btnSeek" type="submit" value="查询" onclick="Search()" >&nbsp;&nbsp;
+总数：<b style="color:red">{$Total}</b>&nbsp;&nbsp;
+未授权：<b style="color:red">{$UnAuthorizeCount}</b>&nbsp;&nbsp;
+已授权：<b style="color:red">{$AuthorizeCount}</b>&nbsp;&nbsp;
+正版用户比率：<b style="color:red">{$Percent}%</b>
+</li>
+</div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="55px" nowrap="nowrap">ID</th>
+                        <th width="260px">域名</th>
+                        <th width="100px" nowrap="nowrap">版本号</th>
+                        <th width="80px" nowrap="nowrap">操作系统</th>
+                        <th width="75px" nowrap="nowrap">是否授权</th>
+                        <th width="120px" nowrap="nowrap">授权时间</th>
+                        <th style="padding-left:30px; text-align:left">操作</th>
+                    </tr>  
+    <notempty name="Data">                
+    <volist name="Data" id="i">
+    <tr>
+    	<td><input type="checkbox" name="CustomerID[]" value="{$i.CustomerID}" /></td>
+        <td>{$i.CustomerID}</td>
+        <td><a href="http://{$i.Host}" target="_blank">{$i.Host}</a></td>
+        <td>{$i.Version}&nbsp;<eq name="$i.IsOEM" value="1"><b style="color:red; font-weight:bold">OEM</b></eq></td>
+        <td>{$i.OS}</td>
+        
+        <td>
+            <eq name="i.IsAuthorize" value="1">
+                <span style="color:#000">已授权</span>
+            <else/>
+                <span style="color:#F00">未授权</span>
+            </eq>
+        </td>
+        
+        <td>{$i.Date}</td>
+        <td style="text-align:left;">
+        <eq name="i.IsAuthorize" value="0">
+            <a style="float:left"  onclick="Del({$i.CustomerID})" class="btnDel">删除</a>
+            <div style="float:left;width:3px">&nbsp;</div>
+            <a style="float:left" onclick="Authorize(1, {$i.CustomerID})" id="btnCheck">授权</a>
+        <else/>
+        	<a style="float:left" onclick="Authorize(0, {$i.CustomerID})" id="btnUnCheck">取消授权</a>
+        </eq>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="10" id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

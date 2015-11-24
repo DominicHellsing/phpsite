@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">互动管理</dd>
+                <dd class="link">在线客服</dd>
+                <dd class="link">在线客服设置</dd>
+            </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		 $('#frmConfig').submit(function(){
+			try{
+				for ( s in CKEDITOR.instances ) {
+				   CKEDITOR.instances[s].updateElement();
+				}
+			}catch(e){
+				;
+			}finally{
+				$(this).ajaxSubmit( {success: complete,dataType: 'json'} );
+	     		return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返）返回false  
+			}
+	     });
+		 
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}
+		};
+		 
+	});
+</script>
+<script>
+function GoBack(){
+	window.location.href = "{$Group}/support/index";
+}
+</script>
+<div class="wrap">
+    <div class="container">
+        
+        <div id="main">
+            <div class="con box-green">
+                <form enctype="multipart/form-data" id="frmConfig" method="post" action="{$Action}">
+                <div class="box-header"  id="c9">
+                    <h4>在线客服设置</h4>
+                </div>
+                <div class="box-content">
+<table class="table-font">
+    <tr>
+        <th>显示样式</th>
+        <td>
+<select name="ONLINE_STYLE">
+<eq name="AdminLanguageMark" value="cn">
+<option value="green" <eq name="OnlineStyle" value="green">selected="selected"</eq> >绿色清新</option>
+<option value="red" <eq name="OnlineStyle" value="red">selected="selected"</eq> >红运当头</option>
+<option value="blue" <eq name="OnlineStyle" value="blue">selected="selected"</eq> >经典蓝色</option>
+<option value="gray" <eq name="OnlineStyle" value="gray">selected="selected"</eq> >灰色幽默</option>
+<else/>
+<option value="green_en" <eq name="OnlineStyle" value="green_en">selected="selected"</eq> >绿色清新</option>
+<option value="red_en" <eq name="OnlineStyle" value="red_en">selected="selected"</eq> >红运当头</option>
+<option value="blue_en" <eq name="OnlineStyle" value="blue_en">selected="selected"</eq> >经典蓝色</option>
+<option value="gray_en" <eq name="OnlineStyle" value="gray_en">selected="selected"</eq> >灰色幽默</option>
+</eq>
+</select>
+      
+        </td>
+    </tr>
+    <tr>
+        <th>标题</th>
+        <td><input type="text" class="textinput w270" name="ONLINE_TITLE" value="{$OnlineTitle}"  /></td>
+    </tr>
+    
+    <tr>
+        <th>页脚信息</th>
+        <td>
+        <!-- 编辑器调用开始 -->
+        <textarea id="ONLINE_FOOTER_TEXT" name="ONLINE_FOOTER_TEXT">{$OnlineFooterText}</textarea>
+		<script type='text/javascript'>window.CKEDITOR_BASEPATH='{$WebPublic}ckeditor/';</script>
+		<script type='text/javascript' src='{$WebPublic}ckeditor/ckeditor.js?t=C6HH5UF'></script>
+		<script type='text/javascript'>
+		CKEDITOR.replace('ONLINE_FOOTER_TEXT', {'uiColor': '#bed393', 'width':'100%', 
+filebrowserBrowseUrl : '{$WebPublic}ckfinder/ckfinder.html',
+filebrowserImageBrowseUrl : '{$WebPublic}ckfinder/ckfinder.html?Type=Images',
+filebrowserFlashBrowseUrl : '{$WebPublic}ckfinder/ckfinder.html?Type=Flash',
+filebrowserUploadUrl : '{$WebPublic}ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
+filebrowserImageUploadUrl : '{$WebPublic}ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
+filebrowserFlashUploadUrl : '{$WebPublic}ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash',
+		'height':'140px', 
+		'toolbar':[['Source','-','Bold','Italic','Underline','Strike'],['Image','Flash','Link','Unlink','Anchor'],
+		['TextColor','BGColor'],['Styles','Format','Font','FontSize']]});
+        </script>
+        <!-- 编辑器调用结束 -->
+    </tr>
+    
+    <tr>
+        <th>上边距</th>
+        <td><input type="text" class="textinput w270" name="ONLINE_TOP" value="{$OnlineTop}"  /></td>
+    </tr>
+    
+    <tr>
+        <th>宽度</th>
+        <td><input type="text" class="textinput w270" name="ONLINE_WIDTH" value="{$OnlineWidth}"  /></td>
+    </tr>
+    
+   <tr style="display:none">
+        <th>电话</th>
+        <td><input type="text" class="textinput w270" name="ONLINE_TELEPHONE" value="{$OnlineTelephone}"  /></td>
+    </tr>
+    
+    <tr>
+        <th  style="vertical-align:top;">是否展开</th>
+        <td><label><input type="radio" name="ONLINE_OPEN" value="0" <eq name="OnlineOpen" value="0">checked="checked"</eq> />收缩</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="ONLINE_OPEN" value="1" <eq name="OnlineOpen" value="1">checked="checked"</eq> />展开</label></td>
+    </tr>
+    
+    <tr>
+        <th  style="vertical-align:top;">显示位置</th>
+        <td><label><input type="radio" name="ONLINE_POSITION" value="0" <eq name="OnlinePosition" value="0">checked="checked"</eq> />左侧</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="ONLINE_POSITION" value="1" <eq name="OnlinePosition" value="1">checked="checked"</eq> />右侧</label></td>
+    </tr>
+    
+    <tr>
+        <th  style="vertical-align:top;">特效形式</th>
+        <td><label><input type="radio" name="ONLINE_EFFECT" value="1" <eq name="OnlineEffect" value="1">checked="checked"</eq> />滚动</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="ONLINE_EFFECT" value="0" <eq name="OnlineEffect" value="0">checked="checked"</eq> />固定</label></td>
+    </tr>
+    
+    <tr>
+        <th>是否启用</th>
+        <td>
+<label><input type="radio" name="ONLINE_ENABLE" value="1" <eq name="OnlineEnable" value="1">checked="checked"</eq> />启用</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="ONLINE_ENABLE" value="0" <eq name="OnlineEnable" value="0">checked="checked"</eq> />关闭</label>
+</td>
+    </tr>
+</table>
+                </div>
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit" type="submit" value="保存设置" />&nbsp;&nbsp;
+                        <input  id="btnSubmit"  type="button" value="返回" onclick="GoBack()" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

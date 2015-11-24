@@ -1,0 +1,16 @@
+<eq name="TopHasChild" value="1">
+    <div class="left_title2"><h2>{$TopChannelID|ChannelName}</h2></div>
+    <div class="left_body2">
+        <ul class="subchannellist">
+            <NavigationList id="n" channelid='$TopChannelID'  depth="-1">
+                <eq name="n.ChannelID" value="$ChannelID">
+                 	<li class="depth{$n.ChannelDepth}" id="current">
+                <else/>
+                	<li class="depth{$n.ChannelDepth}">
+                </eq>
+                <a href="{$n.ChannelUrl}">{$n.ChannelName}</a></li>
+            </NavigationList>
+        </ul>
+    </div>
+    <div class="left_bottom2"></div>
+</eq>

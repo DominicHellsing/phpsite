@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>页面提示</title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">友情提示</dd><!--导航-->
+            </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type="text/javascript">
+var i = {$waitSecond};
+var reTime = setInterval(function(){
+	i = i-1;
+	if(i<0){
+		
+		window.location.href= '{$jumpUrl}'
+		window.clearInterval(reTime);
+		return;
+		
+	}
+	document.getElementById("seconds").innerHTML = i;
+},1000);
+
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green">
+				<div class="box-header"><h4>友情提示:</h4></div>
+                <div class="box-content">
+                    <table class="table-font">
+                        <tr>
+                           <th class="w120" >
+                                <present name="message" >
+                                	<img src="{$Images}success.png" />
+                                <else/>
+                                	<img src="{$Images}error.png" />
+                                </present>
+                           </th>
+                           <td >
+                    <present name="message" >
+                    	<span style="color:#f60;font-size:22px;font-weight:bold">{$message}</span>
+                    <else/>
+                    	<span style="color:#F00;font-size:22px;font-weight:bold">{$error}</span>
+                    </present>
+    <br />
+    <present name="closeWin" >
+		页面将在<span id="seconds" style="font-weight:bold;color:#f60;">{$waitSecond}</span>秒后自动关闭，如果不想等待请点击 <a href="{$jumpUrl}">这里</a> 关闭
+	<else/>
+		页面将在<span id="seconds" style="font-weight:bold;color:#f60;">{$waitSecond}</span>秒后自动跳转，如果不想等待请点击 <a href="{$jumpUrl}">这里</a> 跳转
+	</present>
+                           </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div><!--/ main-->
+    </div><!--/ container-->
+</div><!--/ wrap-->
+<include file="../Public/adminbottom" />
+</body>
+</html>

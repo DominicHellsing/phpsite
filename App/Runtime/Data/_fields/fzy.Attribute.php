@@ -1,0 +1,2 @@
+<?php
+return array ( 0 => 'AttributeID', 1 => 'ChannelModelID', 2 => 'FieldName', 3 => 'FieldType', 4 => 'DisplayName', 5 => 'DisplayType', 6 => 'DisplayOrder', 7 => 'DisplayWidth', 8 => 'DisplayHeight', 9 => 'DisplayClass', 10 => 'DisplayValue', 11 => 'DisplayHelpText', 12 => 'IsValidate', 13 => 'ValidateRule', 14 => 'GroupID', 15 => 'IsRequire', 16 => 'IsEnable', 17 => 'IsSystem', '_autoinc' => true, '_pk' => 'AttributeID', ); ?>

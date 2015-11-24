@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.tabs.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">内容管理</dd>
+        <dd class="link">修改频道</dd><!--导航-->
+        </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+
+
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		function complete(data){
+			CloseLoadBox();
+			if (data.status==1){
+				try{
+					if(data.data && data.info ){
+						for ( s in CKEDITOR.instances ) {
+							   var content = CKEDITOR.instances[s].getData();
+							   var len = data.data.length;
+							   for(i=0;i<len;i++){
+								   content = content.replace(data.data[i],data.info[i]);
+							   }
+							   CKEDITOR.instances[s].setData( content );
+							   //由于setData是异步执行，所以后面不能添加updateElement()
+							   //Updates the <textarea> element that was replaced by the editor 
+							   //with the current data available in the editor.
+							   //CKEDITOR.instances[s].updateElement(); 
+						}
+					}
+				}catch(e){
+					;
+				}
+				SucceedBox("修改频道成功!");
+				RefreshLeftFrame();
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}else if(data.status==2){
+				ErrorBox(data.info); //上传失败
+			}else if(data.status==3){
+				$('#txtImageFile').val(data.data);
+				SucceedBox(data.info); //上传成功
+			}else if(data.status==4){
+				$('#ChannelIconImageFile').val(data.data);
+				SucceedBox(data.info); //上传成功
+			}
+		};
+		
+		 $('#frmSaveChannel').submit(function(){  // 提交表单
+		 	try{
+				LoadBox();
+				for ( s in CKEDITOR.instances ) {
+				   CKEDITOR.instances[s].updateElement();
+				}
+			}catch(e){
+				;
+			}finally{
+				$(this).ajaxSubmit( {success: complete,dataType: 'json'} );
+	     		return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返）返回false  
+			}
+	     });
+		 
+		 $('#btnUpload').click(function(){  // 提交表单
+			$('#frmSaveChannel').attr('action','{$UploadAction}/currentfile/imagefile');
+		 });
+		 
+		$('#btnChannelIconUpload').click(function(){  // 提交表单
+		 	$('#frmSaveChannel').attr('action','{$UploadAction}/addwater/no/flag/4/currentfile/ChannelIconFile');
+	     });
+		 
+		 $("#ChannelIconImageFile").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "value",
+			position: "5-7"
+		 });
+		 
+		 $('#btnSubmit').click(function(){  // 提交表单
+			$('#frmSaveChannel').attr('action','{$Action}');
+		 });
+		 
+		 $('#ChannelModelID').change(function(){ 
+			var modelID = $(this).children('option:selected').val();
+			var t1 = "article.html"; //主页模板
+			var t2 = "showarticle.html"; //阅读模板
+			switch( modelID ){
+				case "30":t1="article.html";t2 = "showarticle.html";break; //文章模型
+				case "31":t1="picture.html";t2 = "showpicture.html";break; //图片模型
+				case "32":t1="page.html";t2 = "";break; //单页模型
+				case "33":t1="";t2 = "";break; //链接模型
+				case "34":t1="video.html";t2 = "showvideo.html";break; //视频模型
+				case "35":t1="download.html";t2 = "showdownload.html";break; //下载模型
+				case "36":t1="product.html";t2 = "showproduct.html";break; //产品模型
+				case "37":t1="feedback.html";t2 = "showfeedback.html";break; //反馈模型
+			}
+			$('#IndexTemplate').val(t1);
+			$('#ReadTemplate').val(t2);
+		 });
+		 
+		 $("#txtImageFile").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "value",
+			position: "5-7"
+		 });
+		 
+		 $('.box-green1').Tabs({
+		     event:'click'
+		 });
+		 $('#ChannelName').focus();
+	});
+</script>
+<script>
+function GoBack(){
+	window.location.href = "{$Url}Index";
+}
+</script>
+<form action="{$Action}" method="post" id="frmSaveChannel"  enctype="multipart/form-data">
+<input type="hidden" name="ChannelID" value="{$ChannelID}" />
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green1">
+            
+                <ul class="tab_menu">
+                <volist name="Group" id="g">
+    				<li <eq name="i" value="1">class="current"</eq> >{$g.DisplayName}</li>
+                </volist>
+                </ul>
+
+                <div class="tab_box">          
+					 <volist name="Group" id="g" key="x">
+                    	<div <neq name="x" value="1">class="hide"</neq> >
+                    	<table class="table-font">     
+                        <volist name="Attribute" id="a">
+                            <eq name="a.GroupID" value="$g.AttributeID">
+                                    <tr>
+                                        <th class="w120">{$a.DisplayName}</th>
+                                        <td>{$a.html}</td>
+                                    </tr>
+                            </eq>
+                        </volist>
+                        </table>
+                        </div>
+                    </volist>
+                </div> 
+ 
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input id="btnSubmit" type="submit" value="保存" />
+                        &nbsp;&nbsp;<input  id="btnSubmit"  type="button" value="返回" onclick="GoBack()" />
+                    </div>
+                </div>                
+            </div><!--/ con-->        
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</form>
+</body>
+</html>

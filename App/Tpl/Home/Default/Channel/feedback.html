@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$ChannelName}|{$Title}-{$WebName}</title>
+<include file="Public:meta" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frm').ajaxForm({
+			success: complete,
+			dataType: 'json',
+			beforeSubmit: check
+		});
+		
+			function check(){
+				<feedbackmodellist id="f">
+						<eq name="f.IsRequire" value="1">
+								if($("#{$f.FieldName}").val()==""){
+									alert("{$f.DisplayName}{$Think.lang.Required}");
+									$("#{$f.FieldName}").focus();
+									return false;
+								}
+						</eq>
+						
+						<eq name="f.IsValidate" value="1">
+							<notempty name="f.ValidateRule">
+									var re = new RegExp({$f.ValidateRule});
+									if(!re.test( $("#{$f.FieldName}").val() )){
+										alert("{$f.DisplayName}{$Think.lang.Invalid}");
+										$("#{$f.FieldName}").focus();
+										return false;
+									}
+							</notempty>
+						</eq>
+				</feedbackmodellist>
+			<eq name="FeedbackVerifycode" value="1">
+				if( $("#verifycode").val() == ""){
+					alert("{$Think.lang.VerifyCodeRequired}");
+					$("#verifycode").focus();
+					return false;
+				}
+			</eq>
+			return true;
+		}
+		
+		function complete(data){
+			if (data.status==1){
+				alert(data.info);
+				$('#frm').resetForm();
+            }else if(data.status==0){
+				alert(data.info);
+			}
+			ChangeCode();
+		};
+		
+		 $('#frm').submit(function(){
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+	});
+</script>
+<script>
+	function ChangeCode(){
+		var timenow = new Date().getTime();
+		var obj = document.getElementById('code');
+		if( obj ) obj.src = "__GROUP__/public/feedbackCode/"+timenow;
+	}
+</script>
+</head>
+<body>
+<div class="body_feedback">
+	<include file="Public:header" />
+    <!--主体内容 开始-->
+    <div class="feedback">
+    	<!--左侧区域 开始-->
+		<div id="left">
+                <include file="Public:subchannel" />
+                <include file="Public:search" />
+                <include file="Public:contact" />
+			</div>
+        <!--左侧区域 结束-->
+        
+        <!--右侧区域 开始-->
+		<div id="right">
+                <div class="right_title1">
+                    <h2>{$ChannelName}</h2>
+                </div>
+            	<div class="right_body1">
+                        <table class="feedback_table">
+                        <form method="post" id="frm" action="{:FeedbackUrl()}">
+                        <input type="hidden" name="ChannelID" value="{$ChannelID}" >
+                        <feedbackmodellist id="f">
+                            <tr>
+                                <th>{$f.DisplayName}<eq name='f.IsRequire' value='1'><span class="required">*</span></eq></th>
+                                <td>
+                                <switch name="f.DisplayType">
+                                    <case value="textarea">
+                                        <textarea id="{$f.FieldName}"   name="{$f.FieldName}" class="form_textarea" >{$f.DisplayValue}</textarea>
+                                    </case>
+                                    <case value="radio">
+                                        <volist name="f.Item" id="it">
+                                                <input id="{$f.FieldName}" name="{$f.FieldName}" type="radio"  class="form_radio"   value="{$it.Value}"  {$it.Selected}  />{$it.Text}&nbsp;&nbsp;
+                                        </volist>
+                                    </case>
+                                   <case value="checkbox">
+                                        <volist name="f.Item" id="it">
+                                                <input id="{$f.FieldName}"  class="form_checkbox"   name="{$f.FieldName}[]" value="{$it.Value}" type="checkbox" {$it.Selected} />{$it.Text}&nbsp;&nbsp;
+                                        </volist>
+                                    </case>
+                                    <case value="select">
+                                        <select  id="{$f.FieldName}"  name="{$f.FieldName}"  class="form_select" >
+                                            <volist name="f.Item" id="it">
+                                                    <option  value="{$it.Value}"  {$it.Selected} />{$it.Text}</option>
+                                            </volist>
+                                         </select>
+                                    </case>
+                                    <case value="label">{$f.DisplayValue}</case>
+                                    <case value="password"><input id="{$f.FieldName}" name="{$f.FieldName}" type="password"   class="form_text"  value="{$f.DisplayValue}" /></case>
+                                    <default /><input id="{$f.FieldName}" name="{$f.FieldName}" type="text"   class="form_text"  maxlength="100"   value="{$f.DisplayValue}" />
+                                 </switch>
+                                 </td>
+                             </tr>
+                        </feedbackmodellist>
+                        
+                        <eq name="FeedbackVerifycode" value="1">
+                            <tr>
+                                <th class="required">{$Think.lang.Verifycode}</th>
+                                <td>
+                                <input id="verifycode" class="form_text_verifycode" name="verifycode" type="text" maxlength="4" />
+                                <img  src="__GROUP__/public/feedbackCode/"  onclick="ChangeCode()"  class="code_image" id="code"  align="absMiddle"  alt="{$Think.lang.ChangeVerifycode}"  title="{$Think.lang.ChangeVerifycode}" />
+                                </td>
+                            </tr>
+                        </eq>
+                            <tr>
+                                <td colspan="2" class="operation"><input class="form_button" type="submit" name="submit" value="{$Think.lang.Submit}" /></td>
+                            </tr>
+                        </form>
+                        </table>
+                </div>
+                <div class="right_bottom1"></div>
+		</div>
+        <!--右侧区域 结束-->
+		<div class="clear"></div>
+	</div>
+    <!--主体内容 开始-->
+</div>
+<include file="Public:footer" />
+</body>
+</html>

@@ -1,0 +1,2 @@
+<?php
+return array ( 0 => 'AdminID', 1 => 'AdminName', 2 => 'MemberID', 3 => 'AdminGroupID', 4 => 'AdminPassword', 5 => 'LastLoginTime', 6 => 'LastLoginIP', 7 => 'IsLock', 8 => 'IsSystem', '_autoinc' => true, '_pk' => 'AdminID', ); ?>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$ChannelName}</title>
+<include file="Public:meta" />
+</head>
+<body class="body_job">
+    <include file="Public:header" />
+    <div  id="content">
+        <div class="job">
+            <eq name="HasChild" value="1">
+                <include file="Public:subchannel" />
+            <else/>
+                 <ul class="wxlist">
+                     <JobList id="j" nowpage="$NowPage">
+                     <li>
+                        <div class="JobName">{$j.JobName}</div>
+                        <table cellpadding="0" cellspacing="0" border="0" class="job_table">
+                            <tr>
+                                <th>{$Think.lang.Gender}</th><td>{$j.Gender}</td>
+                                <th>{$Think.lang.Age}</th><td>{$j.Age}</td>
+                            </tr>
+                           <tr>
+                                <th>{$Think.lang.Salary}</th><td>{$j.Salary}</td>
+                                <th>{$Think.lang.Language}</th><td>{$j.Language}</td>
+                            </tr>
+                            <tr>
+                                <th>{$Think.lang.HiringNo}</th><td>{$j.Number}</td>
+                                <th>{$Think.lang.Location}</th><td>{$j.Workplace}</td>
+                            </tr>
+                            <tr>
+                                <th>{$Think.lang.ValidTime}</th><td>{$j.Expiration}</td>
+                                <th>{$Think.lang.Education}</th><td>{$j.Education}</td>
+                            </tr>
+                            <tr>
+                                <th>{$Think.lang.Requirement}</th>
+                                <td  colspan="3"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" align="left">{$j.Requirement}</td>
+                            </tr>
+                        </table>
+                        </li>
+                   </JobList>
+                </ul>
+            </eq>
+            <div class="clear"></div>
+         </div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

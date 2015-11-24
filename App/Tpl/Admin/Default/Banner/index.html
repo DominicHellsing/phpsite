@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">广告管理</dd>
+        <dd class="link">网站广告</dd><!--导航-->
+        <dd class="link">幻灯片管理</dd><!--导航-->
+        </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}del/BannerID/"+id;
+		$.get(url, {}, DelComplete, "json");
+		return true;
+	}
+	
+	//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='BannerID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchDel");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存排序吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchSort");
+		$('#frm').submit();
+		return true;
+	}	
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		$(".TagTip").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "alt"
+		});
+	});
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                  <div class="table">
+                   
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add"  title="添加幻灯片" target="_self">&nbsp;&nbsp;添加幻灯片</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="30px"  nowrap="nowrap">选中</th>
+                        <th width="50px" >幻灯片ID</th>
+                        <th width="200px" >幻灯片名称</th> 
+                        <th width="150px" >所属幻灯分组</th>
+                        <th width="65px" >幻灯片排序</th>
+                        <th width="170px" >幻灯片图片</th>
+                        <th>链接地址</th>       	
+                        <th width="60px" >是否启用</th>
+                        <th width="150">操作</th>
+                    </tr>
+    <notempty name="Banner">  
+    <volist name="Banner" id="b">
+    <tr id="tr{$b.BannerID}">
+    	<td><input type="checkbox" name="BannerID[]" value="{$b.BannerID}" /></td>
+    	<td>{$b.BannerID}</td>
+        <td style="text-align:left; word-break : break-all">{$b.BannerName}</td>
+        <td style="text-align:center;color:#00F;"><b>{$b.BannerGroupName}</b></td>
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:65px" name="BannerOrder[]" value="{$b.BannerOrder}" />
+        <input type="hidden" class='textinput' name="BannerOrderID[]" value="{$b.BannerID}" />
+        </td>
+        <td style="text-align:center; cursor:pointer;padding:1">
+        <eq name="b.BannerImage|yd_file_ext|strtolower" value="swf">
+        <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="180px" height="50px">
+		<param name="movie" value="{$b.BannerImage}">
+		<param name="quality" value="high">
+		<param name="bgcolor" value="#ffffff">
+		<param name="menu" value="false">
+		<param name=wmode value="transparent">
+		<embed src="{$b.BannerImage}" wmode="opaque"  menu="false" bgcolor="#ffffff"  quality="high" width="180px" height="50px" allowScriptAccess="sameDomain" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />
+		</object>
+        <else/>
+        <span class="TagTip" alt="{$b.BannerImage}" >
+        <img src="{$b.BannerImage}" width="180px" height="50px" />
+        </span>
+        </eq>
+        </td>
+        <td style="text-align:left;">{$b.BannerUrl}</td>
+        <td><eq name="b.IsEnable" value="1"><span style="color:black">启用</span>
+        <else/><span style="color:red">禁用</span></eq>
+        </td>
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" href="{$Url}Modify/BannerID/{$b.BannerID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$b.BannerID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="8" id="NoData">暂无信息！</td></tr>
+    </notempty>                                    
+    </table>
+         <div class="th">
+              <div class="form"   id="notice"><b>说明：</b>只有启用的幻灯片才能在前台显示！</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

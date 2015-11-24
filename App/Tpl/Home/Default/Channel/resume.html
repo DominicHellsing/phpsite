@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$ChannelName}|{$Title}-{$WebName}</title>
+<include file="Public:meta" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type='text/javascript' src='{$WebPublic}My97DatePicker/WdatePicker.js'></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmResume').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				alert(data.info);
+				$('#frmResume').resetForm();
+            }else if(data.status==0){
+				alert(data.info);
+			}
+			ChangeResumeCode();
+		};
+		
+		 $('#frmResume').submit(function(){  // 提交表单
+	     	//$('#frmAddBanner').ajaxSubmit();  
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+	});
+</script>
+<script>
+	function PickDate(){
+		var language = "{$HomeLanguageMark}";
+		WdatePicker({
+			skin:'whyGreen',
+			dateFmt:'yyyy-MM-dd',
+			lang:language
+		})
+	}
+	
+	function ChangeResumeCode(){
+			var timenow = new Date().getTime();
+			var obj = document.getElementById('ResumeCode');
+			if( obj ) obj.src = '__GROUP__/public/ResumeCode/'+timenow;
+	}
+</script>
+</head>
+<body class="body_article">
+	<include file="Public:header" />
+    <!--主体内容 开始-->
+    <div class="article">
+    	<!--左侧区域 开始-->
+		<div id="left">
+              <include file="Public:subchannel" />
+              <include file="Public:search" />
+              <include file="Public:contact" />
+		</div>
+        <!--左侧区域 结束-->
+        
+        <!--右侧区域 开始-->
+		<div id="right">
+       			<div class="right_title1">
+                    <h2>{$ChannelName}</h2>
+                </div>
+				<div class="right_body1"> 
+					<table class="resume_table">
+    				<form method="post"  id="frmResume" action="{$ResumeAction}">
+                        <tr>
+                            <th>{$Think.lang.RJobName}</th>
+                            <td>
+                                <input name="JobName" type="text" class="form_text" id="JobName" value="{$JobName}" disabled="disabled"/>
+                                <input id="JobID" name="JobID" type="hidden"  value="{$JobID}"  class="form_text" maxlength="100" />
+                            </td>
+                        </tr>      
+                        <tr>
+                        	<th>{$Think.lang.RYourName}<span class="required">*</span></th>
+                            <td>
+                                <input name="GuestName" type="text" value="{$MemberName}" class="form_text" id="GuestName" />
+                                <input id="GuestID" name="GuestID" type="hidden"  value="{$GuestID}"  class="form_text" maxlength="100" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RGender}</th>
+                            <td>
+                                <input  type="radio" name="Gender" value="男" checked="checked" class="form_radio" />{$Think.lang.RMale}&nbsp;&nbsp;
+                                <input  type="radio" name="Gender" value="女"   class="form_radio"/>{$Think.lang.RFemale}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RBirthday}</th>
+                            <td><input name="Birthday" type="text" onClick="PickDate()" readonly="readonly"  class="Wdate form_text" id="Birthday"  onFocus="PickDate()" /></td>
+                        <tr>
+                        <tr>
+                            <th>{$Think.lang.REthnic}</th>
+                            <td><input name="Ethnic" type="text" class="form_text" id="Ethnic" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RPolitical}</th>
+                            <td><input name="Political" type="text" class="form_text" id="Political" /></td>
+                        </tr>
+                        
+                        <tr>
+                            <th>{$Think.lang.REducation}</th>
+                            <td><input name="Education" type="text" class="form_text" id="Education" /></td>
+                        </tr>
+                        
+                        <tr>
+                            <th>{$Think.lang.RBirthplace}</th>
+                            <td><input name="Birthplace" type="text" class="form_text" id="Birthplace" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RSchool}</th>
+                            <td><input name="School" type="text" class="form_text" id="School" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RSpecialty}</th>
+                            <td><input name="Specialty" type="text" class="form_text" id="Specialty" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RTelephone}<span class="required">*</span></th>
+                            <td><input name="Telephone" type="text" class="form_text" id="Telephone" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.REmail}</th>
+                            <td><input name="Email" type="text" class="form_text" id="Email" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RAddress}</th>
+                            <td><input name="Address" type="text" class="form_text" id="Address" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RSalary}</th>
+                            <td><input name="Salary" type="text" class="form_text" id="Salary" /></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.RDetail}</th>
+                            <td><textarea name="Detail" class="form_textarea" id="Detail"></textarea></td>
+                        </tr>
+                        <tr>
+                            <th>{$Think.lang.Verifycode}<span class="required">*</span></th>
+                            <td>                         
+                                <input id="verifycode" class="form_text_verifycode" name="verifycode" type="text" maxlength="4" />
+                                <img src="__GROUP__/public/ResumeCode" onclick="ChangeResumeCode()" class="code_image" id="ResumeCode" align="absMiddle" alt="{$Think.lang.ChangeVerifycode}"  title="{$Think.lang.ChangeVerifycode}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="operation">
+                            	<input class="form_button" type="submit" name="submit" value="{$Think.lang.ResumeSubmit}" />
+                            </td>
+                        </tr>
+                    </form>
+				</table>
+				<div class="page">{$Page}</div>
+			</div>
+            	<div class="right_bottom1"></div>
+		</div>
+        <!--右侧区域 结束-->
+        <div class="clear"></div>
+	</div>
+    <!--主体内容 结束-->
+    <include file="Public:footer" />
+</body>
+</html>

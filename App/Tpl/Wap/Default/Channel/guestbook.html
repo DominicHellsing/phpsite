@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$ChannelName}</title>
+<include file="Public:meta" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frm').ajaxForm({
+			success: complete,
+			dataType: 'json',
+			beforeSubmit: check
+		});
+		
+		function check(){
+			<guestbookmodellist id="f">
+					<eq name="f.IsRequire" value="1">
+							if($("#{$f.FieldName}").val()==""){
+								alert("{$f.DisplayName}{$Think.lang.Required}");
+								$("#{$f.FieldName}").focus();
+								return false;
+							}
+					</eq>
+					
+					<eq name="f.IsValidate" value="1">
+					<notempty name="f.ValidateRule">
+							var re = new RegExp({$f.ValidateRule});
+							if(!re.test( $("#{$f.FieldName}").val() )){
+								alert("{$f.DisplayName}{$Think.lang.Invalid}");
+								$("#{$f.FieldName}").focus();
+								return false;
+							}
+					</notempty>
+					</eq>
+			</guestbookmodellist>
+			  <eq name="GuestBookVerifycode" value="1">
+					if( $("#verifycode").val() == ""){
+						alert("{$Think.lang.VerifyCodeRequired}");
+						$("#verifycode").focus();
+						return false;
+					}
+				</eq>
+			return true;
+		}
+		
+		function complete(data){
+			if (data.status==1){
+				alert("{$Think.lang.GuestbookSuccessNoCheck}");
+				$('#frm').resetForm();
+            }else if(data.status==0){
+				alert(data.info);
+			}
+			ChangeCode();
+		};
+		
+		 $('#frm').submit(function(){
+	     	//$('#frmAddBanner').ajaxSubmit();  
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+	});
+</script>
+<script>
+	function ChangeCode(){
+		var timenow = new Date().getTime();
+		var obj = document.getElementById('code');
+		if( obj ) obj.src = "__GROUP__/public/guestbookCode/"+timenow;
+	}
+</script>
+</head>
+<body>
+    <include file="Public:header" />
+    <div  id="content" >
+        <div class="guestbook">
+            <ul class="wxlist">
+                <li>
+                    <div class="ChannelName"><h1>{$ChannelName}</h1></div>
+                    <table border="0" cellpadding="0" cellspacing="3" class="guestbook_table">
+                        <form method="post" id="frm" action="{:GuestbookAddAction()}">
+                        	<guestbookmodellist id="f">
+                            <tr>
+                                <td class="t1">
+                                <eq name="f.IsRequire" value="1"><span class="required">{$f.DisplayName}*</span><else/>{$f.DisplayName}</eq>
+                                </td>
+                                <td class="t2">
+                                <switch name="f.DisplayType">
+                                    <case value="textarea"><textarea id="{$f.FieldName}"   name="{$f.FieldName}">{$f.DisplayValue}</textarea></case>
+                                    <case value="radio">
+                                        <volist name="f.Item" id="it">
+                                              <input id="{$f.FieldName}" class="form_radio" name="{$f.FieldName}" value="{$it.Value}" type="radio" {$it.Selected} />{$it.Text}&nbsp;&nbsp;
+                                        </volist>
+                                    </case>
+                                   <case value="checkbox">
+                                        <volist name="f.Item" id="it">
+                                        		<input id="{$f.FieldName}"   class="form_checkbox"   name="{$f.FieldName}[]" value="{$it.Value}" type="checkbox" {$it.Selected} />{$it.Text}&nbsp;&nbsp;
+                                        </volist>
+									</case>
+                                    <case value="select">
+                                    	 <select  id="{$f.FieldName}"  name="{$f.FieldName}" >
+                                            <volist name="f.Item" id="it">
+                                                    <option  value="{$it.Value}"  {$it.Selected} />{$it.Text}</option>
+                                            </volist>
+                                         </select>
+                                    </case>
+                                    <case value="label">{$f.DisplayValue}</case>
+                					<case value="password"><input id="{$f.FieldName}" name="{$f.FieldName}" type="password"  value="{$f.DisplayValue}" /></case>
+                                    <default /><input id="{$f.FieldName}" name="{$f.FieldName}" type="text"  maxlength="100" value="{$f.DisplayValue}" />
+                                 </switch>
+                                 </td>
+                             </tr>
+                            </guestbookmodellist>
+                            <eq name="GuestBookVerifycode" value="1">
+                            <tr>
+                                <td class="t1"><span class="required">{$Think.lang.Verifycode}*</span></td>
+                                <td class="t2">
+                                <input id="verifycode"  class="form_text_verifycode" name="verifycode" type="text" maxlength="4" />&nbsp;
+ 								<img  src="__GROUP__/public/guestbookCode/"  onclick="ChangeCode()"  class="code_image" id="code"  align="absMiddle"  alt="{$Think.lang.ChangeVerifycode}"  title="{$Think.lang.ChangeVerifycode}" />
+                                </td>
+                            </tr>
+                            </eq>
+                            <tr>
+                                <td colspan="2"><input class="ui-btn-submit" type="submit" name="submit"  value="{$Think.lang.Submit}" />
+                            </tr>
+                         </table>
+                        </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

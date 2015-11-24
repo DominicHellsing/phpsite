@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">广告管理</dd>
+            		    <dd class="link">邮件群发</dd><!--导航-->
+            		    <dd class="link">邮件群发管理</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delSend/MailSendID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+	//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='MailSendID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchDelSend");
+		$('#frm').submit();
+		return true;
+	}
+	
+</script>
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		$(".MailTitle").powerFloat({
+			reverseSharp:true,
+			position:"4-5"
+		});
+		
+		$(".sendlog").powerFloat({
+			reverseSharp:true,
+			position:"4-5"
+		});
+	});
+</script>
+<style>
+.mytip{
+	display:none; 
+	background-color:#FFF;
+	padding:8px; 
+	line-height:22px;
+	text-align:left;
+	border:1px solid #CCC;
+}
+.mylog{
+	display:none; 
+	background-color:#FFF;
+	padding:0px; 
+	line-height:22px;
+	text-align:left;
+	border:1px solid #CCC;
+}
+.MailTitle{
+	cursor:pointer;	
+}
+</style>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}addSend"  title="添加群发邮件" target="_self">添加群发邮件</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="40px"  nowrap="nowrap">选中</th>
+                        <th width="45px" >邮件ID</th>
+                        <th>邮件主题</th> 
+                        <th width="120px" >添加时间</th>
+                        <th width="120px" >最后发送时间</th>
+                        <th width="90px" >最后发送日志</th>
+                        <th width="280px">操作</th>
+                    </tr>
+    <notempty name="MailSend">  
+    <volist name="MailSend" id="m">
+    <tr id="tr{$m.MailSendID}">
+    	<td><input type="checkbox" name="MailSendID[]" value="{$m.MailSendID}" /></td>
+    	<td>{$m.MailSendID}</td>
+        <td style="text-align:left;">
+        <span class="MailTitle" rel="mt{$i}">
+        <eq name="Think.const.LANG_SET" value="cn">
+        {$m.MailTitle|Left=30}
+        <else/>
+        {$m.MailTitle|Left=60}
+        </eq>
+        </span>
+        <div class="mytip" id="mt{$i}">
+        <b style="color:#00F">邮件主题：</b><b>{$m.MailTitle}</b><br />
+        <b style="color:#00F">邮件内容：</b>{$m.MailContent}
+        </div>
+        </td>
+        <td>{$m.AddTime|strtotime|yd_friend_date}</td>
+        <td><notempty name="m.SendTime">
+        	{$m.SendTime|strtotime|yd_friend_date}
+        <else/>
+        	<b style="color:#F00">未发送</b>
+        </notempty></td>
+        <td>
+        <notempty name="m.SendLog">
+        <span class="sendlog" rel="log{$i}" style="cursor:pointer">查看发送日志</span>
+        <div class="mylog" id="log{$i}">{$m.SendLog}</div>
+        </notempty>
+        </td>
+        <td style="text-align:left;padding-left:5px">
+<a  style="float:left" id="btnSaveAll" href="{$Url}Send/MailSendID/{$m.MailSendID}" target="_self">群发当前邮件</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" href="{$Url}ModifySend/MailSendID/{$m.MailSendID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$m.MailSendID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="7" id="NoData">暂无信息！</td></tr>
+    </notempty>                                 
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

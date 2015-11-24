@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$InfoTitle}-{$WebName}</title>
+    <include file="Public:meta" />
+</head>
+<body class="body_product">
+    	<include file="Public:header" />
+        <!--主体内容 开始-->
+        <div class="product">
+                <!--左侧区域 开始-->
+                <div id="left">
+                   <include file="Public:subchannel" />
+                   <include file="Public:search" />
+                   <include file="Public:contact" />
+                </div>
+                <!--左侧区域 结束-->
+                
+                <!--右侧区域 开始-->
+                <div id="right">
+                    <div class="right_title">
+                        <h2>{$ChannelName}</h2>
+                    </div>                   
+                    <div class="right_body">
+                        <div class="info_product_detail_wrap">
+                        		<table class="detail_table" align="center">
+                                	  <tr>
+                                      		<th><img src="{$InfoPicture|DefaultPicture}" title="{$InfoTitle}" alt="{$InfoTitle}" /></th>
+                                            <td valign="top">
+                                                <div class="InfoTitle"><h1>{$InfoTitle}</h1></div>
+                                                <notempty name="f2">
+                                                    <b>{$Think.lang.ProductNumber}：</b><span class="f2">{$f2}</span><br/>
+                                                </notempty>
+                                                <notempty name="f1">
+                                                    <b>{$Think.lang.BuyPrice}：</b><span class="f1">{$f1}</span><br/>
+                                                </notempty>
+                                                <div><b>{$Think.lang.ProductHit}：</b><span class="InfoHit">{$InfoHit}</span></div>
+                                                <b>{$Think.lang.ProductTime}：</b><span class="InfoTime">{$InfoTime}</span><br/>
+                                                <div class="WantOrder"><a class="btn1" href="{$InfoID|OrderUrl}" target="_blank">{$Think.lang.WantOrder}</a></div>
+                                            </td>
+                                      </tr>
+                                </table>
+                        </div>
+                        <div class="ProductDescription">{$Think.lang.ProductDescription}</div>
+                        <div class="InfoContent">{$InfoContent}</div>
+                        <!--上下一条新闻 开始-->
+                        <div class="info_previous_next_wrap">
+                            <div class="Previous">
+                                <eq name='HasPrevious' value="1">
+                                    <b>{$Think.lang.Previous}{$ChannelSName}：</b><a  href="{$PreviousInfoUrl}" title="{$PreviousInfoTitle}">{$PreviousInfoTitle}</a>
+                                <else/>
+                                    <b>{$Think.lang.Previous}{$ChannelSName}：</b>{$Think.lang.Nothing}
+                                </eq>
+                            </div>
+                            
+                            <div class="Next">
+                                <eq name='HasNext' value="1">
+                                    <b>{$Think.lang.Next}{$ChannelSName}：</b><a  href="{$NextInfoUrl}" title="{$NextInfoTitle}">{$NextInfoTitle}</a>
+                                <else/>
+                                    <b>{$Think.lang.Next}{$ChannelSName}：</b>{$Think.lang.Nothing}
+                                </eq>
+                            </div>
+                        </div>
+                        <!--上下一条新闻 结束-->
+                    </div>
+                    <div class="right_bottom"></div>
+                </div>
+                <!--右侧区域 结束-->
+                <div class="clear"></div>
+        </div>
+        <!--主体内容 结束-->
+    	<include file="Public:footer" />
+</body>
+</html>

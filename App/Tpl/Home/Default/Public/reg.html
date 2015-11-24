@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$Title}-{$WebName}</title>
+<include file="Public:meta" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type=text/javascript>
+	$(document).ready(function(){
+		$("#MemberCode").click( ChangeVerify );
+		
+		function ChangeVerify(){
+			var timenow = new Date().getTime();
+		    $("#MemberCode").attr("src", "{$Url}memberCode/d/" + timenow);
+		};
+		
+		$('#frmReg').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==0){ //登录失败
+				ChangeVerify();
+				alert(data.info);
+            }else{
+				alert(data.info);
+				$('#frmReg').resetForm();
+			}
+		};
+		
+		 $('#frmReg').submit(function(){  // 提交表单
+	     	return false; //返回false  
+	     });
+	});
+</script>
+</head>
+<body class="body_article">
+	<include file="Public:header" />
+    <!--主体内容 开始-->
+    <div class="article">
+    	<!--左侧区域 开始-->
+        <div id="left">
+            <include file="Public:search" />
+            <include file="Public:contact" />
+        </div>
+        <!--左侧区域 结束-->
+        
+        <!--右侧区域 开始-->    
+        <div id="right">
+        	<div class="right_title">
+                <h2>{$Think.lang.UserReg}</h2>
+            </div>
+            <div class="right_body">
+            <form id="frmReg" method="post" action="{:MemberRegAction()}" >
+                <table class="reg_table">
+                    <tr>
+                        <th>{$Think.lang.UserName}<span class="required">*</span></th>
+                        <td><input name="MemberName" type="text" class="form_text" /></td>
+                    </tr>
+                    <tr>
+                        <th>{$Think.lang.Password}<span class="required">*</span></th>
+                        <td><input class="form_text" name="MemberPassword"   type="password" /></td>
+                    </tr>
+                    <tr>
+                        <th>{$Think.lang.ConfirmPassword}<span class="required">*</span></th>
+                        <td><input class="form_text" name="MemberPassword1"  type="password" /></td>
+                    </tr>
+                    <tr>
+                        <th>{$Think.lang.Email}<span class="required">*</span></th>
+                        <td><input class="form_text" name="MemberEmail"   type="text" /></td>
+                    </tr>
+                    <tr>
+                        <th>{$Think.lang.PasswordQuestion}<span class="required">*</span></th>
+                        <td><input class="form_text" name="MemberQuestion"  type="text" />{$Think.lang.PasswordQuestionRemark}</td>
+                    </tr>
+                    <tr>
+                        <th>{$Think.lang.PasswordAnswer}<span class="required">*</span></th>
+                        <td><input class="form_text" name="MemberAnswer"  type="text" />{$Think.lang.PasswordAnswerRemark}</td>
+                    </tr>
+                    
+                    <eq name="MemberRegVerifyCode" value="1">
+                    <tr>
+                        <th>{$Think.lang.Verifycode}</th>
+                        <td><input name="MemberCode" type="text" class="form_text_verifycode" maxlength="4" />&nbsp;
+                        <img  class="code_image" id="MemberCode" title="{$Think.lang.ChangeVerifycode}" src="{$Url}/verify/" align="absMiddle" /></td>
+                    </tr>
+                    </eq>
+                    
+                    <tr>
+                        <td colspan="2" class="operation">
+             				<input class="form_button" type="submit" name="submit" value="{$Think.lang.Reg}" />&nbsp;
+            				<a href="{:MemberLoginUrl()}" target="_blank">{$Think.lang.WantLogin}</a>&nbsp;
+                            <a href="{:MemberForgetUrl()}" target="_blank">{$Think.lang.ForgetPassword}</a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            </div>
+            <div class="right_bottom"></div>
+        </div>
+        <!--右侧区域 结束-->
+        <div class="clear"></div>
+    </div>
+    <!--主体内容 结束-->   
+	<include file="Public:footer" />
+</div>
+</body>
+</html>

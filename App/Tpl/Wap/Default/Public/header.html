@@ -1,0 +1,82 @@
+<in name="ChannelID" value="1,2">
+	<!--页眉开始-->
+    <div id="header">
+    	<eq name="TShowLogo" value="1">
+		<!--Logo 开始-->
+        <div class="logo">
+           <notempty name="WebLogo">
+                 <div class="WebLogo"><img src="{$WebLogo}"  /></div>
+           </notempty>
+            <notempty name="Language">
+                 <div class="Language">
+                    <a href="{:LanguageUrl('cn')}" target="_self"><img src="{$Images}zw.gif" /></a>
+                    <a href="{:LanguageUrl('en')}" target="_self"><img src="{$Images}english.gif" /></a>
+                 </div>
+            </notempty>
+        </div>
+        <!--Logo 结束-->
+        </eq>
+        
+        <!--幻灯片 开始-->
+        <script type="text/javascript" src="{$WebPublic}jquery/flexslider/jquery.flexslider-min.js"></script>
+        <script type="text/javascript">
+          $(document).ready(function() {
+                $('.flexslider').flexslider({
+                        controlNav: true, 
+                        directionNav: false,
+                        animation: "slide",
+                        //manualControls: ".myflexslider .slidenav"
+                    });
+          });
+        </script>
+        <div id="banner" class="flexslider" >
+             <ul class="slides">
+                <BannerList id="b" bannergroupid="$T1">
+                    <li>
+                        <notempty name="b.BannerUrl">
+                        	<a href="{$b.BannerUrl}"><img src="{$b.BannerImage}" /></a>
+                        <else/>
+                        	<img src="{$b.BannerImage}" />
+                        </notempty>
+                    </li>
+                </BannerList>
+             </ul>
+        </div>
+        <!--幻灯片 结束-->
+    </div>
+<else/>
+    <!--顶部开始-->
+    <div id="top">
+        <!--频道导航 开始-->
+        <script>
+        window.onload = function (){
+            var oWin = document.getElementById("window");
+            var oLay = document.getElementById("overlay");	
+            var oBtn = document.getElementById("popmenu");
+            var oClose = document.getElementById("close");
+            oBtn.onclick = function (){oLay.style.display = "block";oWin.style.display = "block"	};
+            oLay.onclick = function (){oLay.style.display = "none";oWin.style.display = "none"	}
+        };
+        </script>
+        <div style="margin-bottom:55px;">
+            <div id="toolbar">
+                <div class="fixed-green">
+                    <a class="ui-title" id="popmenu">{$ChannelName}</a>
+                    <a class="ui-btn-back" href="javascript:history.go(-1)"></a>
+                    <a class="ui-btn-home" href="{:HomeUrl()}"></a>
+                </div>
+            </div>
+            <div id="overlay"></div>
+            <div id="window">
+                <ul class="windowlist">
+                <NavigationList id="f" channelid='0' prefix="" depth="1" offset="1">
+                     <li><a  href="{$f.ChannelUrl}"><span>{$f.ChannelName}</span></a></li>
+                </NavigationList>
+                <div class="clear"></div>
+                </ul>
+            </div>
+        </div>
+        <!--频道导航 结束-->
+    </div>
+    <!--顶部结束-->
+</in>

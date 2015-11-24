@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+</head>
+<body id="main_page"  style="height:100%">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">网站优化</dd><!--导航-->
+                        <dd class="link">站长工具</dd><!--导航-->
+            		    <dd class="link">站长统计</dd><!--导航-->
+            		</dl>
+		</div>
+        <div style="height:100%">
+        <iframe src="{$Src}" width="100%" height="100%" ></iframe>
+        </div>
+</body>
+</html>

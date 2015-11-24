@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<style>
+.ChannelDepth1{font-weight:bold; color:#000; padding:2px 5px 2px 0px;}
+.ChannelDepth2{color:#000;padding:2px 5px 2px 20px;}
+.ChannelDepth3{color:#000;padding:2px 5px 2px 40px;}
+.ChannelDepth4{color:#000;padding:2px 5px 2px 60px;}
+.ChannelDepth5{color:#000;padding:2px 5px 2px 80px;}
+.ChannelDepth6{color:#000;padding:2px 5px 2px 100px;}
+.ChannelDepth7{color:#000;padding:2px 5px 2px 120px;}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">会员管理</dd>
+        <dd class="link">管理员信息</dd>
+        <dd class="link">添加管理员分组</dd>
+        <!--导航-->
+        </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+
+
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmAdd').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+				$('#frmAdd').resetForm();
+				$('#AdminGroupName').focus();
+            }else{
+				ErrorBox(data.info);
+			}
+		};
+		
+		 $('#frmAdd').submit(function(){  // 提交表单
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+		 
+		 $('#AdminGroupName').focus();
+	});
+</script>
+<script>
+function GoBack(){
+	window.location.href = "{$Url}Index";
+}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green">
+                <form enctype="multipart/form-data" action="{$Action}" method="post" id="frmAdd">
+                <volist name="Group" id="g">
+                    <div class="box-header"><h4>{$g.DisplayName}</h4></div>
+                    <div class="box-content"><table class="table-font">
+                    <volist name="Attribute" id="a">
+                        <eq name="a.GroupID" value="$g.AttributeID">
+                            <tr>
+                                <th class="w120">{$a.DisplayName}</th>
+                                <td>{$a.html}</td>
+                            </tr>
+                        </eq>
+                    </volist>
+                </volist>
+
+                            <tr>
+                             <th class="w120">管理组权限</th>
+                             <td>
+              
+    <MenuTopList id="mt" MenuOwner="1">
+        <div class="box-header" style="border:1px solid #87A34D;padding:0">
+        <h4 style="color:#000;font-weight:bold;font-size:14px;">
+        <in name="mt.MenuTopID" value="1,8">
+        <input type="checkbox" value="{$mt.MenuTopID}" name="MenuTopPurviewXX"  disabled="disabled" checked="checked" />{$mt.MenuTopName}
+        <input type="hidden" value="{$mt.MenuTopID}" name="MenuTopPurview[]" />
+        <else/>
+        <input type="checkbox" value="{$mt.MenuTopID}" name="MenuTopPurview[]" />{$mt.MenuTopName}
+        </in>
+        
+        <span style="color:gray;padding-left:10px">注意：如果没有选中上层栏目，则子栏目无效！</span>
+        </h4>
+        <table class="table-font" style="padding:0">
+        <MenuGroupList id="mg" MenuTopID="$mt.MenuTopID">
+        <tr>
+        <td style="width:200px;text-align:left;color:blue;padding-left:20px;font-weight:bold">
+        <input type="checkbox" value="{$mg.MenuGroupID}" name="MenuGroupPurview[]" />{$mg.MenuGroupName}
+        </td>
+        <td style="text-align:left">
+            <MenuList id="m" MenuGroupID="$mg.MenuGroupID">
+            	<eq name="m.MenuType" value="3">
+            	<ChannelList id="cl" channelid="0" depth="-1" prefix="">
+                <neq name="cl.ChannelModelID" value="33">
+                <div class="ChannelDepth{$cl.ChannelDepth}">
+                <input type="checkbox" value="{$cl.ChannelID}" name="ChannelPurview{$Think.const.LANG_SET}[]" />├─{$cl.ChannelName}
+                </div>
+                </neq>
+                </ChannelList>
+            <else/>
+                <span style="padding-right:8px;font-weight:bold">
+                <input type="checkbox" value="{$m.MenuID}" name="MenuPurview[]" />{$m.MenuName}
+                </span>
+            </eq>
+            </MenuList>
+        </td>
+        </tr>
+        </MenuGroupList>
+        </table>
+		</div>                  
+    </MenuTopList>
+                            </td>
+                            </tr>
+                </table>
+                    </div>
+                    
+ 
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit" type="submit" value="保存并继续添加" />
+                        &nbsp;&nbsp;<input  id="btnSubmit"  type="button" value="返回" onclick="GoBack()" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

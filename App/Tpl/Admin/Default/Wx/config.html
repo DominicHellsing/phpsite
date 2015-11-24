@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">微信接口</dd><!--导航-->
+                        <dd class="link">微信设置</dd>
+            		    <dd class="link">微信功能设置</dd><!--导航-->
+            		</dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存排序吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchSortMenu");
+		$('#frm').submit();
+		return true;
+	}	
+	
+	function SetStatus(id, status){
+		var url = "{$Url}enableMenu/MenuID/"+id+"/IsEnable/"+status;
+		window.location.href = url;
+	}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="refresh" href="{$Group}/public/AdminLeft/MenuTopID/15" title="刷新后，左下脚显示最新的应用列表！" target="menu">刷新</a></li>                   
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+                    </div>
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="50px" >编号</th>
+                        <th width="200px" >应用名称</th>
+                        <th width="65px" >排序</th>
+                        <th width="80px" >是否显示</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>  
+    <notempty name="Menu">
+    <volist name="Menu" id="m">
+    <tr>
+    	<td>{$i}</td>
+        <td style="font-weight:bold;">&nbsp;{$m.MenuName}</td>
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:65px" name="MenuOrder[]" value="{$m.MenuOrder}" />
+        <input type="hidden" class='textinput' name="MenuOrderID[]" value="{$m.MenuID}" />
+        </td>
+        <td><eq name="m.IsEnable" value="1"><b style="color:black">显示</b><else/><b style="color:red">隐藏</b></eq></td>
+        <td style="text-align:left;padding-left:5px">
+        <eq name="m.IsEnable" value="1">       
+        	<a style="float:left" onclick="SetStatus({$m.MenuID}, 0)" class="btnDel" >隐藏</a>
+        <else/>
+        	<a style="float:left" onclick="SetStatus({$m.MenuID},1)" id="btnEdit" >显示</a>
+        </eq>
+        </td>
+    </tr>
+    </volist>  
+    <else/>
+    <tr><td colspan="5" id="NoData">暂无信息！</td></tr>
+    </notempty>                              
+    </table>
+         <div class="th">
+              <div class="form" id="notice"><b>说明：</b>[1]状态为“显示”的微应用将在左下方微信应用列表中显示！
+              [2]设置后，请点击“刷新”按钮进行刷新！
+              </div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

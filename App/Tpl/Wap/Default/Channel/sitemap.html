@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$ChannelName}</title>
+<include file="Public:meta" />
+</head>
+<body class="body_article">
+    <include file="Public:header" />
+    <div  id="content">
+        <div class="article">
+            <ul class="sitemaplist">
+            	<li><div class="ChannelName">{$ChannelName}</div></li>
+            	<navigationlist id="s" channelid="0" depth="-1" >
+                    <a href="{$s.ChannelUrl}">
+                    	<li><div class="ChannelDepth{$s.ChannelDepth}">{$s.ChannelName}</div></li>
+                    </a>
+                </navigationlist>
+            </ul>
+            <div class="clear"></div>
+         </div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

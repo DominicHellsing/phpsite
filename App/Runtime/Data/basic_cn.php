@@ -1,0 +1,2 @@
+<?php
+return array ( 'WEB_NAME' => '某某公司', 'WEB_URL' => 'http://www.xx.com', 'WEB_ICP' => 'ICP备888888888号', 'WEB_STATUS' => '1', 'WEB_CLOSE_REASON' => '抱歉，网站正在维护中，给您带来不便深表歉意！', 'WEB_BAD_WORDS' => '他妈的=***', 'WEB_BAD_IP' => '', 'WEB_LOGO' => '/Upload/public/logo.png', 'EMAIL_SENDER' => '', 'EMAIL_ACCOUNT' => '', 'EMAIL_SMTP' => '', 'EMAIL_PASSWORD' => '', 'WEB_ICON' => '', ); ?>

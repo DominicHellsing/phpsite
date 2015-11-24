@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">广告管理</dd>
+            		    <dd class="link">邮件群发</dd><!--导航-->
+            		    <dd class="link">订阅邮箱管理</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}del/MailID/"+id+"/MailClassID/{$MailClassID}/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+	
+	//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+	//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='MailID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchDel/MailClassID/{$MailClassID}");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//查询
+	function Search(){
+		$('#frm').attr("action", "{$Url}index");
+		$('#frm').submit();
+		return true;
+	}	
+	
+</script>
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		$(".Address").powerFloat({
+			reverseSharp:true,
+			position:"4-5"
+		});
+	});
+</script>
+<style>
+.mytip{
+	display:none; 
+	background-color:#FFF;
+	padding:8px; 
+	line-height:22px;
+	text-align:left;
+	border:1px solid #CCC;
+}
+.Address{
+	cursor:pointer;	
+}
+</style>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add"  title="添加邮箱帐号" target="_self">添加邮箱帐号</a></li>
+<li class="toolbar"><a id="btnBack" href="{$Url}ClassIndex">返回</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label>邮件订阅分类</label><select name="MailClassID" id="MailClassID">
+<option value="-1">全部</option>
+<volist name="MailClass" id="mc">
+<eq name="mc.MailClassID" value="$MailClassID">
+<option value="{$mc.MailClassID}" selected="selected">
+<else/>
+<option value="{$mc.MailClassID}">
+</eq>
+{$mc.MailClassName}</option>
+</volist>
+</select>&nbsp;
+<input id="btnSeek" type="submit" value="查询" onclick="Search()">
+</li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="40px"  nowrap="nowrap">选中</th>
+                        <th width="45px" >邮箱ID</th>
+                        <th width="150px" >邮箱帐号</th> 
+                        <th width="100px" >订阅分类</th>
+                        <th width="85px" >姓名</th>
+                        
+                        <th width="100px" >电话</th>
+                        <th>地址</th>
+                        <th width="120px" >添加时间</th>
+                        <th width="60px" >是否启用</th>
+                        <th width="150px">操作</th>
+                    </tr>
+    <notempty name="Mail">  
+    <volist name="Mail" id="m">
+    <tr id="tr{$m.MailID}">
+    	<td><input type="checkbox" name="MailID[]" value="{$m.MailID}" /></td>
+    	<td>{$m.MailID}</td>
+        <td style="text-align:left;">{$m.MailAccount}</td>
+        <td style="color:blue;font-weight:bold">{$m.MailClassName}</td>
+		<td>{$m.Name}</td>   
+             
+        <td>{$m.Telephone}</td> 
+        <td><span class="Address" rel="des{$i}">{$m.Address|Left=15}</span>
+        <div class="mytip" id="des{$i}">{$m.Address}</div>
+        </td>
+        <td>{$m.AddTime|strtotime|yd_friend_date}</td>
+        <td><eq name="m.IsEnable" value="1"><span style="color:black">启用</span>
+        <else/><span style="color:red">禁用</span></eq></td>
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" href="{$Url}Modify/MailID/{$m.MailID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$m.MailID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="10" id="NoData">暂无信息！</td></tr>
+    </notempty>                                 
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type='text/javascript' src='{$WebPublic}ckfinder/ckfinder.js'></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信接口</dd><!--导航-->
+                <dd class="link">微信应用</dd><!--导航-->
+                <dd class="link">修改会员通知</dd>
+        </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frm').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}else if(data.status==2){
+				ErrorBox(data.info); //上传失败
+			}else if(data.status==3){
+				//alert(data.data);
+				//$('#GiftPicture').val(data.data);
+				SucceedBox(data.info); //上传成功
+			}
+		};
+		
+		 $('#frm').submit(function(){  // 提交表单
+			try{
+				for ( s in CKEDITOR.instances ) {
+				   CKEDITOR.instances[s].updateElement();
+				}
+			}catch(e){
+				;
+			}finally{
+				$(this).ajaxSubmit( {success: complete,dataType: 'json'} );
+	     		return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返）返回false  
+			}
+	     });
+		 
+		 $('#btnSubmit').click(function(){  // 提交表单
+		 	$('#frm').attr('action','{$Action}');
+	     });
+		 
+		 $('#NotifyName').focus();
+	});
+</script>
+<script>
+function GoBack(){
+	window.location.href = "{$Url}notify";
+}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green">
+                <form action="{$Action}" method="post" id="frm" enctype="multipart/form-data">
+                    <input type="hidden" name="{$HiddenName}" value="{$HiddenValue}" />
+                	<input type="hidden" name="NotifyID" value="{$NotifyID}" />
+                    <div class="box-header"><h4>基本信息</h4></div>
+                    <div class="box-content">
+                        <table class="table-font">
+                            <tr>
+                                <th>通知标题</th>
+                                <td><input type="text" class="textinput w450"  id="NotifyName" name="NotifyName" value="{$n.NotifyName}" /></td>
+                            </tr>
+    <tr>
+        <th>页脚信息</th>
+        <td>
+        <!-- 编辑器调用开始 -->
+        <textarea id="NotifyContent" name="NotifyContent">{$n.NotifyContent}</textarea>
+		<script type='text/javascript'>window.CKEDITOR_BASEPATH='{$WebPublic}ckeditor/';</script>
+		<script type='text/javascript' src='{$WebPublic}ckeditor/ckeditor.js?t=C6HH5UF'></script>
+		<script type='text/javascript'>
+		CKEDITOR.replace('NotifyContent', {'uiColor': '#bed393', 'width':'100%', 
+filebrowserBrowseUrl : '{$WebPublic}ckfinder/ckfinder.html',
+filebrowserImageBrowseUrl : '{$WebPublic}ckfinder/ckfinder.html?Type=Images',
+filebrowserFlashBrowseUrl : '{$WebPublic}ckfinder/ckfinder.html?Type=Flash',
+filebrowserUploadUrl : '{$WebPublic}ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
+filebrowserImageUploadUrl : '{$WebPublic}ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
+filebrowserFlashUploadUrl : '{$WebPublic}ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash',
+		'height':'180px', 
+		'toolbar':[['Source','-','Bold','Italic','Underline','Strike'],['Image','Flash','Link','Unlink','Anchor'],
+		['TextColor','BGColor'],['Styles','Format','Font','FontSize']]});
+        </script>
+        <!-- 编辑器调用结束 -->
+    </tr>
+                           <tr>
+                                <th>发布时间</th>
+                                <td><script type='text/javascript' src='{$WebPublic}My97DatePicker/WdatePicker.js'></script>
+                                <input name='NotifyTime' type='text' class='Wdate' id='NotifyTime'  class='textinput' style="width:140px"  onClick="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly='readonly'   value='{$n.NotifyTime}' />
+                                </td>
+                            </tr>
+                          </table>
+                    </div>
+ 
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit" type="submit"  value="保存" />
+                        &nbsp;&nbsp;<input  id="btnSubmit"  type="button" value="返回" onclick="GoBack()" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

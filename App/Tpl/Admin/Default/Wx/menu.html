@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<style>
+.MenuDepth1{padding-left:2px;}
+.MenuDepth1 input{color:#00F; font-weight:bold}
+.MenuDepth2{padding-left:25px}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">微信网站</dd>
+        <dd class="link">微信设置</dd><!--导航-->
+        <dd class="link">自定义菜单设置</dd><!--导航-->
+        </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+
+	//保存所有修改
+	function saveAll(){
+		if( !confirm("确定保存所有修改吗?") ) return false;
+		$('#frm').attr("action", "{$Url}saveAllMenu");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//删除
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delMenu/MenuID/"+id;
+		location.href = url;
+		return true;
+	}
+	
+	//同步更新微信服务器菜单
+	function updateMenu(){
+		if( !confirm("确定同步菜单到微信吗?") ) return false;
+		LoadBox("正在同步菜单到微信，请稍后...");
+		url = "{$Url}updateMenu";
+		$.get(url, {}, UpdateMenuComplete, "json");
+		return true;
+	}
+	
+	//回调函数
+	function UpdateMenuComplete(data, textStatus){
+		CloseLoadBox();
+		if (data.status == 1){
+			SucceedBox(data.info);
+		}else{ 
+			ErrorBox(data.info);
+		}
+	}
+	
+	function clearMenu(){
+		if( !confirm("确定清除微信全部菜单吗?") ) return false;
+		LoadBox("正在清除微信全部菜单，请稍后...");
+		url = "{$Url}clearMenu";
+		$.get(url, {}, ClearMenuComplete, "json");
+		return true;
+	}
+	
+	function ClearMenuComplete(data, textStatus){
+		CloseLoadBox();
+		if (data.status == 1){
+			SucceedBox(data.info);
+		}else{ 
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" id="frm"  method="post">
+                  <div class="table">
+                  	<div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}AddMenu" title="添加菜单" target="_self">添加二级菜单</a></li>
+<li class="toolbar"><a id="btnSave" onclick="saveAll()"  title="保存所有修改">保存所有修改</a></li>
+<li class="toolbar"><a id="btnSave" onclick="updateMenu()"  title="将本地菜单同步到微信">同步菜单到微信</a></li>
+<li class="toolbar"><a id="btnCache" onclick="clearMenu()"  title="清除微信服务器菜单">清除微信菜单</a></li>
+<li class="toolbar" style="color:#FF0000; font-weight:bold">
+</li>
+                    </div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="50" >菜单ID</th>
+                        <th width="190" >菜单名称</th> 
+                         <th width="60">菜单排序</th>  
+                        <th width="100" >回复消息类型</th>
+                        <th>菜单内容</th>
+                        <th width="65" >是否启用</th>
+                        <th width="150">操作</th>
+                    </tr>  
+    <notempty name="Menu">
+    <volist name="Menu" id="c">
+    <tr>
+        <td>{$c.MenuID}<input type="hidden" name="MenuID[]" value="{$c.MenuID}" /></td>
+        <td  style="text-align:left" nowrap="nowrap">
+        <div class="MenuDepth<eq name="c.Parent" value="0">1<else/>2</eq>" >
+        <input type="text" class='textinput' style="width:160px" name="MenuName[]" maxlength="16" value="{$c.MenuName}" />
+        </div>
+        </td>
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:50px" name="MenuOrder[]" value="{$c.MenuOrder}" /></td>
+        <td><b style="color:{$c.TypeID|WxMenuTypeColor}">{$c.TypeName}</b></td>
+        <td>
+        <switch name="c.TypeID">
+        	<case value="1">{$c.p1|Left=25}</case>
+            <case value="2">显示<b style="color:green; padding:0 3px">{$c.p1|ChannelName}</b>频道前<b style="color:#00F; padding:0 3px">{$c.p2}</b>条信息</case>
+            <case value="3">{$c.p1}</case>
+            <case value="4">打开<b style="color:green; padding:0 3px">{$c.p1|ChannelName}</b>频道主页</case>
+            <case value="5">
+            	<empty name="c.p4">
+                	<eq name="c.p1|is_numeric" value="1">
+                		 <b style="color:{$c.TypeID|WxMenuTypeColor}">{$c.p1|WxAppName}</b>
+                    <else/>
+                    	 {$c.p1}
+                    </eq>
+                 <else/>
+                 	<b>{$c.p4}</b>
+                </empty>
+            </case>
+            <case value="6"><a href="{$c.p1}" target="_blank">{$c.p1}</a></case>
+        </switch>
+        </td>
+        <td>
+        <eq name="c.IsEnable" value="1"><span style="color:#000">启用</span>
+        <else/><span style="color:#F00">禁用</span>
+        </eq>
+        </td>
+        <td style="text-align:left">
+        <a style="float:left;" href="{$Url}ModifyMenu/MenuID/{$c.MenuID}" id="btnEdit">修改</a>
+        <neq name="c.Parent" value="0">
+        <div style="float:left;width:3px">&nbsp;</div>
+        <a style="float:left" onclick="Del({$c.MenuID})" class="btnDel">删除</a>
+        </neq>
+        </td>
+    </tr>
+    </volist> 
+    <else/>
+    	<tr><td colspan="8" id="NoData">暂无信息！</td></tr>
+    </notempty>                               
+    </table>
+         <div class="th">
+              <div class="form"  id="notice">
+              <b>说明：</b>
+               [1]你可以创建最多 3 个一级菜单，每个一级菜单下可以创建最多 5 个二级菜单；&nbsp;&nbsp;
+               [2]必须点击“同步菜单到微信”按钮才能更新微信自定菜单
+              </div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

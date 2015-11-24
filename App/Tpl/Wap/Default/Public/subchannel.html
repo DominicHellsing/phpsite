@@ -1,0 +1,51 @@
+<!--子频道样式有三种（图文、文字、橱窗），默认均为微信样式  0：默认,1：图文,2：文字,3：橱窗,4：相册-->
+<switch name="ChannelStyle">
+    <case value="2" ><!--2|文字-->
+       <ul class="channellist">
+            <NavigationList id="c1" channelid='$ChannelID'>
+               <notin name="c1.ChannelID" value="1,2">
+                   <li>
+                        <a  href="{$c1.ChannelUrl}"><div class="ChannelName">{$c1.ChannelName}</div></a>
+                    </li>
+                </notin>
+            </NavigationList>
+        </ul>
+    </case>
+    <case value="3" ><!--3|橱窗-->
+        <ul class="channellist">
+            <NavigationList id="c1" channelid='$ChannelID'>
+               <notin name="c1.ChannelID" value="1,2">
+                   <li>
+                        <a  href="{$c1.ChannelUrl}">
+                             <notempty name="c1.ChannelIcon">
+                              	  <div class="ChannelIcon"><img src="{$c1.ChannelIcon}"  /></div>
+                             </notempty>
+                            <div class="ChannelName">{$c1.ChannelName}</div>
+                        </a>
+                    </li>
+                </notin>
+            </NavigationList>
+        </ul>
+    </case>
+    <default /><!--0|默认为图文 -->
+         <!--子频道显示 开始-->
+        <ul class="wxlist">
+            <NavigationList id="f" channelid='$ChannelID' prefix="" depth="1">
+                  <a  href="{$f.ChannelUrl}">
+                      <li>
+                          <div class="ChannelName">{$f.ChannelName}</div>
+                          <notempty name="f.ChannelPicture">
+                          		<div class="ChannelPicture"><img src="{$f.ChannelPicture}"  /></div>
+                          </notempty>
+                          <notempty name="f.ChannelSContent">
+                                <div class="ChannelSContent">{$f.ChannelSContent}</div>
+                          <else/>
+                                <div class="ChannelSContent">{$f.ChannelContent|strip_tags|Left=50}</div>
+                          </notempty>
+                          <div class="ShowInfo">{$Think.lang.ClickToViewDetail}>></div>
+                      </li>
+                  </a>
+            </NavigationList>
+        </ul>
+         <!--子频道显示 结束-->
+</switch>

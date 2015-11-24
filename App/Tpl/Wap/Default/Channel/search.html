@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$Think.lang.SearchResult}</title>
+<include file="Public:meta" />
+</head>
+<body  class="body_article">
+	<assign name="ChannelName" value="$Think.lang.SearchResult"  comment="防止顶部导航为空" />
+    <include file="Public:header" />
+    <div  id="content">
+        <div class="search">
+            <include file="Public:search" />
+            <notempty name="SearchWord" >
+                    <!--循环开始-->
+                    <ul class="textlist">
+                        <li><div class="searchresult">{$Think.lang.SearchResult}</div></li>
+                        <infolist id="n" channelid='$ChannelID' keywords="$SearchWord" timeformat="Y-m-d" titlelen="70" NowPage="$NowPage"  empty="$Think.lang.NoInformation">
+                            <li>
+                                [<a href="{$n.ChannelUrl}" ><b>{$n.ChannelName}</b></a>]
+                                <a href="{$n.InfoUrl}"  title="{$n.InfoTitle}">
+                                    {$n.InfoSTitle|str_ireplace=$SearchWord,"<b class='red'>$SearchWord</b>",###}
+                                </a>
+                            </li>
+                        </infolist>
+                    </ul>
+                    <!--循环结束-->
+                    <div class="page">{$Page}</div>
+            </notempty>
+        </div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

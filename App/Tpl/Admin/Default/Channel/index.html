@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<style>
+.ChannelDepth1{padding-left:2px;}
+.ChannelDepth1 input{color:#00F;}
+.ChannelDepth2{padding-left:15px}
+.ChannelDepth3{padding-left:30px}
+.ChannelDepth4{padding-left:45px}
+.ChannelDepth5{padding-left:60px}
+.ChannelDepth6{padding-left:75px}
+.ChannelDepth7{padding-left:90px}
+.ChannelDepth8{padding-left:105px}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">内容管理</dd>
+        <dd class="link">频道管理</dd>
+        <dd class="link">管理频道</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function DelChannel(id){
+		if( !confirm("确定删除频道吗?") ) return false;
+		url = "{$Url}del/ChannelID/"+id;
+		$.get(url, {}, DelChannelComplete, "json");
+		return true;
+	}
+	
+	//回调函数
+	function DelChannelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+			RefreshLeftFrame();
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+	
+	//保存所有修改
+	function saveAll(){
+		if( !confirm("确定保存所有修改吗?") ) return false;
+		$('#frm').attr("action", "{$Url}saveAll");
+		$('#frm').submit();
+		RefreshLeftFrame();
+		return true;
+	}	
+	
+	function clearChannelCache(){
+		url = "{$Url}clearCache/t/{:time()}";
+		$.get(url, {}, ClearCacheComplete, "json");
+		return true;
+	}
+		//回调函数
+	function ClearCacheComplete(data, textStatus){
+		if (data.status == 1){
+			SucceedBox(data.info);
+		}else{
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(".cp").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "value",
+			position: "5-7"
+		 });
+	});
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" id="frm"  method="post">
+                  <div class="table">
+                  	<div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add" title="添加频道" target="_self">添加频道信息</a></li>
+<li class="toolbar"><a id="btnSaveAll" href="{$Group}/label/index" title="频道属性标记管理" target="_self">属性标记管理</a></li>
+<li class="toolbar"><a id="btnSave" onclick="saveAll()"  title="保存所有修改">保存所有修改</a></li>
+<li class="toolbar" style="display:none"><a id="btnCache" onclick="clearChannelCache()"  title="当添加、删除、移动频道后，请清除频道缓存">清除频道缓存</a></li>
+                    </div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="45" >频道ID</th>
+                        <th>频道名称</th> 
+                        <th width="90">静态文件名称</th>
+                        <th width="55" >频道排序</th>
+                        <th width="55" >分页条数</th>
+                        <th width="60">简短名称</th>  
+                        <th width="55" >频道模型</th>            	
+                        <th width="100" >首页模板</th>
+                        <th width="120" >阅读模板</th>
+                        <th width="185" >频道属性</th>
+                        <th width="150">操作</th>
+                    </tr>  
+    <notempty name="Channel">
+    <volist name="Channel" id="c">
+    <notin name="c.ChannelID" value="6,7,10,11">
+    <tr id="t{$c.ChannelID}">
+        <td>{$c.ChannelID}<input type="hidden" name="ChannelID[]" value="{$c.ChannelID}" /></td>
+        <td  style="text-align:left" nowrap="nowrap">
+        <div class="ChannelDepth{$c.ChannelDepth}">
+        <input type="text" class='textinput' style="width:100px" name="ChannelName[]" value="{$c.ChannelName}" />
+        </div>
+        </td>
+        <td><input type="text" class='textinput' style="width:90px" name="Html[]" value="{$c.Html}" /></td>
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:50px" name="ChannelOrder[]" value="{$c.ChannelOrder}" /></td>
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:50px" name="PageSize[]" value="{$c.PageSize}" />
+        </td>
+        <td><input type="text" class='textinput' style="width:60px" name="ChannelSName[]" value="{$c.ChannelSName}" /></td>
+        <td>
+        <b style="color:{$c.ChannelModelID|ChannelModelColor}">
+        {$c.ChannelModelName}
+        </b>
+        </td>                 
+        <td><input type="text" class='textinput' style="width:100px" name="IndexTemplate[]" value="{$c.IndexTemplate}" /></td>
+        <td><input type="text" class='textinput' style="width:120px" name="ReadTemplate[]" value="{$c.ReadTemplate}" /></td>
+        <td>
+        <notempty name="c.ChannelPicture"><b style="color:red" class="cp" value="{$c.ChannelPicture}">图</b>&nbsp;</notempty>
+        <eq name="c.IsHtml" value="1"><span style="color:#F0F">HTML</span></eq>&nbsp;
+        <eq name="c.IsSystem" value="1"><span style="color:#90F">系统</span>
+        <else/><span style="color:green">自定义</span>
+        </eq>&nbsp;
+        <eq name="c.IsLock" value="1"><span style="color:blue">锁定</span>
+        <else/><span style="color:blue">未锁</span>
+        </eq>&nbsp;
+        <eq name="c.IsShow" value="1"><span style="color:#600">显示</span>
+        <else/><span style="color:#CCC">隐藏</span>
+        </eq>&nbsp;
+        <eq name="c.IsEnable" value="1"><span style="color:#000">启用</span>
+        <else/><span style="color:#F00">禁用</span>
+        </eq>
+        </td>
+        
+        <td style="text-align:left;">
+        <if condition="$c.IsSystem eq 0" >
+            <if condition="$c.IsLock eq 0" >
+<a style="float:left" href="{$Url}Modify/ChannelID/{$c.ChannelID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="DelChannel({$c.ChannelID})" class="btnDel">删除</a>
+            <else/>
+<a style="float:left;" href="{$Url}Modify/ChannelID/{$c.ChannelID}" id="btnEdit">修改</a>
+            </if>
+        <else/>
+<a style="float:left;" href="{$Url}Modify/ChannelID/{$c.ChannelID}" id="btnEdit">修改</a>        
+        </if>
+        </td>
+    </tr>
+    </notin>
+    </volist> 
+    <else/>
+    <tr><td colspan="10" id="NoData">暂无信息！</td></tr>
+    </notempty>                               
+    </table>
+         <div class="th">
+              <div class="form"   id="notice">
+				<b>频道删除说明：</b>[1]不能删除锁定频道和系统频道;&nbsp;
+                [2]当频道存在子频道时，必须先删除所有子频道，才能删除父级频道;&nbsp;
+                [3]当频道存在数据时，必须先删除频道所有数据，才能频道。
+              </div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

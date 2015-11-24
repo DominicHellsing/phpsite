@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+    <div class="container">
+        <div id="header">
+            <div class="con">
+            <div id="logo">
+                <a href="?c=login&a=welcome" title="{CMSName}后台" target="main">{CMSName}后台</a>
+            </div>
+            <div id="menu">
+                    <div class="item">
+                        <ul>
+                        <volist name="MenuTop" id="m" key="i">
+                            <if condition="$m.IsActive eq '1'">
+                             <li class="index"><a href="{$Group}/{$m.MenuTopUrl}/MenuTopID/{$m.MenuTopID}" id="item{$i}" target="{$m.MenuTopTarget}"  mid="{$m.MenuTopID}"  class="active" onclick="Tabmenu(this,{$m.MenuTopID});">{$m.MenuTopName}</a></li>
+                            <else/>
+                            <li><a href="{$Group}/{$m.MenuTopUrl}/MenuTopID/{$m.MenuTopID}" id="item{$i}" target="{$m.MenuTopTarget}"  mid="{$m.MenuTopID}"  onclick="Tabmenu(this,{$m.MenuTopID});">{$m.MenuTopName}</a></li>
+                            </if>
+                        </volist>
+                        </ul>
+                    </div>
+                </div><!--/ menu-->
+                
+            <notempty name="Language">
+            <div id="language">
+              <div>
+                <ul>
+                <volist name="Language" id="l">
+                    <li>
+                    <a <eq name="l.LanguageMark" value="$MemberLanguageMark">class="active"</eq>  onclick="ChangeLng(this,'{$l.LanguageMark}','{$Url}','lng{$l.LanguageID}')" target="main">{$l.LanguageName}</a>
+                    </li>
+                </volist>
+                </ul>
+              </div>
+            </div>
+            </notempty>
+            
+            </div><!--/ con-->
+        </div><!--/ header-->
+</div>
+</div>
+<script type="text/javascript">
+function ChangeLng(obj,mark,url,id){
+	var Items = document.getElementById("language").getElementsByTagName("a");
+	for(var i= 0,len = Items.length;i<len;++i){
+		if(Items[i].clssName !==""){
+			Items[i].className = "";
+		}
+	}
+	obj.className = "active";
+	
+	//获取当前顶层菜单ID
+	var mid = 0;
+	var Items = document.getElementById("menu").getElementsByTagName("a");
+	for(var i= 0,len = Items.length;i<len;++i){
+		if(Items[i].className == "active"){
+			mid = Items[i].getAttribute('mid');
+			break;
+		}
+	}
+	
+	if(mid == 10){ //内容频道需要刷新左侧菜单
+		RefreshChannel(obj,mark);
+	}else{
+		RefreshMain(obj,mark);
+	}
+}
+
+function RefreshChannel(obj,mark){
+	var t = new Date().getTime();
+	var url = window.parent.frames["menu"].location.href;
+	var p = url.indexOf("/l/");
+	if( p > 0){
+	  url = url.substring(0, p);
+	}
+	obj.target = "menu";
+	obj.href = url+"/l/"+mark+"/random/"+t;
+	return true;
+}
+
+function RefreshMain(obj,mark){
+	var t = new Date().getTime();
+	var url = window.parent.frames["main"].location.href;
+	var p = url.indexOf("/l/");
+	if( p > 0){
+	  url = url.substring(0, p);
+	}
+	obj.target = "main";
+	obj.href = url+"/l/"+mark+"/random/"+t;
+	return true;
+}
+
+function Tabmenu(obj,n){
+	var Items = document.getElementById("menu").getElementsByTagName("a");
+	for(var i= 0,len = Items.length;i<len;++i){
+		if(Items[i].clssName !==""){
+			Items[i].className = "";
+		}
+	}
+	obj.className = "active";
+	obj.blur();
+	location.hash = n;
+};
+
+(function(){
+var n = 1;
+var curitem = document.getElementById("item"+n);
+	Tabmenu(curitem,n);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">系统管理</dd>
+                <dd class="link">系统管理</dd><!--导航-->
+                <dd class="link">模型管理</dd><!--导航-->
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function DelChannelModel(id){
+		if( !confirm("确定删除频道模型吗?") ) return false;
+		url = "{$Url}del/ChannelModelID/"+id;
+		window.location.href = url;
+		return true;
+	}	
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存排序吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchSort");
+		$('#frm').submit();
+		return true;
+	}
+	
+	function clearModelCache(){
+		url = "{$Url}clearCache/t/{:time()}";
+		$.get(url, {}, ClearCacheComplete, "json");
+		return true;
+	}
+	
+	//回调函数
+	function ClearCacheComplete(data, textStatus){
+		if (data.status == 1){
+			SucceedBox(data.info);
+		}else{
+			ErrorBox(data.info);
+		}
+	}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" id="frm"  method="post">
+                  <div class="table">
+                  	<div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add" title="添加频道模型" target="_self">添加频道模型</a></li>
+<li class="toolbar" style="display:none"><a id="btnCache" onclick="clearModelCache()"  title="清除模型缓存">清除模型缓存</a></li>
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+                    </div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="70"  nowrap="nowrap">频道模型ID</th>
+                        <th width="140" nowrap="nowrap">频道模型名称</th>
+                        <th width="80" >频道模型排序</th>
+                        <th width="260" >频道模型描述</th>
+                        <th width="100" >频道模型属性</th>
+                        <th width="75" >是否启用</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>
+    <notempty name="ChannelModel">  
+    <volist name="ChannelModel" id="c">
+    <tr>
+        <td>{$c.ChannelModelID}<input type="hidden" name="ChannelModelID[]" value="{$c.ChannelModelID}" /></td>
+        <td><b style="color:{$c.ChannelModelID|ChannelModelColor}">{$c.ChannelModelName}</b></td>
+        <td>
+        <input type="text" class='textinput'  onclick="this.select()" style="width:70px" name="ChannelModelOrder[]" value="{$c.ChannelModelOrder}" />
+        </td>
+        <td style="text-align:left">{$c.ChannelModelDescription}</td>
+        <td>
+        <lt name="c.ChannelModelID" value="30">
+        <span style="color:#000">内部模型</span>
+        <else/>
+        <span style="color:#F00">自定义</span>
+        </lt>
+        </td>
+        <td><eq name="c.IsEnable" value="1"><span style="color:#000">启用</span>
+        <else/><span style="color:#F00">禁用</span></eq>
+        </td>
+        <td style="text-align:left;">
+<a style="float:left" href="{$Url}ViewField/ChannelModelID/{$c.ChannelModelID}" id="btnEdit">字段</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" href="{$Url}Modify/ChannelModelID/{$c.ChannelModelID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<eq name="c.IsSystem" value="0">
+<eq name="c.CanDelete" value="1">
+<gt name="c.ChannelModelID" value="39" >
+<a style="float:left" onclick="DelChannelModel({$c.ChannelModelID})" class="btnDel">删除</a>
+</gt>
+</eq>
+</eq>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="5" id="NoData">暂无信息！</td></tr>
+    </notempty>                                  
+    </table>
+         <div class="th">
+              <div class="form"   id="notice"><b>说明：</b>建议不要随意修改系统模型！</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

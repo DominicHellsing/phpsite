@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="{$WebPublic}jquery/css/start/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-ui-1.8.22.custom.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<style>
+#InfoHit{
+	color:#00F;
+	font-weight:bold;
+}
+
+#NoData{
+	color:#F00;
+	text-align:left;
+	padding-left:10px;
+}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">内容管理</dd><!--导航-->
+                <dd class="link" style="color:blue"><b>{$ChannelID|ChannelName}</b></dd>
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+	//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='InfoID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frmInfo').attr("action", "__URL__/batchDel");
+		$('#frmInfo').submit();
+		return true;
+	}
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定对记录排序吗?") ) return false;
+		$('#frmInfo').attr("action", "__URL__/batchSort");
+		$('#frmInfo').submit();
+		return true;
+	}	
+</script>
+
+<script  type="text/javascript">
+$(function(){
+	// Dialog
+	$('#dialog').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 430,
+		height: 270,
+		open: function () { $("body > div[role=dialog]").appendTo("form#frmInfo");},
+		buttons: {
+			'确定': function() { //批量移动
+				$('#frmInfo').attr("action", "__URL__/batchMove");
+				$('#frmInfo').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+	
+	//属性批量设置对话框
+	$('#dlgAttr').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 375,
+		height: "auto",
+		open: function () { $("body > div[role=dialog]").appendTo("form#frmInfo");},
+		buttons: {
+			'确定': function() { //批量移动
+				$('#frmInfo').attr("action", "__URL__/batchLabel");
+				$('#frmInfo').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+	
+	$('#attr').click(function(){
+		var arrChk = $("input[name='InfoID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		
+		$('#dlgAttr').dialog('open');
+		return false;
+	});
+	
+
+	// Dialog Link
+	$('#move').click(function(){
+		var arrChk = $("input[name='InfoID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		
+		$('#dialog').dialog('open');
+		return false;
+	});
+	
+	$("#cid").change(function(){
+		var id = $("#cid").val();
+		url = "{$Group}/Channel/GetSpecial/ChannelID/"+id;
+		$.get(url, {}, ChangeComplete, "json"); //不使用无刷新技术
+	 });
+	 
+	//回调函数
+	function ChangeComplete(data, textStatus){
+		if (data.status == 1){
+			$("#sid").empty();
+			$("#sid").append(data.info);
+		}
+	}
+
+});
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}del/InfoID/"+id+"/ChannelID/{$ChannelID}/p/{$NowPage}";
+		//$.get(url, {}, DelInfoComplete, "json"); //不使用无刷新技术
+		location.href = url;
+		return true;
+	}
+	
+	function Edit(id){
+		url = "{$Url}modify/InfoID/"+id+"/ChannelModelID/{$ChannelModelID}";
+		location.href = url;
+	}
+	
+	//回调函数
+	function DelInfoComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+	
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+</script>
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		$(".TagTip").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "alt"
+		});
+	});
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data"  method="post" id="frmInfo">
+                <input type="hidden" name="ChannelID" id="ChannelID" value="{$ChannelID}" />
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                <input type="hidden" name="ChannelModelID" id="ChannelModelID" value="{$ChannelModelID}" />
+                
+<div id="dialog" title="批量移动信息" style="display:none">
+<table>
+<tr>
+   <th width="80px" nowrap="nowrap" align="right"><span style="font-weight:bold;color:blue">所属频道</span></th>
+   <th align="left"><channelselect selectvalue="$ChannelID" menuowner="0" groupid="$GroupID" name="cid" id="cid"  hasSingleChannel="1" /></th>
+</tr>
+<tr>
+    <td nowrap="nowrap" align="right"><span style="font-weight:bold;color:blue">专题</span></th>
+    <td align="left">
+    <specialselect ChannelID="$ChannelID" size="8" style='width:300px' name="sid[]" id="sid"/>
+    </td>
+</tr>
+</table>
+</div>
+
+<div id="dlgAttr" title="批量设置属性" style="display:none">
+<table>
+<tr>
+<th width="80px" nowrap="nowrap" style="text-align:right;font-weight:bold;color:blue;padding-right:5px">属性标记</th>
+<th align="left"><labelcheckbox channelmodelid="30" name="lid[]" id="lid" separator="&nbsp;&nbsp;"/></th>
+</tr>
+<tr>
+    <td nowrap="nowrap" style="text-align:right;font-weight:bold;color:blue;padding-right:5px">是否启用</th>
+    <td align="left">
+    	<input type="radio" name="IsEnable" value="1" checked="checked"/>启用
+        <input type="radio" name="IsEnable" value="0" />不启用
+    </th>
+</tr>
+</table>
+</div>
+
+                  <div class="table">
+                  	<div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="move" title="批量移动">移动</a></li>
+<li class="toolbar"><a id="attr" title="属性批量设置">属性</a></li>
+                    </div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="50px" nowrap="nowrap">ID</th>
+                        <th width="50px" nowrap="nowrap">排序</th>
+                        <th width="420px" >标题</th>
+                        <th width="120px" nowrap="nowrap">所属频道</th>
+                        <th width="60px" nowrap="nowrap">点击次数</th>
+                        <th width="80px" >属性</th>
+                        <th width="120px" nowrap="nowrap">发布时间</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>  
+    <notempty name="Info">                
+    <volist name="Info" id="i">
+    <tr id="t{$i.InfoID}">
+    	<td><input type="checkbox" name="InfoID[]" value="{$i.InfoID}" /></td>
+        <td>{$i.InfoID}</td>
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:50px" name="InfoOrder[]" value="{$i.InfoOrder}" />
+        <input type="hidden" class='textinput' style="width:50px" name="InfoOrderID[]" value="{$i.InfoID}" /></td>
+        <td style="text-align:left">
+        <a href="{$i.InfoID|InfoUrl}" title="{$i.InfoTitle}" target="_blank">{$i.InfoTitle|Left=25}</a>
+        <notempty name="i.InfoPicture">
+        &nbsp;&nbsp;<b class="TagTip" alt="{$i.InfoPicture}" style="color:#F00">[图]</b>
+        </notempty>
+        </td>
+        <td><a href="{$i.ChannelID|ChannelUrl}" target="_blank"><b>{$i.ChannelName}</b></a></td>
+        <td id="InfoHit">{$i.InfoHit}</td>
+        <td>
+        <eq name="i.IsCheck" value="1">
+        <span style="color:#000">已审核</span><else/><span style="color:#F00">未审核</span>
+        </eq>
+        &nbsp;
+        <eq name="i.IsEnable" value="1">
+        <span style="color:#000">启用</span><else/><span style="color:#F00">关闭</span>
+        </eq>
+        </td>
+        
+        <td>{$i.InfoTime|strtotime|yd_friend_date}</td>
+        <td style="text-align:left;">
+<a style="float:left" onclick="Edit({$i.InfoID})" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$i.InfoID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="9" id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+              <div class="form" style="color:blue;font-weight:bold;text-align:left">
+				{$Page}
+              </div>
+         </div>
+                </div>
+</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">模板管理</dd><!--导航-->
+            		    <dd class="link">手机模板管理</dd><!--导航-->
+                        <dd class="link">模板管理</dd>
+            		</dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnParent" href="{$Url}Index/dir?dir={$ParentDir}" title="返回上一级目录">上级目录</a></li>
+<li style="font-weight:bold;font-size:14px">&nbsp;模板名称：<span style="color:red">{$TemplateName}</span> &nbsp;&nbsp;&nbsp;&nbsp;模板目录：<span style="color:red">{$CurrentDir}</span></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+<tr>
+    <th width="310px" >文件夹/文件名</th>
+    <th width="125px" >文件类型</th>
+    <th width="130px" >文件大小</th>
+    <th width="170px" >修改时间</th>
+    <th style="text-align:left;padding-left:20px">操作</th>
+</tr>
+<notempty name="FileList">
+    <volist name="FileList" id="f">
+        <eq name="f.isDir" value="1">
+            <tr>
+                <td style="text-align:left"><img src="{$f.ico}" border="0" width="16" height="16"/>
+                <a href="{$Url}Index?dir={$f.RelativePath}">{$f.filename}</a></td>
+                <td>文件夹</td>
+                <td>{$f.size}</td>
+                <td>{$f.mtime}</td>
+                <td style="text-align:left;padding-left:5px;"></td>
+            </tr>
+        <else/>
+            <tr>
+                <td style="text-align:left"><img src="{$f.ico}" width="16" height="16">{$f.filename}</td>
+                <td>{$f.filetype}</td>
+                <td>{$f.size}</td>
+                <td>{$f.mtime}</td>
+                <td style="text-align:left;padding-left:5px">
+                <in name="f.ext" value="js,css,html,htm,php,txt">
+                <a style="float:left" href="{$Url}Modify?file={$f.RelativePath}" id="btnEdit" name="btnEdit">编辑</a>
+                <else/>
+                <a style="float:left" href="{$f.fileurl}" target="_blank" id="btnEdit" name="btnEdit">浏览</a>
+                </in>
+                </td>
+            </tr>
+        </eq>
+    </volist>
+<else/>
+<tr><td colspan="5" style="color:red;font-weight:bold;text-align:left;padding-left:10px">没有文件或文件夹!</td></tr>
+</notempty>                               
+    </table>
+         <div class="th">
+			<div class="form"  id="notice"><b>说明：</b>点击“编辑”按钮可修改当前模板内容！</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<script  type="text/javascript">
+$(function(){
+	//属性批量设置对话框
+	$('#dlgAnswer').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 450,
+		height: 250,
+		open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+		buttons: {
+			'确定': function() { //批量移动
+				$('#frm').attr("action", "__URL__/AnswerOrder");
+				$('#frm').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+	
+});
+</script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">后台首页</dd>
+            		    <dd class="link">互动管理</dd><!--导航-->
+            		    <dd class="link">我的订单</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delOrder/OrderID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+	
+	//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='OrderID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelOrder");
+		$('#frm').submit();
+		return true;
+	}
+</script>
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		$(".lxfs").powerFloat({
+			reverseSharp:true
+		});
+	});
+</script>
+<style>
+.mytip{
+	display:none; 
+	background-color:#FFF;
+	padding:8px; 
+	line-height:22px;
+	text-align:left;
+	border:1px solid #CCC;
+}
+</style>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="60px" >订单编号</th>
+                        <th>订购信息</th>
+                        <th width="120px" >订购时间</th>
+                        <th width="260px" >管理员回复</th>
+                        <th width="80px">操作</th>
+                    </tr>  
+    <notempty name="Order">
+    <volist name="Order" id="m">
+    <tr id="tr{$m.OrderID}">
+    	<td><input type="checkbox" name="OrderID[]" value="{$m.OrderID}" /></td>
+    	<td><span id="OrderID{$m.OrderID}">{$m.OrderID}</span></td>
+        <td style="text-align:left">{$m.AllInfo}</td>
+                <td>{$m.OrderTime|strtotime|yd_friend_date}</td>
+        <td style="text-align:left">
+            <notempty name="m.AnswerContent">
+                <span id="AnswerContent{$m.OrderID}" style="color:#060">{$m.AnswerContent}&nbsp;&nbsp;</span>
+                <br/><span style="color:red; float:right"><b style="color:#000000">回复时间：</b>{$m.AnswerTime|strtotime|yd_friend_date}</span>
+            </notempty>
+        </td>
+        <td style="text-align:left;padding-left:5px">
+        <empty name="m.AnswerTime">
+        <a style="float:left" onclick="Del({$m.OrderID})" class="btnDel">删除</a>
+        </empty>
+        </td>
+    </tr>
+    </volist> 
+    <else/>
+    <tr><td colspan="13" style="text-align:left;color:red;font-weight:bold;padding-left:10px">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+			<div class="form" style="color:blue;font-weight:bold;text-align:left">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

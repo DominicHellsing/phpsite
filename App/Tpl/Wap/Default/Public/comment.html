@@ -1,0 +1,77 @@
+<neq name="CommentEnable" value="0">
+<!--评论列表 开始-->
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmComment').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				alert("{$Think.lang.CommentSuccessNoCheck}");
+				$('#frmComment').resetForm();
+            }else if(data.status==0){
+				alert(data.info);
+			}
+			ChangeCode();
+		};
+		
+		 $('#frmComment').submit(function(){  // 提交表单
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+	});
+</script>
+<script type='text/javascript'>
+function ChangeCode(){
+    var timenow = "&t="+new Date().getTime();
+    var obj = document.getElementById('CommentCode'); 
+    if( obj ) obj.src = "{:CodeUrl('commentcode')}"+timenow;
+}
+</script>
+<div class="comment">
+    <ul class="wxlist">
+         <li>
+            <div class="CommentList"><h1>{$Think.lang.CommentList}</h1></div>
+            <commentlist id="c" InfoID="$InfoID" nowpage="$NowPage" >
+                  <div>
+                      [<notempty name="c.GuestName">{$c.GuestName}<else/>{$Think.lang.Anonymous}</notempty>&nbsp;
+                      <span class="CommentTime">{$c.CommentTime|strtotime|yd_friend_date}</span>]&nbsp;
+                      <span class="CommentContent">{$c.CommentContent}</span>
+                  </div>
+            </commentlist>
+            <div class="page">{$Page}</div>
+            <div class="LeaveComment"><h1>{$Think.lang.LeaveComment}</h1></div>
+            <form action="{:CommentAddAction()}" id="frmComment" method="post">
+                <table border="0px" cellpadding="0px" cellspacing="3px" class="comment_table">
+                     <tr>
+                        <td class="t1"><span class="required">{$Think.lang.CommentContent}*</span></td>
+                        <td class="t2"><textarea id="CommentContent"  name="CommentContent"   ></textarea></td>
+                     </tr>
+                     <tr>
+                        <td class="t1">{$Think.lang.YourName}</td>
+                        <td class="t2">
+                            <input id="GuestName" name="GuestName" type="text" value="{$GuestName}"  maxlength="100" />
+                            <input id="GuestID" name="GuestID" type="hidden"  value="{$GuestID}"   maxlength="100"  />      
+                            <input id="InfoID" name="InfoID" type="hidden"  value="{$InfoID}"   maxlength="100"  />
+                        </td> 
+                    </tr>
+                    <eq name="CommentVerifycode" value="1">
+                    <tr>
+                        <td class="t1"><span class="required">{$Think.lang.Verifycode}*</span></td>
+                        <td class="t2"><input id="verifycode"  name="verifycode" type="text"   class="form_text_verifycode" maxlength="4"  />&nbsp;
+                        <img  src="{:CodeUrl('commentcode')}"  onclick="ChangeCode()"  class="code_image" id="CommentCode"  align="absMiddle"  />
+                        </td>
+                    </tr>
+                    </eq>
+                    <tr>
+                        <td colspan="2"><input class="ui-btn-submit" type="submit" name="submit" value="{$Think.lang.PostComment}" /></td>
+                    </tr>
+                </table>
+            </form>
+        </li>
+    </ul>  
+</div>
+<!--评论列表 结束-->
+</neq>

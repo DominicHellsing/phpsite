@@ -1,0 +1,67 @@
+﻿<!-- 友情链接 开始-->
+<div id="link_main">
+	<div id="link">
+        <div class="right_title1"><h2>{$Think.lang.Link}</h2></div>
+        <div class="right_body1">
+              <div class="link_pic">
+                <ul>
+                    <!--循环开始-->
+                    <LinkList id="m" >
+                        <eq name="m.LinkType" value="2">
+                            <li>
+                                <a href="{$m.LinkUrl}" target="_blank">
+                                    <img src="{$m.LinkLogo}" title="{$m.LinkName}" alt="{$m.LinkName}" />
+                                </a>
+                            </li>
+                        </eq>
+                    </LinkList>
+                    <!--循环结束-->
+                </ul>
+          </div>
+              <div class="link_text">
+                <ul>
+                    <!--Link循环开始-->
+                    <LinkList id="k" >
+                        <eq name="k.LinkType" value="1">
+                            <li><a href="{$k.LinkUrl}" target="_blank" title="{$k.LinkName}"><b>{$k.LinkName}</b></a></li>
+                        </eq>
+                    </LinkList>
+                    <!--Link循环结束-->
+                </ul>
+            </div>
+        </div>
+         <div class="right_bottom1"></div>
+     </div>
+</div>
+<!-- 友情链接 结束-->
+
+<!-- 底部版权 开始-->
+<div id="copyright_main">
+	<div id="copyright">
+          <div class="bottom_navigation">
+              <NavigationList id="n" channelid='0'>
+              		<neq name="i" value="1">&nbsp;|&nbsp;</neq>
+                    <a  href="{$n.ChannelUrl}" target="{$n.ChannelTarget}" >{$n.ChannelName}</a>
+              </NavigationList>
+          </div>
+          
+           <div class="bottom_info">
+                <notempty name="Contact"><b>{$Think.lang.Contact}：</b>{$Contact}&nbsp;&nbsp;<b></notempty>
+                <notempty name="Mobile">{$Think.lang.Mobile}：</b>{$Mobile}&nbsp;&nbsp;</notempty>
+                <notempty name="Telephone"><b>{$Think.lang.Telephone}：</b>{$Telephone}&nbsp;&nbsp;</notempty>
+                <notempty name="Fax"><b>{$Think.lang.Fax}：</b>{$Fax}&nbsp;&nbsp;</notempty>
+                <notempty name="Email"><b>{$Think.lang.Email}：</b>{$Email}&nbsp;&nbsp;</notempty><br />
+                <notempty name="WebUrl">
+                	<b>{$Think.lang.WebUrl}：</b><a  href="{$WebUrl}" target="_self">{$WebUrl}</a>&nbsp;&nbsp;
+                </notempty>
+                <notempty name="Address"><b>{$Think.lang.Address}：</b>{$Address}<br /></notempty>
+                <a  href="{$WebUrl}" target="_self">{$Company}</a>&nbsp;
+                {$Think.lang.Copyright}&nbsp;{$CMSCopyRight}&nbsp;{$WebICP}&nbsp;{$Stat} 
+           </div>
+	</div>
+</div>
+<gotop id="gotop" right="20" bottom="150" style="12" />
+<online id="online" />
+<online3 />
+<baidushare />
+<!-- 底部版权 结束-->

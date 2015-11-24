@@ -1,0 +1,2 @@
+<?php
+return array ( 'cn' => array ( 'LanguageID' => '1', 'LanguageName' => '中文', 'LanguageMark' => 'cn', 'LanguageIcon' => NULL, ), 'en' => array ( 'LanguageID' => '2', 'LanguageName' => '英语', 'LanguageMark' => 'en', 'LanguageIcon' => NULL, ), ); ?>

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信接口</dd><!--导航-->
+                <dd class="link">微信应用</dd><!--导航-->
+                <dd class="link">调查题目</dd>
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delQuestion/AppID/{$AppID}/QuestionID/"+id;
+		location.href = url;
+	}
+	
+	function Edit(id){
+		var url = "{$Url}ModifyQuestion/AppID/{$AppID}/QuestionID/"+id;
+		location.href = url;
+	}
+	
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='QuestionID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelQuestion/AppID/{$AppID}");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存排序吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchSortQuestion/AppID/{$AppID}");
+		$('#frm').submit();
+		return true;
+	}	
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                  <div class="table">
+                   
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnBack" href="{$Url}research" title="返回">返回</a></li>  
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}exportQuestion/AppID/{$AppID}"  title="导出调查结果" target="_self">导出调查结果</a></li>
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}AddQuestion/AppID/{$AppID}"  title="添加调查题目" target="_self">添加调查题目</a></li>
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}suggest/AppID/{$AppID}"  title="查看用户建议" target="_self">查看用户建议</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+<li class="toolbar"><a id="refresh" href="{$Url}question/AppID/{$AppID}" title="刷新">刷新</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="40px"  nowrap="nowrap">选中</th>
+                        <th width="45px" >题目ID</th>
+                        <th width="55px" >排序</th>
+                        <th width="260px" >题目名称</th> 
+                        <th>题目选项</th>
+                        <th width="50px" >属性</th>
+                        <th  width="150px"  style="text-align:left;padding-left:20px">操作</th>
+                    </tr>  
+    <notempty name="Question">
+    <volist name="Question" id="q">
+    <tr>
+    	<td><input type="checkbox" name="QuestionID[]" value="{$q.QuestionID}" /></td>
+    	<td>{$q.QuestionID}</td>
+        <td>
+        <input type="text" class='textinput' onclick="this.select()" style="width:55px" name="QuestionOrder[]" value="{$q.QuestionOrder}" />
+        <input type="hidden" class='textinput' name="QuestionOrderID[]" value="{$q.QuestionID}" />
+        </td>
+        <td style="text-align:left;"><b style="color:blue">{$q.QuestionName}</b></td>
+        <td style="text-align:left;">
+        	<volist name="q.Item" id="it" key="j">
+            <b>[{$j}]</b>&nbsp;{$it.ItemName}
+            （<b style="color:blue">{$it.VoteCount}</b>票&nbsp;&nbsp;&nbsp;占<b style="color:red">{$it.VotePercent}%</b>）
+             <br/>
+            </volist>
+        </td>
+       <td>
+        <eq name="q.IsEnable" value="1">
+        <span style="color:#000">启用</span><else/><span style="color:#F00">禁用</span>
+        </eq>
+        </td>
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" onclick="Edit({$q.QuestionID})" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$q.QuestionID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="7" id="NoData">暂无信息！</td></tr>
+    </notempty>                                  
+    </table>
+         <div class="th">
+              <div class="form" style="font-weight:bold">
+              调查主题：<b style="color:#00F">{$AppName}</b>&nbsp;&nbsp;
+              参与调查人数：<b style="color:#F00">{$PeopleNumber}</b>&nbsp;
+              <a  href="{$Url}suggest/AppID/{$AppID}"  target="_self">[查看详情]</a>
+              </div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

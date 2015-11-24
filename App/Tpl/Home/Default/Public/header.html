@@ -1,0 +1,128 @@
+<eq name="TShowTop" value="1">
+<!--顶部 开始-->
+<div id="top_main">
+	<div id="top">
+		<div id="top_1">
+            <eq name="EnableMember" value="1"> 
+                <empty name="MemberID">
+                    <a href="{:MemberLoginUrl()}" target="_self">[{$Think.lang.Login}]&nbsp;</a>
+                    <a href="{:MemberRegUrl()}" target="_self">[{$Think.lang.Reg}]&nbsp;</a>
+                    <a href="{:MemberForgetUrl()}" target="_self">[{$Think.lang.ForgetPassword}]</a>
+                <else/>
+                    {$Think.lang.UserName}:<span class="MemberName">{$MemberName}&nbsp;</span>
+                    {$Think.lang.MemberGroup}:<span class="MemberGroupName">{$MemberGroupName}&nbsp;</span>
+                    <a href="{:MemberUrl()}" target="_blank">[{$Think.lang.MemberCenter}]&nbsp;</a>
+                    <a href="{:MemberLogoutUrl()}" target="_self">[{$Think.lang.MemberQuit}]</a>
+                </empty>
+            </eq>
+		</div>
+		<div id="top_2">
+            <eq name="EnableWap" value="1">
+            	<a href="{:WapHomeUrl()}" target="_blank">
+                	<span class="MobileEdition">{$Think.lang.MobileEdition}&nbsp;</span>
+                </a>
+            </eq>
+            <notempty name="Language">
+                <a href="{:LanguageUrl('cn')}" target="_self">简体中文版&nbsp;</a>
+            	<a href="{:LanguageUrl('en')}" target="_self">English</a>
+            </notempty>
+		</div>
+	</div>
+</div>
+<!--顶部 结束-->
+</eq>
+
+<!--Logo 开始-->
+<div id="logo_main">
+    <div id="logo">
+            <!--网站Logo 开始-->
+            <div class="WebLogo">
+                <a href="{:HomeUrl()}" target="_self">
+                    <img  src="{$WebLogo}" title="{$WebName}" alt="{$WebName}" />
+                 </a>
+            </div>     
+            <!--网站Logo 结束-->
+			<div class="tel">
+                
+                    <img  src="/Upload/public/tel.png" title="{$WebName}" alt="{$WebName}" />
+                
+            </div>   
+    </div>
+	  
+</div>
+<!--Logo 结束-->
+
+<!--导航条 开始-->
+<div id="navigation_main">
+	<div id="navigation">
+        <ul class="navigationlist">
+            <navigationlist id="n1" channelid='0'>
+                <li>
+                    <eq name="n1.ChannelID" value="$TopChannelID">
+                    	 <a href="{$n1.ChannelUrl}" target="{$n1.ChannelTarget}" class="current">{$n1.ChannelName}</a>
+                    <else />  
+                    	 <a href="{$n1.ChannelUrl}" target="{$n1.ChannelTarget}"  >{$n1.ChannelName}</a>
+                    </eq>
+                    <eq name="n1.HasChild" value="1">
+                        <ul class="subnavigationlist">
+                           <navigationlist id="n2" channelid="$n1.ChannelID">
+                               <li><a href="{$n2.ChannelUrl}" target="{$n2.ChannelTarget}">{$n2.ChannelName}</a></li>
+                           </navigationlist>
+                        </ul>
+                    </eq>
+                </li>
+            </navigationlist>
+        </ul>
+	</div>
+</div>
+<!--导航条 结束-->
+
+<!--Flash幻灯片 开始-->
+<!--
+<div id="banner_main">
+    <div id="banner">
+    		{//<banner width="1000" height="$TBannerHeight"  bannergroupid="$T1" />}
+    </div>
+</div>
+-->
+<!--Flash幻灯片 结束-->
+
+<!--JS幻灯片 开始-->
+	<slide selector="#banner_main" titCell=".hd ul" maincell="#banner ul" effect="fold" autoPlay="true"  autoPage="true" />
+    <div id="banner_main">
+        <div id="banner">
+                 <ul class="bannerlist" style="height:{$TBannerHeight}px;">
+                    <BannerList id="b" bannergroupid="$T1">
+                        <li style="background:url({$b.BannerImage}) {$b.BannerDescription} center center  no-repeat; height:{$TBannerHeight}px;">
+                            <notempty name="b.BannerUrl">
+                            	<a href="{$b.BannerUrl}" target="_blank" style="display:block; height:{$TBannerHeight}px;"></a>
+                            </notempty>
+                        </li>
+                    </BannerList>
+                 </ul>
+        </div>
+        <div class="hd"><ul></ul></div>
+    </div>
+<!--JS幻灯片 结束-->
+
+<in name="ChannelID" value="1,2">
+    <!--公告 开始-->
+    <div id="announcement">
+        <div class="announcement_title">{$T2|ChannelName}：</div>
+        <div class="announcement_body">
+            <ul class="announcementlist">
+                <infolist id="f" channelid='$T2' top="5" empty="$Think.lang.NoInformation">
+                	 <li>
+                     	<a href="{$f.InfoUrl}" target="_blank" title="{$f.InfoTitle}">{$f.InfoSTitle}</a>[{$f.InfoTime}]
+                     </li>
+                </infolist>
+            </ul>
+        </div>
+        <div class="announcement_bottom">
+        	<span class="more" ><a href="{$T2|ChannelUrl}" target="_blank">{$Think.lang.More}...</a></span>
+        </div>
+    </div>
+    <slide selector="#announcement"  maincell="ul.announcementlist" effect="top" vis="1" interTime="3000" autoPlay="true" />
+    <!--公告 结束-->
+</in>
+<include file="Public:location" />

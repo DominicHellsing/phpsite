@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$ChannelName}</title>
+<include file="Public:meta" />
+</head>
+<body class="body_single">
+    <include file="Public:header" />
+    <div  id="content">
+        <div  class="single">
+            <eq name="HasChild" value="1">
+                <include file="Public:subchannel" />
+            <else/>
+                 <ul class="wxlist">
+                     <li>
+                        <div class="ChannelName"><h1>{$ChannelName}</h1></div>
+                        <notempty name="ChannelPicture">
+                            <div class="ChannelPicture"><img src="{$ChannelPicture}"  alt="{$ChannelName}" /></div>
+                        </notempty>
+                        <div class="ChannelContent">{$ChannelContent}</div>
+                    </li>
+                </ul>
+            </eq>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

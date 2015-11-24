@@ -1,0 +1,131 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3c.org/TR/1999/REC-html401-19991224/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<TITLE>管理登录_{$WebName}</TITLE>
+<META content=zh-cn http-equiv=Content-Language />
+<META content="text/html; charset=utf-8" http-equiv=Content-Type />
+<LINK rel=stylesheet type=text/css href="{$Css}all.css" />
+<LINK rel=stylesheet type=text/css href="{$Css}login.css" />
+<SCRIPT type=text/javascript src="{$WebPublic}jquery/jquery-1.7.2.min.js"></SCRIPT>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<SCRIPT type=text/javascript>
+	$(document).ready(function(){
+		var h = $(window).height();
+		$('#centerlogin').css({ height: h });
+		$("#verifycodeimg").click( ChangeVerify );
+		
+		
+		function ChangeVerify(){
+			var timenow = new Date().getTime();
+		    $("#verifycodeimg").attr("src", "{$Url}verify/d/" + timenow);
+		};
+		
+		$('#frmLogin').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==0){ //登录失败
+				ChangeVerify();
+				alert(data.info);
+            }else{
+				window.location = '{$Url}AdminIndex';
+			}
+		};
+		
+		 $('#frmLogin').submit(function(){  // 提交表单
+	     	//$('#frmLogin').ajaxSubmit();
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+		 
+		 $('#username').focus();
+		
+		
+	});
+	var resizeTimer = null;
+	function sizewindow(){
+		var h = $(window).height();
+   		$('#centerlogin').css({height:h});
+    }
+	window.onresize=sizewindow;
+</SCRIPT>
+<script language="JavaScript">
+if(self!=top){top.location=self.location;}
+</script>
+<META name="GENERATOR" content="MSHTML 8.00.6001.19222"></HEAD>
+<BODY>
+<DIV class="login-div" id="nav">
+<TABLE style="BORDER-COLLAPSE: collapse" id="centerlogin" border="0" cellPadding="0" width="100%">
+  <TBODY>
+  <TR>
+    <TD style="WIDTH: 564px" vAlign="center" align="middle">
+      <DIV class="login-form">
+      <TABLE style="BORDER-COLLAPSE: collapse" border=0 cellPadding=0 
+        width=564><TBODY>
+        <TR><TD class="login-top"></TD></TR>
+        <TR>
+          <TD class="login-bg">
+            <TABLE style="WIDTH: 100%">
+              <TBODY>
+              <TR>
+                <TD class="login"><IMG src="{$Images}/login_logo.jpg"></TD></TR>
+              <TR>
+                <TD>
+                  <TABLE style="WIDTH: 100%">
+                    <TBODY>
+                    <TR>
+                      <TD class="login-title">
+                        <TABLE style="WIDTH: 100%">
+                          <TBODY>
+                          <TR>
+                            <TD><IMG src="{$Images}login_title.png" /></TD>
+                            </TR>
+                          <TR>
+                            <TD class="loigntitle">企业网站管理系统，具有SEO优化、静态页生成、会员、订单等常见专门为企业网站特定的功能！</TD></TR></TBODY></TABLE></TD>
+                      <TD class="loign-line"><IMG src="{$Images}login_line.png"></TD>
+                      <TD class="login-form-center"><!--from-->
+                        <FORM id="frmLogin" method="post" name="frmLogin" action="{$Url}checkLogin/"  enctype="multipart/form-data">
+                        <INPUT value="adminuser" type="hidden" name="archive"> <INPUT 
+                        value="login_into" type="hidden" name="action">
+                        <TABLE border="0" cellPadding="0">
+                          <TBODY>
+                          <TR>
+                            <TD class="logintd"></TD>
+                            <TD class="logintd2">
+                              <DIV class="loginwanntile">
+                              <UL>
+                                <LI><SPAN id="logintitle">请输入用户名和密码</SPAN></LI></UL></DIV></TD></TR>
+                          <TR>
+                            <TD class="logintd" nowrap="nowrap">用户名</TD>
+                            <TD class="logintd2">
+            <INPUT style="WIDTH: 175px" id="username" class="infoInput" maxLength="20" name="username" value="">
+            </TD></TR>
+                          <TR>
+                            <TD class="logintd">密　码</TD>
+                            <TD class="logintd2"><INPUT style="WIDTH: 175px" 
+                              id="password" class="infoInput" 
+                              maxLength=20 type="password" name="password" value=""></TD></TR>
+                          <TR>
+                            <TD class="logintd">验证码</TD>
+                            <TD class="logintd2">
+                            <INPUT style="TEXT-TRANSFORM: uppercase; WIDTH: 80px" id="verifycode" class="infoInput" maxLength="4" name="verifycode" value="">
+                              <img style="CURSOR: pointer" id="verifycodeimg" title="如果您无法识别验证码，请点图片更换" src="{$Url}/verify/" align="absMiddle" />
+                              
+                            </TD>
+                          </TR>
+                          <TR>
+                            <TD class="logintd"></TD>
+                            <TD class="logintd2"><INPUT class="buttonface" value="登陆管理平台" type="submit" name="button"></TD>
+                          </TR>
+                          </TBODY>
+                          </TABLE>
+                          </FORM><!--form_end-->
+                          </TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></TD></TR>
+        <TR>
+          <TD class=login-down></TD></TR></TBODY></TABLE></DIV>
+      <DIV class="fotter">
+     &nbsp;{$CMSCopyRight} All Rights Reserved 
+      后台推荐使用IE8、谷歌或Firefox浏览器</DIV></TD></TR></TBODY></TABLE></DIV>
+</BODY>
+</HTML>

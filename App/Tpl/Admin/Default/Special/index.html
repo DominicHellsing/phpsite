@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">内容管理</dd>
+                <dd class="link">频道管理</dd><!--导航-->
+                <dd class="link">专题管理</dd><!--导航-->
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function DelSpecial(id){
+		if( !confirm("确定删除专题吗?") ) return false;
+		url = "{$Url}del/SpecialID/"+id;
+		$.get(url, {}, DelSpecialComplete, "json");
+		return true;
+	}
+	
+	//回调函数
+	function DelSpecialComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+	
+		//保存所有修改
+	function saveAll(){
+		if( !confirm("确定保存所有修改吗?") ) return false;
+		$('#frm').attr("action", "{$Url}saveAll");
+		$('#frm').submit();
+		return true;
+	}	
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" id="frm"  method="post">
+                  <div class="table">
+                  	<div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add"  title="添加专题" target="_self">添 加 专 题</a></li>
+<li class="toolbar"><a id="btnSave" onclick="saveAll()"  title="保存所有修改">保存所有修改</a></li>
+                    </div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="45"  nowrap="nowrap">专题ID</th>
+                        <th width="130" nowrap="nowrap">专题名称</th>
+                        <th width="130"  nowrap="nowrap">所属频道</th> 
+                        <th width="60" >专题排序</th>
+                        <th width="150" >专题描述</th>
+                        <th width="80" >专题属性</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>
+    <notempty name="Special">  
+    <volist name="Special" id="s">
+    <tr id="t{$s.SpecialID}">
+        <td>{$s.SpecialID}<input type="hidden" name="SpecialID[]" value="{$s.SpecialID}" /></td>
+        <td>
+        <input type="text" class='textinput' style="width:120px" name="SpecialName[]" value="{$s.SpecialName}" />
+        </td>
+        <td><eq name="s.ChannelID" value="0">所有频道<else />{$s.ChannelName}</eq></td>
+        <td>
+        <input type="text" class='textinput'  onclick="this.select()" style="width:50px" name="SpecialOrder[]" value="{$s.SpecialOrder}" />
+        </td>
+        <td>{$s.SpecialDescription}</td>
+        <td><eq name="s.IsEnable" value="1"><span style="color:#000">启用</span>
+        <else/><span style="color:#F00">关闭</span></eq>
+        </td>
+        <td style="text-align:left;">
+<a style="float:left" href="{$Url}Modify/SpecialID/{$s.SpecialID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="DelSpecial({$s.SpecialID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="7" id="NoData">暂无信息！</td></tr>
+    </notempty>                                  
+    </table>
+         <div class="th">
+              <div class="form"  id="notice"><b>说明：</b>专题用于已有分类的信息再次分类！</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

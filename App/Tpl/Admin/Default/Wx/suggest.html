@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信接口</dd><!--导航-->
+                <dd class="link">微信应用</dd><!--导航-->
+                <dd class="link">查看用户建议</dd>
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+	//查询
+	function Search(){
+		$('#frm').attr("action", "__URL__/suggest");
+		$('#frm').submit();
+		return true;
+	}	
+	
+	
+	function ClearResearchData(id){
+		if( !confirm("确定清除所有用户调查数据吗?") ) return false;
+		url = "{$Url}clearResearchData/AppID/"+id;
+		location.href = url;
+		return true;
+	}
+	
+</script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function(){
+		$("#Keywords").focus();
+	});
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data"  method="post" id="frm">
+                <input type="hidden" name="Keywords" id="Keywords" value="{$Keywords}" />
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                <input type="hidden" name="AppID" id="AppID" value="{$AppID}" />
+<div class="table">
+<div style="padding:0px; height:28px;">
+ <li class="toolbar"><a id="btnBack" href="{$Url}question/AppID/{$AppID}" title="返回">返回</a></li>  
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}exportSuggest/AppID/{$AppID}"  title="导出用户建议" target="_self">导出用户建议</a></li>
+<li class="toolbar"><a id="btnCache" onclick="ClearResearchData({$AppID})"  title="清空调查数据" target="_self">清空调查数据</a></li>
+<li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label>姓名/手机号码</label><input type="text" class='textinput' name="Keywords" style="width:150px" value="{$Keywords}" id="Keywords" placeholder="姓名/手机号码"/>
+&nbsp;<input id="btnSeek" type="submit" value="查询" onclick="Search()">&nbsp;&nbsp;&nbsp;&nbsp;
+<b style="color:#0000FF">{$AppName}</b></li>
+</div>
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="75px" nowrap="nowrap">用户姓名</th>
+                        <th  width="110px" >手机号码</th>
+                        <th>建议内容</th>
+                        <th width="125px" >建议时间</th>
+                    </tr>  
+                    <notempty name="Suggest">                
+                        <volist name="Suggest" id="s">
+                            <tr>
+                                <td><b>{$s.MemberRealName}</b></td>
+                                <td>{$s.MemberMobile}</td>
+                                <td style="text-align:left">{$s.SuggestContent}</td>
+                                <td>{$s.SuggestTime|strtotime|yd_friend_date}</td>
+                            </tr>
+                        </volist>
+                    <else/>
+                        <tr><td colspan="4" id="NoData">暂无信息！</td></tr>
+                    </notempty>                                
+    		</table>
+         <div class="th"><div class="page">{$Page}</div></div>
+                </div>
+</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

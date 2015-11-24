@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">广告管理</dd><!--导航-->
+                        <dd class="link">网站广告</dd>
+            		    <dd class="link">广告内容管理</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}del/AdID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='AdID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchDel");
+		$('#frm').submit();
+		return true;
+	}
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add"  title="添加广告内容" target="_self">添加广告内容</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="30px"  nowrap="nowrap">选中</th>
+                        <th width="45px" >广告ID</th>
+                        <th width="140px" >广告名称</th>
+                        <th width="70px" >广告类型</th>
+                        <th width="290px" >广告内容</th>
+                        
+                        <th>广告地址</th>
+                        <th width="80px" >广告描述</th>
+                        <th width="120px">发布时间</th>
+                        <th width="60px">是否启用</th>
+                        <th width="150px">操作</th>
+                    </tr>
+    <notempty name="Ad">  
+    <volist name="Ad" id="a">
+    <tr id="tr{$a.AdID}">
+    	<td><input type="checkbox" name="AdID[]" value="{$a.AdID}" /></td>
+    	<td>{$a.AdID}</td>
+        <td>{$a.AdName}</td>
+        <td>{$a.AdTypeName}</td>
+        <td>
+        <switch name="a.AdTypeID">
+        <case value="1|3"><img width='280px' height='80px' src='{$a.AdContent}' border='0' /></case>
+        <case value="5">
+        <img width='140px' height='40px' src='{$a.AdContent1}' border='0' />
+        <img width='140px' height='40px' src='{$a.AdContent2}' border='0' />
+        </case>
+        <case value="2">
+        <embed width='298px' height='80px' src="{$a.AdContent}" quality="high" type="application/x-shockwave-flash" wmode="transparent" pluginspage="http://www.macromedia.com/go/getflashplayer" allowScriptAccess="always">
+        </embed>
+        </case>
+        <default/>{$a.AdContent|htmlentities}
+        </switch>
+        </td>
+        <td>{$a.AdUrl}</td>
+        <td>{$a.AdDescription}</td>
+        <td>{$a.AdTime|strtotime|yd_friend_date}</td>
+        <td><eq name="a.IsEnable" value="1">
+        <span style="color:#000">启用</span><else/><span style="color:#F00">禁用</span></eq></td>
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" id="btnEdit" name="btnEdit" href="{$Url}Modify/AdID/{$a.AdID}">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$a.AdID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="10" id="NoData">暂无信息！</td></tr>
+    </notempty>                                 
+    </table>
+         <div class="th">
+			<div class="page">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

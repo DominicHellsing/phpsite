@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$ChannelName}|{$Title}-{$WebName}</title>
+<include file="Public:meta" />
+</head>
+<body class="body_job">
+	<include file="Public:header" />
+     <!--主体内容 开始-->
+    <div class="job">
+    		<!--左侧区域 开始-->
+			<div id="left">
+                <include file="Public:subchannel" />
+                <include file="Public:search" />
+                <include file="Public:contact" />
+			</div>
+            <!--左侧区域 结束-->
+            
+            <!--右侧区域 开始-->
+            <div id="right">
+            	<div class="right_title">
+                    <h2>{$ChannelName}</h2>
+                </div>		
+				<div class="right_body"> 
+                    <ul class="joblist">
+                      	<JobList id="n" nowpage="$NowPage">
+                          <li>
+                              <table class="job_table">
+                                    <tr>
+                                          <th  class="">{$Think.lang.JobName}</th>
+                                          <td  colspan="2"  class="t2">{$n.JobName}</td>
+                                          <td><div class="operation"><a class="btn" href="{$n.JobID|ResumeUrl}" >{$Think.lang.WantJob}</a></div></td>
+                                    </tr>
+                                    <tr>
+                                          <th class="">{$Think.lang.HiringNo}</th>
+                                          <td class="t2">{$n.Number}</td>
+                                          <th class="t3">{$Think.lang.ValidTime}</th>
+                                          <td class="t4">{$n.Expiration}</td>
+                                    </tr>
+                                    <tr>
+                                          <th class="">{$Think.lang.Education}</th>
+                                          <td class="t2">{$n.Education}</td>
+                                          <th class="t3">{$Think.lang.Gender}</th>
+                                          <td class="t4">{$n.Gender}</td>
+                                    </tr>
+                                    <tr>
+                                          <th class="">{$Think.lang.Age}</th>
+                                          <td class="t2">{$n.Age}</td>
+                                          <th class="t3">{$Think.lang.Salary}</th>
+                                          <td class="t4">{$n.Salary}</td>
+                                    <tr>
+                                    <tr>
+                                          <th class="">{$Think.lang.Language}</th>
+                                          <td class="t2">{$n.Language}</td>
+                                          <th class="t3">{$Think.lang.Location}</th>
+                                          <td class="t4">{$n.Workplace}</td>
+                                    </tr>
+                                    <tr>
+                                          <th>{$Think.lang.Requirement}</th>
+                                          <td colspan="3" class="Requirement">{$n.Requirement}</td>
+                                    </tr>
+                            </table>
+                          </li>
+                        </JobList>
+                    </ul>
+                    <div class="page">{$Page}</div>
+				</div>
+                <div class="right_bottom"></div>
+			</div>
+        	<!--右侧区域 结束-->
+            <div class="clear"></div>
+	</div>
+    <!--主体内容 结束-->
+    <include file="Public:footer" />
+</body>
+</html>

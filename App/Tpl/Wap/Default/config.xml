@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config version="1.0">
+	<groups>
+		<group id="1" name="基本设置"/>
+	</groups>
+	<global>
+		<var title="是否显示Logo" name="TShowLogo" value="1" type="radio" parameter="1|是|1@@@0|否" help="" groupid="1" order="1"/>
+		<var title="是否显示左下角红色按钮" name="TShowPlug" value="1" type="radio" parameter="1|是|1@@@0|否" help="" groupid="1" order="3"/>
+	</global>
+	<cn>
+		<var title="幻灯片分组" name="T1" value="3" type="bannergroupselect" help="" groupid="1" order="10"/>
+		<var1 title="公告频道" name="T2" value="33" type="channelselect" help="" groupid="1" order="12"/>
+		<var title="左下角红色按钮展开第3个按钮链接" name="T3" value="15" type="channelselect" help="" groupid="1" order="12"/>
+		<var1 title="产品频道" name="T4" value="23" type="channelselect" help="" groupid="1" order="16"/>
+		<var1 title="案例频道" name="T5" value="32" type="channelselect" help="" groupid="1" order="18"/>
+		<var1 title="新闻频道" name="T6" value="20" type="channelselect" help="" groupid="1" order="20"/>
+		<var1 title="新闻子频道1" name="T7" value="20" type="channelselect" help="" groupid="1" order="22"/>
+		<var1 title="新闻子频道2" name="T8" value="21" type="channelselect" help="" groupid="1" order="24"/>
+		<var1 title="下载频道" name="T9" value="30" type="channelselect" help="" groupid="1" order="26"/>
+		<var1 title="视频频道" name="T10" value="55" type="channelselect" help="" groupid="1" order="28"/>
+		<var title="左下角红色按钮展开第4个按钮链接" name="T11" value="9" type="channelselect" help="" groupid="1" order="14"/>
+		<var1 title="人才招聘" name="T12" value="8" type="channelselect" help="" groupid="1" order="32"/>
+		<var1 title="保留变量2" name="T13" value="" type="channelselect" help="" groupid="1" order="34"/>
+		<var1 title="保留变量3" name="T14" value="" type="channelselect" help="" groupid="1" order="36"/>
+		<var1 title="保留变量4" name="T15" value="" type="channelselect" help="" groupid="1" order="38"/>
+	</cn>
+	<en>
+		<var title="幻灯片分组" name="T1" value="4" type="bannergroupselect" help="" groupid="1" order="10"/>
+		<var1 title="公告频道" name="T2" value="34" type="channelselect" help="" groupid="1" order="12"/>
+		<var title="左下角红色按钮展开第3个按钮链接" name="T3" value="35" type="channelselect" help="" groupid="1" order="12"/>
+		<var1 title="产品频道" name="T4" value="43" type="channelselect" help="" groupid="1" order="16"/>
+		<var1 title="案例频道" name="T5" value="50" type="channelselect" help="" groupid="1" order="18"/>
+		<var1 title="新闻频道" name="T6" value="40" type="channelselect" help="" groupid="1" order="20"/>		
+		<var1 title="新闻子频道1" name="T7" value="41" type="channelselect" help="" groupid="1" order="22"/>
+		<var1 title="新闻子频道2" name="T8" value="42" type="channelselect" help="" groupid="1" order="24"/>
+		<var1 title="下载频道" name="T9" value="51" type="channelselect" help="" groupid="1" order="26"/>
+		<var1 title="视频频道" name="T10" value="56" type="channelselect" help="" groupid="1" order="28"/>
+		<var title="左下角红色按钮展开第4个按钮链接" name="T11" value="5" type="channelselect" help="" groupid="1" order="14"/>		
+		<var1 title="人才招聘" name="T12" value="4" type="channelselect" help="" groupid="1" order="32"/>
+		<var1 title="保留变量2" name="T13" value="" type="channelselect" help="" groupid="1" order="34"/>
+		<var1 title="保留变量3" name="T14" value="" type="channelselect" help="" groupid="1" order="36"/>
+		<var1 title="保留变量4" name="T15" value="" type="channelselect" help="" groupid="1" order="38"/>
+	</en>
+</config>

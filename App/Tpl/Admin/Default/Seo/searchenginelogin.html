@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">网站优化</dd><!--导航-->
+                        <dd class="link">网站优化</dd><!--导航-->
+            		    <dd class="link">常用搜索引擎登录入口</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form  enctype="multipart/form-data" method="post" id="frm">
+                  <div class="table">    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="80px">搜索引擎ID</th>
+                        <th width="280px" >搜索引擎Logo</th> 
+                        <th width="120px" >搜索引擎名称</th> 
+                        <th width="250px" >搜索引擎网址</th>
+                        <th style="text-align:left;padding-left:30px">操作</th>       	
+                    </tr>  
+                    
+    <volist name="Seo" id="s">
+    <tr>
+    	<td>{$s.ID}</td>
+    	<td><a href="{$s.Url}" target="_blank"><img src="{$s.LogoUrl}" height="35px" /></a></td>
+        <td><b>{$s.Name}</b></td>
+        <td style="text-align:left;font-weight:bold;padding-left:5px"><a href="{$s.Url}" target="_blank">{$s.Url}</a></td>
+        <td style="text-align:left;font-weight:bold;padding-left:10px">
+        <a style="float:left" href="{$s.LoginUrl}" id="btnPick" target="_blank">搜索引擎登录</a>
+        </td>
+    </tr>
+    </volist>                                
+    </table>
+         <div class="th">
+              <div class="form"   id="notice"><b>说明：</b>为了让网站更快被搜索引擎收录，请将网站提交到各大主流搜索引擎!</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

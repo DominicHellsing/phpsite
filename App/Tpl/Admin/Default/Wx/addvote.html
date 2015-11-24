@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<script type='text/javascript' src='{$WebPublic}ckfinder/ckfinder.js'></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信接口</dd><!--导航-->
+                <dd class="link">微信应用</dd><!--导航-->
+                <dd class="link">添加微投票</dd>
+        </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type='text/javascript'>
+	function BrowserServer(){
+		var finder = new CKFinder();
+		finder.basePath = '{$WebPublic}ckfinder'; 
+		finder.selectActionFunction = SetPictureField;
+		//alert('d'); //加上alert指令后，popup都能弹出对话框
+		finder.popup(); 
+	}
+	function SetPictureField(fileUrl){
+		document.getElementById('VotePicture').value = fileUrl;
+	}
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmAdd').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+				$('#frmAdd').resetForm();
+				$('#VoteName').focus();
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}else if(data.status==2){
+				ErrorBox(data.info); //上传失败
+			}else if(data.status==3){
+				//alert(data.data);
+				$('#VotePicture').val(data.data);
+				SucceedBox(data.info); //上传成功
+			}
+		};
+		
+		 $('#frmAdd').submit(function(){  // 提交表单
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+		 
+		 $('#btnUpload').click(function(){  // 提交表单
+		 	$('#frmAdd').attr('action','{$UploadAction}');
+	     });
+		 
+		 $('#btnSubmit').click(function(){  // 提交表单
+		 	$('#frmAdd').attr('action','{$Action}');
+	     });
+		 
+		 $("#VotePicture").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "value",
+			position: "5-7"
+		 });
+		 
+		 $('#VoteName').focus();
+		 
+	});
+</script>
+<script>
+function GoBack(){
+	window.location.href = "{$Url}vote";
+}
+//添加一个项目
+function addItem(){
+	var oTh = $("#allitems th");
+	var i = oTh.length + 1;
+	var item="<tr><th>投票项"+i+"</th><td>";
+	item += "<input type='text' class='textinput w450' name='ItemName[]' value='' />";
+	item += "<input type='hidden'  name='ItemID[]' value='0' />";
+	item += "&nbsp;<a onclick='delItem(this)'>[-删除投票项]</a></td></tr>";
+	$("#allitems").append(item);
+	$("#allitems input[name='ItemName[]']").last().focus();
+}
+
+function delItem(obj){
+	$(obj).parent().parent().remove();
+	var oTh = $("#allitems th");
+	for(var i=0; i< oTh.length; i++){
+		var txt ="投票项目"+(i+1).toString();
+		$(oTh[i]).text(txt);
+	}
+}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green">
+                <form action="{$Action}" method="post" id="frmAdd" enctype="multipart/form-data">
+                    <div class="box-header"><h4>投票基本信息</h4></div>
+                    <div class="box-content">
+                        <table class="table-font">
+                            <tr>
+                                <th>投票名称</th>
+                                <td><input type="text" class="textinput w450"  id="VoteName" name="VoteName" value="" /></td>
+                            </tr>
+                            <tr>
+                                <th>触发关键词</th>
+                                <td><input type="text" class="textinput" style="230px"  id="AppKeyword" name="AppKeyword" value="" />
+                                <span class='Caution'>在微信输入此关键词，将返回当前应用的图文消息！</span>
+                                </td>
+                            </tr>
+                        <tr>
+                            <th>图文消息封面</th>
+                            <td><input type="text" id="VotePicture" class="textinput w450" name="VotePicture" value=""  />
+                            <br/><input id='wxvotepicture' name ='wxvotepicture' type ='file'  size='70'  class='textinput' />&nbsp;&nbsp;
+                            <input id='btnUpload' name ='btnUpload'  type ='submit' value='上传图片'   class='btnUpload'/>&nbsp;&nbsp;
+                            <input id='btnServer' onclick='BrowserServer(1)' name ='btnServer'  type ='button' value='选择图片'  class='btnUpload' />
+                            </td>
+                        </tr>
+                            <tr>
+                                <th>投票简介</th>
+                                <td>
+                                <textarea class="w450" style="height:40px; width:100%" name="Description"></textarea>
+                                </td>
+                            </tr>
+                           <tr>
+                                <th>起止时间</th>
+                                <td><script type='text/javascript' src='{$WebPublic}My97DatePicker/WdatePicker.js'></script>
+                                <input name='StartTime' type='text' class='Wdate' id='StartTime'  class='textinput' style="width:140px"  onClick="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly='readonly'   value='{$StartTime}' /><span style="padding:0px 5px">到</span><input name='EndTime' type='text' class='Wdate' id='EndTime'  class='textinput' style="width:140px"  onClick="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm:ss'})" readonly='readonly'   value='{$EndTime}' />
+                                </td>
+                            </tr>
+                       <tr>
+                            <th nowrap="nowrap">是否多选</th>
+                            <td>
+                                <input type="radio" name="IsMultiple" value="1"   />多选&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="IsMultiple" value="0"  checked="checked" />单选
+                            </td>
+                        </tr>
+                           <tr>
+                                <th nowrap="nowrap">投票结果</th>
+                                <td>
+                                    <input type="radio" name="ShowResult" value="1" checked="checked"  /> 投票前可见&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="ShowResult" value="2"  />投票后可见&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="ShowResult" value="3"  />投票结束可见 &nbsp;&nbsp;
+                                </td>
+                        	</tr>
+                            <tr>
+                                <th nowrap="nowrap">是否启用</th>
+                                <td>
+                                    <input type="radio" name="IsEnable" value="1" checked="checked"  />启用&nbsp;&nbsp;
+                                    <input type="radio" name="IsEnable" value="0"  />禁用
+                                </td>
+                        	</tr>
+                          </table>
+                    </div>
+                    
+                    <div class="box-header"><h4>投票项</h4></div>
+                    <div class="box-content">
+                        <table class="table-font" id="allitems">
+                            <tr>
+                                <th>投票项1</th>
+                                <td>
+                                <input type="hidden"  name="ItemID[]" value="0" />
+                                <input type="text" class="textinput w450" name="ItemName[]" value="" />
+                                &nbsp;<a onclick="delItem(this)">[-删除投票项]</a>
+                                </td>
+                            </tr>
+                           <tr>
+                                <th>投票项2</th>
+                                <td>
+                                <input type="hidden"  name="ItemID[]" value="0" />
+                                <input type="text" class="textinput w450" name="ItemName[]" value="" />
+                                &nbsp;<a onclick="delItem(this)">[-删除投票项]</a></td>
+                            </tr>
+                           <tr>
+                                <th>投票项3</th>
+                                <td>
+                                <input type="hidden"  name="ItemID[]" value="0" />
+                                <input type="text" class="textinput w450" name="ItemName[]" value="" />
+                                &nbsp;<a onclick="delItem(this)">[-删除投票项]</a></td>
+                            </tr>
+                        </table>
+                        <table class="table-font" id="addItem">
+                            <tr>
+                                <th></th>
+                                <td><a onclick="addItem()">[+添加投票项]<a></td>
+                            </tr>
+                        </table>
+                   </div>
+ 
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit" type="submit"  value="保存并继续添加" />
+                        &nbsp;&nbsp;<input  id="btnSubmit"  type="button" value="返回" onclick="GoBack()" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

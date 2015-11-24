@@ -1,0 +1,2 @@
+<?php
+return array ( 'TITLE' => 'website|cms|wap website|finished website', 'DESCRIPTION' => 'this product include pc site、mobile site、weixin site，Data synchronization, one virtual host, more convenient maintenance. Order hotline: +86-010-88888888', 'KEYWORDS' => 'website,cms,wap website', ); ?>

@@ -1,0 +1,2 @@
+<?php
+return array ( 'CONTACT' => 'Miss Cheng', 'COMPANY' => 'your company', 'ADDRESS' => 'beijing chaoyang wangjin no 8', 'MOBILE' => '400-699-1720', 'TELEPHONE' => '400-699-1720', 'FAX' => '400-699-1720', 'EMAIL' => 'xx@qq.com', 'QQ' => '', 'POSTCODE' => '410100', ); ?>

@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<style>
+.ImageYes{
+	font-size: 14px;
+	color: #339900;
+	font-weight:bold;
+	font-family:Verdana;
+} 
+.ImageNo{
+	font-size:14px;
+	color:red;
+	font-weight:bold;
+	font-family:Verdana;
+}
+</style>
+</head>
+<body id="main_page">
+    <div id="nav" style="display:none;">
+        <dl>
+            <dt>当前位置：</dt>
+            <dd class="link">后台首页</dd>
+            <dd class="link">主页</dd><!--导航-->
+        </dl>
+    </div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con">
+               <div class="table">
+                    <h2 class="th" id="c5">登录成功</h2>                
+                    <table>
+                    <tr>
+                    <td width="33%">您好!&nbsp;&nbsp;<span class="redTip">{$MemberName}</span>
+                    [&nbsp<span class="redTip">{$MemberGroupName}</span>&nbsp;]&nbsp您已成功登录系统!</td>
+                    <td width="33%">登录IP:<span class="redTip">{$LastLoginIP}</span>&nbsp;&nbsp;</td>
+                    <td  width="33%">登录时间:<span class="redTip">{$LastLoginTime}</span> </td>
+                    </tr>
+                    </table>
+                </div>
+                <div class="table">
+                    <h2 class="th"  id="c2">网站安全提示</h2>       
+                    <div class="tips">
+                        <p>(1) 为了使用更安全，请您修改用户后台默认密码；</p>
+                        <p>(2) 用户密码请使用字母和数字，并且长度不少于8位；</p>
+                        <p>(3) 不使用用户后台时，请退出用户后台。</p>
+                    </div>
+                </div>
+                                
+                           
+                <div class="table">
+                    <h2 class="th" id="c5">我的统计信息</h2>                
+                    <table>
+                    <tr>
+                    <td style="width:120px;text-align:right;">我发布的内容数</td>
+                    <td align="left"><span class="redTip">{$InfoCount}</span>&nbsp;</td>
+                    </tr>
+                    <tr style="display:none">
+                    <td style="width:120px;text-align:right;">我的评论数</td>
+                    <td><span class="redTip">{$CommentCount}</span>&nbsp;</td>
+                    </tr>
+                    <tr>
+                    <td style="width:120px;text-align:right;">我的留言数</td>
+                    <td><span class="redTip">{$MessageCount}</span>&nbsp;</td>
+                    </tr>
+                    <tr>
+                    <td style="width:120px;text-align:right;">我的订单数</td>
+                    <td><span class="redTip">{$OrderCount}</span>&nbsp;</td>
+                    </tr>
+                    <tr>
+                    <td style="width:120px;text-align:right;">我的应聘数</td>
+                    <td><span class="redTip">{$ResumeCount}</span>&nbsp;</td>
+                    </tr>
+                    </table>
+                </div>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

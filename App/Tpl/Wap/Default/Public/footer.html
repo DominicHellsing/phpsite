@@ -1,0 +1,69 @@
+<!--页脚开始-->
+<div id="footer">
+    <!-- 微信分享导引 开始-->
+    <script>
+        function openGuide(){ document.getElementById('guide').style.display='block'; }
+        function closeGuide(){ document.getElementById('guide').style.display=''; }
+    </script>
+    <div id="guide" onclick="closeGuide()"><img src="{$Images}guide.png"></div>
+    <!-- 微信分享导引 结束-->
+    
+    <eq name="TShowPlug" value="1" >
+        <!--快捷按钮 开始-->
+        <div class="plug-div">
+                <div class="plug-phone">
+                        <div class="plug-menu themeStyle"><span class="close"></span></div>
+
+                        <div class="themeStyle plug-btn plug-btn1 close">
+                        <a href="{:HomeUrl()}"><span style="background-image: url({$Images}system/home.png);"></span></a>
+                        </div>
+
+                        <div class="themeStyle plug-btn plug-btn2 close">
+                        <a href="tel:{$Mobile}"><span style="background-image: url({$Images}system/tel.png);"></span></a>
+                        </div>
+                        
+                        <div class="themeStyle plug-btn plug-btn3 close">
+                        <a href="{$T3|ChannelUrl}"><span style="background-image: url({$Images}system/aboutus.png);"></span></a>
+                        </div>
+                        
+                        <div class="themeStyle plug-btn plug-btn4 close" >
+                        <a href="{$T11|ChannelUrl}"><span style="background-image: url({$Images}system/guestbook.png);"></span></a>
+                        </div>
+                        
+                        <div class="plug-btn plug-btn5 close"></div>
+                </div>
+        </div>
+        <!--快捷按钮 结束-->
+    </eq>
+    
+    <NotIn name="ChannelID" value="1,2">
+    	<eq name="IsWx" value="1">
+            <div class="tool">
+                <table  border="0">
+                    <tr>
+                        <td>
+                            <a  class="btn"  onclick="openGuide()">
+                            <img src="{$Images}send.png" width="32px" align="absmiddle" />{$Think.lang.SendToFriend}
+                            </a>
+                        </td>
+                        <td>
+                            <a  class="btn" onclick="openGuide()">
+                            <img src="{$Images}friend.png" width="32px" align="absmiddle"   />{$Think.lang.ShareToFriend}
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </eq>
+        
+        <div>
+            <ul class="wxlist">
+                <a  href="#top">
+                	<li><div  class="GoTop"><img src="{$Images}top.png" />{$Think.lang.GoTop}</div></li>
+                </a>
+            </ul>
+        </div>
+    </NotIn>
+    <div class="copyright">{$WebName}&nbsp;{$Think.lang.Copyright}</div>
+</div>
+<!--页脚结束-->

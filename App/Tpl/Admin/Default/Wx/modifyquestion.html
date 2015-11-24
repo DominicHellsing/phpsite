@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信接口</dd><!--导航-->
+                <dd class="link">微信应用</dd><!--导航-->
+                <dd class="link">修改调查题目</dd>
+        </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmAdd').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}else if(data.status==2){
+				ErrorBox(data.info); //上传失败
+			}else if(data.status==3){
+				SucceedBox(data.info); //上传成功
+			}
+		};
+		
+		 $('#frmAdd').submit(function(){  // 提交表单
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+		 		 
+		 $('#btnSubmit').click(function(){  // 提交表单
+		 	$('#frmAdd').attr('action','{$Action}');
+	     });
+		 
+		 
+		 $('#QuestionName').focus();
+		 
+	});
+</script>
+<script>
+function GoBack(){
+	window.location.href = "{$Url}question/AppID/{$AppID}";
+}
+//添加一个项目
+function addItem(){
+	var oTh = $("#allitems th");
+	var i = oTh.length + 1;
+	var item="<tr><th>选项"+i+"</th><td>";
+	item += "<input type='text' class='textinput w450' name='ItemName[]' value='' />";
+	item += "<input type='hidden'  name='ItemID[]' value='0' />";
+	item += "&nbsp;<a onclick='delItem(this)'>[-删除选项]</a></td></tr>";
+	$("#allitems").append(item);
+	$("#allitems input[name='ItemName[]']").last().focus();
+}
+
+function delItem(obj){
+	$(obj).parent().parent().remove();
+	var oTh = $("#allitems th");
+	for(var i=0; i< oTh.length; i++){
+		var txt ="选项"+(i+1).toString();
+		$(oTh[i]).text(txt);
+	}
+}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green">
+                <form action="{$Action}" method="post" id="frmAdd" enctype="multipart/form-data">
+                <input type="hidden" name="{$HiddenName}" value="{$HiddenValue}" />
+                <input type="hidden" name="AppID" value="{$AppID}" />
+                    <div class="box-header"><h4>基本信息</h4></div>
+                    <div class="box-content">
+                        <table class="table-font">
+                            <tr>
+                                <th>题目名称</th>
+                                <td><input type="text" class="textinput w450"  id="QuestionName" name="QuestionName" value="{$q.QuestionName}" /></td>
+                            </tr>
+                            <tr>
+                                <th>排序</th>
+                                <td>
+                                <input type="text" class="textinput" style="width:120px"  id="QuestionOrder" name="QuestionOrder" value="{$q.QuestionOrder}" />
+                                <span class='Caution'>请输入数字，值越小排名越靠前！</span>
+                                </td>
+                            </tr>
+                        <tr>
+                            <th nowrap="nowrap">是否多选</th>
+                            <td>
+                                <input type="radio" name="IsMultiple" value="1" <eq name="q.IsMultiple" value="1">checked="checked"</eq>  />多选&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="IsMultiple" value="0"  <eq name="q.IsMultiple" value="0">checked="checked"</eq> />单选
+                            </td>
+                        </tr>
+                        <tr>
+                            <th nowrap="nowrap">是否启用</th>
+                            <td>
+                                    <input type="radio" name="IsEnable" value="1" <eq name="q.IsEnable" value="1">checked="checked"</eq>  />启用&nbsp;&nbsp;
+                                    <input type="radio" name="IsEnable" value="0"  <eq name="q.IsEnable" value="0">checked="checked"</eq>/>禁用
+                            </td>
+                        </tr>
+                          </table>
+                    </div>
+                    
+                    <div class="box-header"><h4>调查选项</h4></div>
+                    <div class="box-content">
+                        <table class="table-font" id="allitems">
+                        	<volist id="it" name="q.Item">
+                                <tr>
+                                    <th>选项{$i}</th>
+                                    <td>
+                                    <input type="hidden" class="textinput w450" name="ItemID[]" value="{$it.ItemID}" />
+                                    <input type="text" class="textinput w450" name="ItemName[]" value="{$it.ItemName}" />
+                                    &nbsp;<a onclick="delItem(this)">[-删除选项]</a></td>
+                                </tr>
+                            </volist>
+                        </table>
+                        <table class="table-font" id="addItem">
+                            <tr>
+                                <th></th>
+                                <td><a onclick="addItem()">[+添加选项]<a></td>
+                            </tr>
+                        </table>
+                   </div>
+ 
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit" type="submit"  value="保存" />
+                        &nbsp;&nbsp;<input  id="btnSubmit"  type="button" value="返回" onclick="GoBack()" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">广告管理</dd>
+        <dd class="link">友情链接</dd>
+        <dd class="link">友情链接分类管理</dd>
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delClass/LinkClassID/"+id;
+		$.get(url, {}, DelComplete, "json");
+		return true;
+	}
+	
+	//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='LinkClassID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelClass");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存排序吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchSortClass");
+		$('#frm').submit();
+		return true;
+	}	
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                  <div class="table">
+                   
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}AddClass"  title="添加友情链接分类" target="_self">添加链接分类</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="50px"  nowrap="nowrap">选中</th>
+                        <th width="120px" >友情链接分类ID</th>
+                        <th width="300px" >友情链接分类名称</th> 
+                        <th width="120px" >友情链接分类排序</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>  
+    <notempty name="LinkClass">
+    <volist name="LinkClass" id="lc">
+    <tr id="tr{$lc.LinkClassID}">
+    	<td><input type="checkbox" name="LinkClassID[]" value="{$lc.LinkClassID}" /></td>
+    	<td>{$lc.LinkClassID}</td>
+        <td style="text-align:left; word-break : break-all">{$lc.LinkClassName}</td>
+        
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:65px" name="LinkClassOrder[]" value="{$lc.LinkClassOrder}" />
+        <input type="hidden" class='textinput' name="LinkClassOrderID[]" value="{$lc.LinkClassID}" />
+        </td>
+        
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" href="{$Url}ModifyClass/LinkClassID/{$lc.LinkClassID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$lc.LinkClassID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="5" id="NoData">暂无信息！</td></tr>
+    </notempty>                                  
+    </table>
+         <div class="th">
+              <div class="form"  id="notice"><b>说明：</b>不能删除包含数据的友情链接分类！</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

@@ -1,0 +1,21 @@
+<div class="left_title">
+    <h2>{$Think.lang.ContactUs}</h2>
+</div>
+<div class="left_body">
+	<div class="contact_wrap">
+        <notempty name="Contact"><b>{$Think.lang.Contact}：</b>{$Contact}<br/></notempty>
+        <notempty name="Mobile"><b>{$Think.lang.Mobile}：</b>{$Mobile}<br/></notempty>
+        <notempty name="Telephone"><b>{$Think.lang.Telephone}：</b>{$Telephone}<br/></notempty>
+        <notempty name="Fax"><b>{$Think.lang.Fax}：</b>{$Fax}<br/></notempty>
+        <SupportList id="q">
+            <b>{$q.SupportName}：</b>{$q.SupportFace}<br/>
+        </SupportList>
+        <notempty name="Email"><b>{$Think.lang.Email}：</b>{$Email}<br/></notempty>
+        <notempty name="PostCode"><b>{$Think.lang.PostCode}：</b>{$PostCode}<br/></notempty>
+        <notempty name="WebUrl">
+            <b>{$Think.lang.WebUrl}：</b><a href='{$WebUrl}' target="_blank"  class="WebUrl">{$WebUrl}</a><br/>
+        </notempty>
+        <notempty name="Address"><b>{$Think.lang.Address}：</b>{$Address}<br/></notempty>
+    </div>
+</div>
+<div class="left_bottom"></div>

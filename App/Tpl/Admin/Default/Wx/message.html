@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信网站</dd><!--导航-->
+                <dd class="link">消息管理</dd><!--导航-->
+                <dd class="link">微消息</dd>
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+	//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='MessageID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelMessage");
+		$('#frm').submit();
+		return true;
+	}
+	
+		//查询
+	function Search(){
+		$('#frm').attr("action", "__URL__/message");
+		$('#frm').submit();
+		return true;
+	}	
+	
+	//查询
+	function DelAll(){
+		if( !confirm("确定删除吗?") ) return false;
+		location.href = "__URL__/delAllMessage";
+	}	
+	
+		//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		$(".TagTip").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "imgaddr"
+		});
+		//选中操作
+		$("#MsgType").attr("value",'{$MsgType}');
+		$("#Keywords").focus();
+	});
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data"  method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+<div class="table">
+<div style="padding:0px; height:28px;">
+<li class="toolbar"><a id="btnCache" onclick="DelAll()"  title="删除所有消息">删除所有消息</a></li>
+<li class="toolbar"><a id="btnSave" href="{$Url}exportMessage"  title="导出所有消息" target="_self">导出所有消息</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="refresh" href="{$Url}message" title="刷新">刷新</a></li>
+<li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>内容/姓名/手机/微信ID</label><input type="text" class='textinput' name="Keywords" style="width:180px" value="{$Keywords}" id="Keywords"/>&nbsp;
+<label>消息类型</label><select name="MsgType" id="MsgType">
+<option value="">全部</option>
+<option value="text">文本消息</option>
+<option value="image">图片消息</option>
+<option value="location">地理位置</option>
+<option value="link">链接消息</option>
+<option value="event">事件推送</option>
+</select>
+&nbsp;<input id="btnSeek" type="submit" value="查询" onclick="Search()">
+</li>
+</div>
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="35px" >选中</th>
+                        <th width="50px">消息ID</th>
+                        <th width="70px" >消息类型</th>
+                        <th>消息内容</th>
+                        <th width="70px" >真实姓名</th>
+                        <th width="90px" >手机号码</th>
+                         <th width="200px" >发送方微信ID</th>
+                        <th  width="120px">时间</th>
+                    </tr>  
+    <notempty name="Message">                
+    <volist name="Message" id="i">
+    <tr id="t{$i.MessageID}">
+    	<td><input type="checkbox" name="MessageID[]" value="{$i.MessageID}" /></td>
+        <td>{$i.MessageID}</td>
+        <td>
+        <switch name="i.MsgType">
+            <case value="text"><b style="color:black">文本消息</b></case>
+            <case value="image"><b style="color:purple">图片消息</b></case>
+            <case value="location"><b style="color:blue">地理位置消息</b></case>
+            <case value="link"><b style="color:red">链接消息</b></case>
+            <case value="event"><b style="color:green">事件推送</b></case>
+        </switch>
+        </td>
+        <td style="text-align:left">
+        <switch name="i.MsgType">
+            <case value="text">{$i.p1}</case>
+            <case value="image">
+            <img src="{$i.p1}"  height="45px" alt="点击查看原图" border="0" style="cursor:pointer" class="TagTip" imgaddr="{$i.p1}" />
+            </case>
+            <case value="location">经度:{$i.p2}&nbsp;&nbsp;维度:{$i.p1}&nbsp;&nbsp;{$i.p4}</case>
+            <case value="link"><a href="{$i.p3}">{$i.p1}<br/>{$i.p2}</a></case>
+            <case value="event">
+            	<eq name="i.p1" value="subscribe">关注事件</eq>
+                <eq name="i.p1" value="unsubscribe">取消关注事件</eq>
+                <eq name="i.p1" value="CLICK">自定义菜单</eq>
+            </case>
+        </switch>
+        </td>
+        <td>{$i.MemberRealName}</td>
+        <td>{$i.MemberMobile}</td>
+        <td>{$i.FromUserName}</td>
+        <td>{$i.CreateTime|strtotime|yd_friend_date}</td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="7" id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

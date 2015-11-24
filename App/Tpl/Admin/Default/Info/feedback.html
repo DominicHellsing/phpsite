@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="{$WebPublic}jquery/css/start/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<style>
+#InfoHit{
+	color:#00F;
+	font-weight:bold;
+}
+label{
+	color:#00F; 
+	line-height:21px; 
+	font-weight:bold; 
+	height:21px; 
+	vertical-align:middle;
+	font-size:12px;
+}
+.mytip{
+	display:none; 
+	background-color:#FFF;
+	padding:6px; 
+	line-height:22px;
+	text-align:left;
+	border:1px solid #CCC;
+}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">内容管理</dd><!--导航-->
+                <dd class="link">{$ChannelID|ChannelName}</dd>
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+	//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='InfoID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frmInfo').attr("action", "__URL__/batchDelFeedback");
+		$('#frmInfo').submit();
+		return true;
+	}
+	
+	
+	//查询
+	function Search(){
+		$('#frmInfo').attr("action", "__URL__/feedback/ChannelID/{$ChannelID}");
+		$('#frmInfo').submit();
+		return true;
+	}
+	
+	//批量审核
+	function BatchCheck(bCheck){
+		//先必须选中记录==============================================
+		var arrChk = $("input[name='InfoID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		//=========================================================
+		if( bCheck == 1 ){
+			if( !confirm("确定审核通过吗?") ) return false;
+			$('#frmInfo').attr("action", "{$Url}batchCheckFeedback/Check/1");
+		}else{
+			if( !confirm("确定取消审核吗?") ) return false;
+			$('#frmInfo').attr("action", "{$Url}batchCheckFeedback/Check/0");
+		}
+		
+		$('#frmInfo').submit();
+		return true;
+	}
+</script>
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		var para = "?Keywords={$Keywords}";
+		url = "{$Url}delFeedback/InfoID/"+id+"/ChannelID/{$ChannelID}/p/{$NowPage}"+para;
+		location.href = url;
+		return true;
+	}
+	
+	function Edit(id){
+		url = "{$Url}modify/InfoID/"+id+"/ChannelModelID/{$ChannelModelID}";
+		location.href = url;
+	}
+	
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+</script>
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){		
+		//选中操作
+		$("#Keywords").focus();
+	});
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data"  method="post" id="frmInfo">
+                <input type="hidden" name="ChannelID" id="ChannelID" value="{$ChannelID}" />
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                <input type="hidden" name="ChannelModelID" id="ChannelModelID" value="{$ChannelModelID}" />
+                  <div class="table">
+<div style="padding:0px; height:28px;">
+<li class="toolbar"><a id="btnSave" href="{$Url}exportFeedback/ChannelID/{$ChannelID}"  title="导出所有数据为CSV" target="_self">导出所有数据</a></li>
+<li class="toolbar"><a id="btnConfig" href="__GROUP__/Config/feedback/ChannelID/{$ChannelID}"  title="设置">&nbsp;设置</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="btnCheck" onclick="BatchCheck(1)" title="批量通过审核">审核</a></li>
+<li class="toolbar"><a id="btnUnCheck" onclick="BatchCheck(0)" title="批量取消审核">取消审核</a></li>
+<li style="padding-left:200px">
+<label>&nbsp;&nbsp;关键词&nbsp;</label><input type="text" class='textinput' name="Keywords" style="width:180px" value="{$Keywords}" id="Keywords"/>&nbsp;
+<input id="btnSeek" type="submit" value="查询" onclick="Search()">
+</li>
+</div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="40px"  nowrap="nowrap">选中</th>
+                        <th width="50px" nowrap="nowrap">ID</th>             
+                        <th >内容</th>
+                        <th width="160px" >反馈人身份</th>
+                        <th width="125px" nowrap="nowrap">时间</th>
+                        <th width="60px" >是否审核</th>
+                        <th style="width:150px">操作</th>
+                    </tr>  
+    <notempty name="Info">                
+    <volist name="Info" id="i" key="n">
+    <tr id="t{$i.InfoID}">
+    	<td><input type="checkbox" name="InfoID[]" value="{$i.InfoID}" /></td>
+        <td>{$i.InfoID}</td>
+        <td style="text-align:left">{$i.AllInfo}</td>
+        <td>&nbsp;<span style="color:#000;font-weight:bold">{$i.MemberName}
+        <eq name="i.MemberID" value="0">[&nbsp;游客&nbsp;]<else/><span style="color:red">[会员]</span></eq>
+        </td>
+        <td>{$i.InfoTime|strtotime|yd_friend_date}</td>
+        <td>
+        <eq name="i.IsCheck" value="1"><span style="color:black">已审核</span>
+        <else/><span style="color:red">未审核</span></eq>
+        </td>
+        <td style="text-align:left;">
+<a style="float:left" onclick="Edit({$i.InfoID})" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$i.InfoID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="10" id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

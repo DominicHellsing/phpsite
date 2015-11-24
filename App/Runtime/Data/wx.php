@@ -1,0 +1,2 @@
+<?php
+return array ( 'WX_TOKEN' => '', 'WX_APP_ID' => '', 'WX_APP_SECRET' => '', 'WX_LOGO' => '', 'WX_NAME' => '', 'WX_ORIGINAL_ID' => '', 'WX_ID' => '', 'WX_DESCRIPTION' => '', 'WX_QRCODE' => '', 'WX_SAVE_MSG' => '0', ); ?>

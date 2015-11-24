@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="{$WebPublic}jquery/css/start/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-ui-1.8.22.custom.min.js"></script>
+<script  type="text/javascript">
+$(function(){
+	//属性批量设置对话框
+	$('#dlgAnswer').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 450,
+		height: 230,
+		open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+		buttons: {
+			'确定': function() { //批量移动
+				$('#frm').attr("action", "__URL__/AnswerMessage");
+				$('#frm').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+	
+});
+</script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        	<dd class="link">内容管理</dd>
+            <dd class="link">{$Think.get.ChannelID|ChannelName}</dd>
+        </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delMessage/MessageID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+	
+	//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+	
+	function Answer(id){
+		var nameTitle = "#MessageTitle"+id;
+		var nameContent = "#AnswerContent"+id;
+		var title = $(nameTitle).html();
+		var content = $(nameContent).html();
+		
+		$('#dlgMessageID').val(id);
+		$('#dlgMessageTitle').html(title);
+		$('#dlgAnswerContent').html(content);
+		
+		$('#dlgAnswer').dialog('open');
+	}
+	
+	function exportMessage(){
+		var url = "{$Url}exportMessage";
+		location.href = url;
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='MessageID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelMessage");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//批量审核
+	function BatchCheck(bCheck){
+		//先必须选中记录==============================================
+		var arrChk = $("input[name='MessageID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		//=========================================================
+		if( bCheck == 1 ){
+			if( !confirm("确定审核通过吗?") ) return false;
+			$('#frm').attr("action", "__URL__/batchCheckMessage/Check/1");
+		}else{
+			if( !confirm("确定取消审核吗?") ) return false;
+			$('#frm').attr("action", "__URL__/batchCheckMessage/Check/0");
+		}
+		
+		$('#frm').submit();
+		return true;
+	}
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />  
+<div id="dlgAnswer" title="管理员回复" style="display:none">
+<table>
+<tr>
+<td nowrap="nowrap"><span style="color:blue;font-weight:bold">回复内容</span>&nbsp;</td>
+<td valign="middle">
+<textarea style="width:335px;height:110px" name="dlgAnswerContent" id="dlgAnswerContent"></textarea>
+<input type="hidden" name="dlgMessageID" id="dlgMessageID" />
+</td>
+</tr>
+</table>
+</div>
+
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSave" onclick="exportMessage()"  title="导出所有数据">导出所有数据</a></li>
+<li class="toolbar"><a id="btnSaveAll" href="{$Group}/ChannelModel/viewField/ChannelModelID/6"  title="留言字段设置">留言字段设置</a></li>
+<li class="toolbar"><a id="btnConfig" href="{$Group}/Config/guestbook"  title="设置">&nbsp;设置</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="btnCheck" onclick="BatchCheck(1)" title="批量审核">审核</a></li>
+<li class="toolbar"><a id="btnUnCheck" onclick="BatchCheck(0)" title="批量取消审核">取消审核</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="45px" >ID</th>
+                        <th  width="115px" >留言人</th>
+                        <th >内容</th>
+                        <th width="120px" >时间</th>
+                        <th width="200px" >管理员回复</th>
+                        <th width="60px" >是否审核</th>
+                        <th width="150px">操作</th>
+                    </tr>  
+    <notempty name="Message">
+    <volist name="Message" id="m">
+    <tr id="tr{$m.MessageID}">
+    	<td><input type="checkbox" name="MessageID[]" value="{$m.MessageID}" /></td>
+    	<td>{$m.MessageID}</td>
+        <td>{$m.GuestName}
+        <eq name="m.GuestID" value="0">[&nbsp;游客&nbsp;]
+        <else/><span style="color:red">[会员]</span>
+        </eq><br/>
+       <span style="color:red;font-weight:bold">IP : {$m.GuestIP}</span>
+        </td>
+        <td style="text-align:left">{$m.AllInfo}</td>
+        <td>{$m.MessageTime|strtotime|yd_friend_date}</td>
+        <td style="text-align:left">
+        <notempty name="m.AnswerContent">
+            <span id="AnswerContent{$m.MessageID}" style="color:#060">{$m.AnswerContent}&nbsp;&nbsp;</span>
+            <br/><span style="color:red; float:right"><b style="color:#000000">回复时间：</b>{$m.AnswerTime|strtotime|yd_friend_date}</span>
+        </notempty>
+        </td>
+        <td>
+        <eq name="m.IsCheck" value="1"><span style="color:black">已审核</span>
+        <else/><span style="color:red">未审核</span></eq>
+        </td>
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" id="btnAnswer" name="btnAnswer" onclick="Answer({$m.MessageID})">回复</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$m.MessageID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist> 
+    <else/>
+    <tr><td colspan="8" id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+			<div class="page">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

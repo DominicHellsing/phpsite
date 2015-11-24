@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$WebName}</title>
+<include file="Public:meta" />
+</head>
+<body>
+    <include file="Public:header" />
+    <div id="content">
+        <!--导航开始-->
+        <ul class="channellist">
+            <NavigationList id="c1" channelid='0'>
+               <notin name="c1.ChannelID" value="1,2">
+                   <li>
+                        <a  href="{$c1.ChannelUrl}">
+                            <div class="ChannelIcon"><img src="{$c1.ChannelIcon}"  /></div>
+                            <div class="ChannelName">{$c1.ChannelName}</div>
+                        </a>
+                    </li>
+                </notin>
+            </NavigationList>
+        </ul>
+        <!--导航结束-->
+        <div class="clear"></div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

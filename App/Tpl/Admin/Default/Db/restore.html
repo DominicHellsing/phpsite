@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="{$WebPublic}jquery/css/start/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-ui-1.8.22.custom.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        	<dd class="link">系统管理</dd>
+            <dd class="link">系统管理</dd><!--导航-->
+            <dd class="link">数据库还原</dd><!--导航-->
+        </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+		
+	//备份所有数据
+	function BatchDel(){
+		var arrChk = $("input[name='files[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除备份文件!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelSqlFile");
+		$('#frm').submit();
+		return true;
+	}
+	
+	function DelSql(file){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delSqlFile/file/"+file;
+		location.href = url;		
+		return true;
+	}
+	
+	function SqlComplete(data, textStatus){
+		if (data.status == 1){ //查看备份文件
+			var title = "<span style='color:blue'>"+data.info+"</span>文件内容";
+			$("#sqlContent").val(data.data);	
+			$('#dlgContent').dialog('option','title', title);		
+			$('#dlgContent').dialog('open');
+		}else if(data.status == 3){ //数据恢复 
+			var txt = "<span style='font-weight:bold;color:red;font-size:18px'>"+data.info+"</span>";
+			$("#restoreText").html(txt);	
+		}else{ 
+			WarnBox(data.info);
+		}
+	}
+	
+	//显示表列信息
+	function ViewSql(file){
+		url = "{$Url}viewSqlFile";	
+		var timenow = new Date().getTime();	
+		$.get(url, {file:file,t:timenow}, SqlComplete, "json");
+	}
+	
+	//数据回复
+	function RestoreSql(file){
+		if( !confirm("确定还原吗?\n注意：1)还原后将永久删除当前所有数据！\n2)确定还原后，没有出现提示框前，不要离开当前页面！") ){
+			return false;
+		}
+		var txt = "<img src='{$WebPublic}/Images/loading/3.gif' width='20' height='20' align='absmiddle' /><span style='font-weight:bold;color:black;font-size:14px'>&nbsp;数据还原中，请稍后...</span>";
+		$("#restoreText").html(txt);	
+		$('#dlgRestore').dialog('open');
+		var timenow = new Date().getTime();
+		url = "{$Url}recover";
+		$.get(url, {file:file,t:timenow}, SqlComplete, "json");
+	}
+	
+		//备份所有数据
+	function BackupAll(){
+		if( !confirm("确定备份数据库吗?") ) return false;
+		LoadBox("数据库备份中，请稍后...");
+		url = "{$Url}backup";
+		$.get(url, {}, DbComplete, "json");
+		return true;
+	}	
+	
+	//备份所有数据回调函数
+	function DbComplete(data, textStatus){
+		CloseLoadBox();
+		if (data.status == 1){
+			SucceedBox("数据库备份成功！");
+			location.href = "{$Url}restore";
+		}else{ 
+			ErrorBox(data.info);
+		}
+	}
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){		 
+		$('#dlgContent').dialog({
+			modal: true,
+			autoOpen: false,
+			width: 770,
+			height: 450, 
+			//maxHeight:410,需要ui.resizable.js
+			open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+			buttons: {
+				'关闭': function() { $(this).dialog("close"); }
+			}
+		});
+		
+		$('#dlgRestore').dialog({
+			modal: true,
+			autoOpen: false,
+			width: 280,
+			height: 150, 
+			//maxHeight:410,需要ui.resizable.js
+			open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+			buttons: {
+				'确定': function() { $(this).dialog("close"); }
+			}
+		});
+	});
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">         
+<div id="dlgContent" class="table" title="" style="display:none;padding:0 0 0 0">
+<textarea readonly="readonly" id="sqlContent" style="width:760px;height:330px"></textarea>
+</div>
+
+<div id="dlgRestore" class="table" title="数据还原" style="display:none;padding:0 0 0 0">
+<div id="restoreText" style="width:100%; text-align:center">
+<img src="{$WebPublic}/Images/loading/3.gif" width="18" height="18" align="absmiddle" />
+<b>数据还原中，请稍后...</b>
+</div>
+</div>
+
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSave" onclick="BackupAll()"  title="备份数据库">备份数据库</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a class="btnDel" onclick="BatchDel()" title="删除选中备份文件">删除</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="50px"  nowrap="nowrap">选中</th>
+                        <th width="210px">备份文件</th>
+                        <th width="150px" >文件大小</th>
+                        <th width="210px" >备份时间</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>
+    <notempty name="SqlFile">                 
+    <volist name="SqlFile" id="s">
+    <tr>
+    	<td><input type="checkbox" name="files[]" value="{$s.Name}" /></td>
+        <td>{$s.Name}</td>
+        <td><b>{$s.Size|byte_format}</b></td>
+    	<td>{$s.Time|yd_friend_date}</td>
+        <td>
+<a style="float:left" onclick="RestoreSql('{$s.Name}')" id="btnCheckDb">还原</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="ViewSql('{$s.Name}')" id="btnEdit">查看</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="DelSql('{$s.Name}')" class="btnDel">删除</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" href="{$Url}downloadSqlFile/file/{$s.Name}" id="btnBackup">下载</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="5"  id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+              备份数据总大小：<span style="color:red;font-weight:bold">{$SqlFileTotalSize|byte_format}</span>
+              &nbsp;&nbsp;&nbsp;共<span style="color:red;font-weight:bold">{$SqlFileCount}</span>个备份文件
+              &nbsp;&nbsp;备注：如需备份指定表，请在[系统管理]-[数据库管理]菜单中备份！
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

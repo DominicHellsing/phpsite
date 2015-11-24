@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<style>
+#InfoHit{
+	color:#00F;
+	font-weight:bold;
+}
+label{
+	color:#00F; 
+	line-height:21px; 
+	font-weight:bold; 
+	height:21px; 
+	vertical-align:middle;
+	font-size:12px;
+}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信接口</dd><!--导航-->
+                <dd class="link">微信应用</dd><!--导航-->
+                <dd class="link">中奖名单管理</dd>
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+	//查询
+	function Search(){
+		$('#frm').attr("action", "__URL__/award");
+		$('#frm').submit();
+		return true;
+	}	
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function CheckAward(id){
+		if( !confirm("确定领奖吗?") ) return false;
+		url = "{$Url}checkAward/AwardID/"+id+"/p/{$NowPage}/AppID/{$AppID}/Mobile/"+$("#Mobile").val();
+		location.href = url;
+	}
+</script>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function(){
+		$("#Mobile").focus();
+	});
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data"  method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+<div class="table">
+<div style="padding:0px; height:28px;">
+<li>
+&nbsp;&nbsp;&nbsp;&nbsp;<label>活动名称：</label>
+<select name="AppID">
+<volist name="App" id="a" >
+	<option value="{$a.AppID}"  <eq name="a.AppID" value="$AppID">selected="selected"</eq> >{$a.AppName}</option>
+</volist>
+</select>
+<label>&nbsp;&nbsp;手机号码：</label><input type="text" class='textinput' name="Mobile" style="width:100px" value="{$Mobile}" id="Mobile"/>&nbsp;
+<input id="btnSeek" type="submit" value="查询" onclick="Search()">
+</li>
+</div>
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="45px" >编号ID</th> 
+                        <th width="100px" >姓名</th>
+                        <th width="100px" >联系电话</th>  
+                        <th width="220px" nowrap="nowrap">中奖者微信号</th>
+                        <th width="190px" >奖品</th>
+
+                        <th width="140px" >中奖SN码</th>
+                        <th width="125px" >中奖时间</th>
+                        <th width="60px" >是否领奖</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>  
+    <notempty name="Award">                
+    <volist name="Award" id="i">
+    <tr>
+    	<td><b>{$i.AwardID}</b></td>
+        <td>{$i.MemberRealName}</td>
+        <td><b style="color:#0000FF">{$i.MemberMobile}</b></td>
+        <td style="text-align:left"><b>{$i.FromUser}</b></td>
+        <td><b>{$i.AwardNumberText}</b>&nbsp;<b style="color:#F00">[{$i.AwardName}]</b></td>
+
+        <td>{$i.AwardSN}</td>
+        <td>{$i.AwardTime|strtotime|yd_friend_date}</td>
+        <td>
+        <eq name="i.IsCheck" value="1">
+        <b style="color:#000">已领奖</b><else/><b style="color:#F00">未领奖</b>
+        </eq>
+        </td>
+        <td style="text-align:left;">
+        <eq name="i.IsCheck" value="0"><a style="float:left" onclick="CheckAward({$i.AwardID})" id="btnEdit">领奖</a></eq>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="7" id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

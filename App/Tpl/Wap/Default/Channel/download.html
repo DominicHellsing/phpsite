@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{$ChannelName}</title>
+<include file="Public:meta" />
+</head>
+<body class="body_download">
+    <include file="Public:header" />
+    <div  id="content" >
+        <div class="download">
+            <eq name="HasChild" value="1">
+                <include file="Public:subchannel" />
+            <else/>
+                <include file="Public:list" />
+            </eq>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <include file="Public:footer" />
+</body>
+</html>

@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$Js}sidebar.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jscroll.js"></script>
+<script type='text/javascript'>
+	$(document).ready(function(){
+		var h = $(window).height();
+		$('#ScrollChannel').css({height:h - 193});
+		
+		$('#ScrollChannel').jscroll({
+			W:"10px",
+			BgUrl:"",//设置滚动条背景图片地址
+	        Bg:"#d8e899",//设置滚动条背景图片position,颜色等
+	        Bar:{  Pos:"up",//设置滚动条初始化位置在底部
+			       Bd:{Out:"#eaf1d6",Hover:"#eaf1d6"},//设置滚动滚轴边框颜色：鼠标离开(默认)，经过
+			       Bg:{Out:"#87a34d",Hover:"#677c3b",Focus:"#677c3b"}
+			}, //设置滚动条滚轴背景：鼠标离开(默认)，经过，点击
+	        Btn:{  btn: false, //是否显示上下按钮 false为不显示
+			       uBg:{Out:"#9bb055",Hover:"#9bb055",Focus:"#9bb055"},//设置上按钮背景：鼠标离开(默认)，经过，点击
+			       dBg:{Out:"#9bb055",Hover:"#9bb055",Focus:"#9bb055"}
+			}  //设置下按钮背景：鼠标离开(默认)，经过，点击
+		});
+		
+				//菜单背景
+		$("div[flag='menu']").bind("click",function(){
+			$("div[flag='menu']").each(function(i){
+				$(this).css("background-color", '');
+			});
+			this.blur();
+			$(this).css("background-color", '#9BB055');
+		});
+		
+	});
+</script>
+<style>
+#treemenu a {font-weight:bold;text-decoration: none;}
+#treemenu a:hover {font-weight:bold;text-decoration: none;}
+#topmenu{text-align:left;padding:2px;}
+#topmenu a {color:#000;text-decoration: none;}
+#topmenu a:hover {text-decoration: none;color:#06F;}
+
+.depth1{ font-weight:bold }
+#topmenu .single{color:#F30;}
+#topmenu .link{color:#60F;}
+#topmenu .feedback{color:#090;}
+</style>
+</head>
+<body id="sidebar_page">
+<div class="wrap">
+    <div class="cotainer">
+        <div id="sidebar" >
+        <div class="home">
+            <a href="{$WebInstallDir}" target="_blank">返回网站首页</a>
+        </div>
+        <div class="con">
+        <!--公用-->
+        <h2>管理首页</h2>
+        <p class="userpanel">       
+        用户名：{$MemberName}<br />
+        分　组：{$MemberGroupName}<br />
+        <eq name="IsAdmin" value="1">
+        <a href="{$WebInstallDir}index.php/Admin/" target="_blank">
+        <span style="color:#C00;font-weight:bold;padding-left:15px">[进入管理后台]</span>
+        </a><br />
+        </eq>
+        <a href="{$Url}pwd" target='main'>密 码</a>&nbsp;|&nbsp;
+        <a href="{$Url}welcome" target='main'>主 页</a>&nbsp;|&nbsp;
+        <a href="{$Url}logout" target="_top">退 出</a>
+        </p>
+        
+        <volist name="MenuGroup" id="mg">
+        	<div class="item">
+            <h2>{$mg.MenuGroupName}<span class='close'>收起</span></h2>
+            <ul>
+            <eq name="mg.MenuGroupID" value="17">
+                <div id="ScrollChannel" style="text-align:left;overflow:hidden;">
+                <div id="ScrollChannel" style="text-align:left;overflow:hidden;">
+                    <volist name="Channel" id="c">
+                        <eq name="c.IsEnable" value="1">
+                            <neq name="c.IsSystem" value="1">
+                                <div id="topmenu" style="text-indent:{$c['ChannelDepth']*12-12}px;" class="depth{$c.ChannelDepth}"   flag="menu">
+                                <eq name="c.ChannelDepth" value="1"><img src="{$Images}r1.gif" align="absmiddle" />
+                                <else/><img src="{$Images}r2.gif" align="absmiddle" />
+                                </eq>
+                                
+                                <switch name="c.ChannelModelID">
+                                    <case value="32"><a href='{$Group}/Channel/Single/ChannelID/{$c.ChannelID}' target='main' class="single">{$c.ChannelName}</a></case>
+                                    <case value="37"><a href='{$Group}/Info/Feedback/ChannelID/{$c.ChannelID}' target='main' class="feedback">{$c.ChannelName}</a></case>
+                                    <case value="33"><a href='{$Group}/Channel/link/ChannelID/{$c.ChannelID}' target='main' class="link">{$c.ChannelName}</a></case>
+                                    <default /><a href='{$Group}/Info/Index/ChannelID/{$c.ChannelID}' target='main'>{$c.ChannelName}</a>
+                                    <eq name="c.HasChild" value="0">
+                            &nbsp;&nbsp;<a href='{$Group}/Info/Add/ChannelID/{$c.ChannelID}' target='main'><img src="{$Images}addinfo.png" align="absmiddle" title="添加内容" alt="添加内容" /></a>
+                                    </eq>
+                                </switch>
+                                </div>
+                            </neq>
+                        </eq>
+                    </volist>
+                </div>
+                </div>
+            </eq>
+        	<volist name="Menu" id="m">
+            	<eq name="m.MenuGroupID" value="$mg.MenuGroupID">
+                    <switch name="m.MenuType">
+                        <case value="1"></case>
+                        <case value="2"></case>
+                        <case value="3"></case>
+                        <case value="0" break="0"></case>
+                        <default/><li><a href='{$Group}/{$m.MenuContent}' target='main'>{$m.MenuName}</a></li>
+                    </switch>
+                </eq>
+            </volist>
+            
+            </ul>
+            </div>
+        </volist>        
+              
+        </div><!--/ .con-->
+        </div><!--/ sidebar-->
+    </div>
+</div>
+</body>
+</html>

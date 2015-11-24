@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$InfoTitle}-{$WebName}</title>
+<include file="Public:meta" />
+</head>
+<body class="body_download">
+	<include file="Public:header" />
+    <!--主体内容 开始-->
+    <div class="download">
+    	<!--左侧区域 开始-->
+        <div id="left">
+            <include file="Public:subchannel" />
+            <!--推荐 开始-->              
+            <div class="left_title"><h2> {$Think.lang.Recommend}{$ChannelSName}</h2></div>
+            <div class="left_body">
+                <ul class="textlist">
+                    <!--循环开始-->
+                    <infolist id="f" channelid='$ChannelID' top="8" timeformat="Y-m-d" labelid="9" empty="$Think.lang.NoInformation">
+                    	<li><a href="{$f.InfoUrl}" target="_blank" title="{$f.InfoTitle}">{$f.InfoSTitle}</a></li>
+                    </infolist>
+                    <!--循环结束-->
+                </ul>
+            </div>
+            <div class="left_bottom"></div>
+            <!--推荐 结束-->
+            <!--热门 开始-->
+            <div class="left_title"><h2>{$Think.lang.Hot}{$ChannelSName}</h2></div>
+            <div class="left_body">
+                <ul class="textlist">
+                    <!--循环开始-->
+                    <infolist id="f" channelid='$ChannelID' top="8" timeformat="Y-m-d" labelid="7" empty="$Think.lang.NoInformation">
+                    	<li><a href="{$f.InfoUrl}" target="_blank" title="{$f.InfoTitle}">{$f.InfoSTitle}</a></li>
+                    </infolist>
+                    <!--循环结束-->
+                </ul>
+            </div>
+            <div class="left_bottom"></div>
+            <!--热门 结束-->
+        </div>
+        <!--左侧区域 结束-->
+        
+        <!--右侧区域 开始-->
+        <div id="right">
+            <div class="right_title">
+                <h2>{$ChannelName}</h2>
+            </div>
+            <div class="right_body">
+                    <div class="InfoTitle"><h1>{$InfoTitle}</h1></div>
+                    <div class="info_from_wrap">
+                        <b>{$Think.lang.From}：</b>
+                        <notempty name="InfoFrom">
+                            {$InfoFrom}
+                        <else/>
+                            <a href="{$WebUrl}" target="_blank">{$WebName}</a>
+                        </notempty>&nbsp;
+                        <b>{$Think.lang.Date}：</b>{$InfoTime}&nbsp;
+                        <b>{$Think.lang.Hit}：</b>{$InfoHit}&nbsp;
+                        <b>{$Think.lang.belong}：</b><a href="{$ChannelUrl}" target="_blank">{$ChannelName}</a>
+                    </div>
+                    <div class="InfoSContent">{$InfoSContent}</div>
+                    <div class="InfoContent">{$InfoContent}</div>
+                    <div class="info_previous_next_wrap">
+                        <div class="Previous">
+                            <eq name='HasPrevious' value="1">
+                                <b>{$Think.lang.Previous}{$ChannelSName}：</b><a  href="{$PreviousInfoUrl}" title="{$PreviousInfoTitle}">{$PreviousInfoTitle}</a>
+                            <else/>
+                                <b>{$Think.lang.Previous}{$ChannelSName}：</b>{$Think.lang.Nothing}
+                            </eq>
+                        </div>
+                        
+                        <div class="Next">
+                            <eq name='HasNext' value="1">
+                                <b>{$Think.lang.Next}{$ChannelSName}：</b><a  href="{$NextInfoUrl}" title="{$NextInfoTitle}">{$NextInfoTitle}</a>
+                            <else/>
+                                <b>{$Think.lang.Next}{$ChannelSName}：</b>{$Think.lang.Nothing}
+                            </eq>
+                        </div>
+                    </div>
+             </div>
+             <div class="right_bottom"></div>
+        </div>
+        <!--右侧区域 结束-->
+        <div class="clear"></div>
+    </div>
+    <!--主体内容 结束-->
+    <include file="Public:footer" />
+</body>
+</html>

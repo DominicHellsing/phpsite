@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">微信接口</dd><!--导航-->
+            		    <dd class="link">微信应用</dd><!--导航-->
+                        <dd class="link">礼品兑换记录</dd>
+        </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnBack" href="{$Url}gift" title="返回">返回</a></li>                  
+<li></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="45px" >编号</th>
+                        <th width="260px" >礼品名称</th>
+                        <th width="100px" >会员卡号</th>
+                        <th width="90px" >姓名</th>
+                        
+                        <th width="40px" >性别</th>
+                        <th width="110px">手机号码</th>
+                        <th width="70px">花费积分</th>
+                        <th style="padding-left:30px; text-align:left">兑换时间</th>
+                    </tr>  
+    <notempty name="GiftMember">
+    <volist name="GiftMember" id="m">
+        <tr>
+            <td><b>{$i}</b></td>
+            <td><b style="color:blue">{$m.Remark}</b></td>
+            <td><b>{$m.CardNumber}</b></td>
+            <td>{$m.MemberRealName}</td>
+            
+            <td><eq name="m.MemberGender" value="0">男<else/>女</eq></td>
+            <td>{$m.MemberMobile}</td>
+            <td><b style="color:red">{$m.ScoreNumber}</b></td>
+            <td style="padding-left:15px; text-align:left">{$m.ScoreTime|strtotime|yd_friend_date}</td>
+        </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="7" id="NoData">暂无信息！</td></tr>
+    </notempty>                                  
+    </table>
+         <div class="th"><div class="page">{$Page}</div></div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

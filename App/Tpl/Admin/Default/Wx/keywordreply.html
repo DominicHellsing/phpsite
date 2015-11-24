@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+			<dt>当前位置：</dt>
+            <dd class="link">微信接口</dd>
+            <dd class="link">自动回复</dd>
+            <dd class="link">关键词自动回复</dd><!--导航-->
+        </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delKeywordReply/ReplyID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='ReplyID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchDelKeywordReply");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存优先级吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchSortKeywordReply");
+		$('#frm').submit();
+		return true;
+	}	
+	
+	//关键词次数清0
+	function setZero(id){
+		if( !confirm("确定对关键词使用次数清0吗?") ) return false;
+		var url = "{$Url}zeroKeywordCount/ReplyID/"+id;
+		$.get(url, {}, ZeroComplete, "json");
+	}
+	
+	//回调函数
+	function ZeroComplete(data, textStatus){
+		if (data.status == 1){
+			$("#c"+data.data).text("0");
+			SucceedBox(data.info); 
+		}else{ //删除失败
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}addKeywordReply"  title="添加关键词" target="_self">&nbsp;&nbsp;添加关键词</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar" style="display:none"><a id="sortall" onclick="BatchSort()" title="批量修改优先级">优先级</a></li>
+                    </div>
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="55px" >关键词ID</th>
+                        <th width="100px" >关键词</th> 
+                        <th width="95px" >使用次数</th>
+                        <th width="150px" >回复消息类型</th>
+                        <th>回复消息内容</th>       	
+                        <th width="60px" >是否启用</th>
+                        <th width="150px">操作</th>
+                    </tr>
+    <notempty name="KeywordReply">  
+    <volist name="KeywordReply" id="b">
+    <tr>
+    	<td><input type="checkbox" name="ReplyID[]" value="{$b.ReplyID}" /></td>
+    	<td>{$b.ReplyID}</td>
+        <td style="text-align:left; word-break : break-all">{$b.Keyword}</td>
+        <td >
+        <b style="text-align:center; color:#0000FF;" id="c{$b.ReplyID}">{$b.Count}</b>
+        &nbsp;&nbsp;<a onclick="setZero({$b.ReplyID})">[清零]</a>
+        </td>
+        <td><b style="color:{$b.TypeID|WxMenuTypeColor}">{$b.TypeName}</b></td>
+        <td style="text-align:left">
+        <switch name="b.TypeID">
+        	<case value="1">{$b.p1|Left=25}</case>
+            <case value="2">显示<b style="color:green; padding:0 3px">{$b.p1|ChannelName}</b>频道前<b style="color:#00F; padding:0 3px">{$b.p2}</b>条信息</case>
+            <case value="3">{$b.p1}</case>
+            <case value="4">打开<b style="color:green; padding:0 3px">{$b.p1|ChannelName}</b>频道主页</case>
+            <case value="5">
+            	<empty name="b.p4">
+                	<eq name="b.p1|is_numeric" value="1">
+                		 <b style="color:{$b.TypeID|WxMenuTypeColor}">{$b.p1|WxAppName}</b>
+                    <else/>
+                    	 {$b.p1}
+                    </eq>
+                 <else/>
+                 	<b>{$b.p4}</b>
+                </empty>
+            </case>
+            <case value="6"><a href="{$b.p1}" target="_blank">{$b.p1}</a></case>
+        </switch>
+        </td>
+        <td>
+        <eq name="b.IsEnable" value="1">
+        <span style="color:black">启用</span>
+        <else/>
+        <span style="color:red">禁用</span>
+        </eq>
+        </td>
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" href="{$Url}ModifyKeywordReply/ReplyID/{$b.ReplyID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$b.ReplyID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="7" id="NoData">暂无信息！</td></tr>
+    </notempty>                                    
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

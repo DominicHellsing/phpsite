@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="{$WebPublic}jquery/css/start/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-ui-1.8.22.custom.min.js"></script>
+<script  type="text/javascript">
+$(function(){
+	//属性批量设置对话框
+	$('#dlgAnswer').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 450,
+		height: 250,
+		open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+		buttons: {
+			'确定': function() { //批量移动
+				$('#frm').attr("action", "__URL__/AnswerResume");
+				$('#frm').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+	
+});
+</script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">后台首页</dd>
+            		    <dd class="link">互动管理</dd><!--导航-->
+            		    <dd class="link">我的应聘</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delResume/ResumeID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='ResumeID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelResume");
+		$('#frm').submit();
+		return true;
+	}
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="70px" >简历编号</th>
+						<th width="150px" >应聘职位</th>
+                        <th width="90px" >姓名</th>
+                        <th width="60px" >性别</th>
+                        <th width="140px" >联系电话</th>
+                        <th width="150px" >电子邮件</th>  
+                        <th width="155px" >投递时间</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>  
+    <notempty name="Resume">
+    <volist name="Resume" id="m">
+    <tr id="tr{$m.ResumeID}">
+    	<td><input type="checkbox" name="ResumeID[]" value="{$m.ResumeID}" /></td>
+        <td><span id="ResumeID{$m.ResumeID}">{$m.ResumeID}</span></td>
+		<td><b>{$m.JobName}</b></td> 
+        <td>{$m.GuestName}</td>
+        <td>{$m.Gender}</td>
+        <td>{$m.Telephone}</td>
+        <td>{$m.Email}</td>
+        <td>{$m.Time}</td> 
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" id="btnAnswer" name="btnAnswer" href="{$Url}Modify/ResumeID/{$m.ResumeID}">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$m.ResumeID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist> 
+    <else/>
+    <tr><td colspan="13" style="text-align:left;color:red;font-weight:bold;padding-left:10px">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+			<div class="form" style="color:blue;font-weight:bold;text-align:left">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

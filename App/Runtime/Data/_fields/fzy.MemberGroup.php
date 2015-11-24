@@ -1,0 +1,2 @@
+<?php
+return array ( 0 => 'MemberGroupID', 1 => 'MemberGroupName', 2 => 'MemberGroupRemark', 3 => 'MenuTopPurview', 4 => 'MenuGroupPurview', 5 => 'MenuPurview', 6 => 'ChannelPurviewen', 7 => 'ChannelPurviewcn', 8 => 'IsSystem', '_autoinc' => true, '_pk' => 'MemberGroupID', ); ?>

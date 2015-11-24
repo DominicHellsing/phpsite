@@ -1,0 +1,21 @@
+    <include file="Public:meta" />
+    <script type="text/javascript" src="{$WebPublic}jquery/jquery.SuperSlide.js"></script>
+<!--JS幻灯片 开始-->
+    <div id="banner_main">
+        <div id="banner">
+                 <ul class="bannerlist">
+                    <BannerList id="b" bannergroupid="1">
+                        <li style="background:url({$b.BannerImage}) center center no-repeat {$b.BannerDescription}; height:460px; ">
+
+                        </li>
+                    </BannerList>
+                 </ul>
+        </div>
+        <div class="hd"><ul></ul></div>
+    </div>
+    <script>
+			$('#banner_main').slide({  
+				autoPage:'true', titCell:'.hd ul', mainCell:'#banner ul', autoPlay:true,      vis:1,    effect:'topLoop'
+			});
+		</script>
+	

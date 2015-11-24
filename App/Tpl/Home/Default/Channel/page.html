@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$ChannelName}|{$Title}-{$WebName}</title>
+    <include file="Public:meta" />
+</head>
+<body  class="body_single">
+	<include file="Public:header" />
+    <!--主体内容 开始-->
+    <div class="single">
+    		<!--左侧区域 开始-->
+			<div id="left">
+                <include file="Public:subchannel" />
+                <include file="Public:search" />
+                <include file="Public:contact" />
+			</div>
+            <!--左侧区域 结束-->
+            
+            <!--右侧区域 开始-->
+             <div id="right">
+                     <div class="right_title">
+                          <h2>{$ChannelName}</h2>
+                    </div>
+                    <div class="right_body">
+                    	 <div class="ChannelContent">{$ChannelContent}</div>
+                    </div>
+                    <div class="right_bottom"></div>
+			 </div>
+             <!--右侧区域 结束-->
+			 <div class="clear"></div>
+	</div>
+    <!--主体内容 结束-->
+	<include file="Public:footer" />
+</body>
+</html>

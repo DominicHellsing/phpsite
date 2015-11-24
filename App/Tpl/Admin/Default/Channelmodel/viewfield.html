@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">系统管理</dd><!--导航-->
+                <dd class="link">{$ChannelModelID|ChannelModelName}</dd><!--导航-->
+                <dd class="link">字段管理</dd><!--导航-->
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function DelChannelModel(id){
+		if( !confirm("确定删除频道模型吗?") ) return false;
+		url = "{$Url}del/ChannelModelID/"+id;
+		window.location.href = url;
+		return true;
+	}	
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存排序吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchSortField/ChannelModelID/{$ChannelModelID}");
+		$('#frm').submit();
+		return true;
+	}
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" id="frm"  method="post">
+                  <div class="table">
+                  	<div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnBack" href="{$ReturnUrl}" target="_self" title="返回">返回</a></li>
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+                    </div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="60"  nowrap="nowrap">字段ID</th>
+                        <th width="100" nowrap="nowrap">字段名称</th>
+                        <th width="80" nowrap="nowrap">字段类型</th>
+                        <th width="120" >显示名称</th>
+                        <th width="95" >显示类型</th>
+                        
+                        <th width="70" >字段排序</th>
+                        <th width="120" >验证正则表达式</th>
+                        <th width="150" >属性</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>
+    <notempty name="Attribute">  
+    <volist name="Attribute" id="c">
+        <tr>
+        <eq name="c.GroupID" value="0">
+        	<td colspan="5" style="text-align:left;padding-left:20px">
+            <span style="color:blue;font-weight:bold">{$c.DisplayName}</span>
+            <input type="hidden" name="AttributeID[]" value="{$c.AttributeID}" />
+            </td>
+            <td><input type="text" class='textinput'  onclick="this.select()" style="width:65px" name="DisplayOrder[]" value="{$c.DisplayOrder}" /></td>
+            <td style="text-align:right"></td>
+    	<else/>
+            <td>{$c.AttributeID}<input type="hidden" name="AttributeID[]" value="{$c.AttributeID}" /></td>
+            <td>{$c.FieldName}</td>
+            <td>{$c.FieldType}</td>
+            <td>{$c.DisplayName}</td>
+            <td><b>{$c.DisplayTypeName}</b></td>  
+            <td><input type="text" class='textinput'  onclick="this.select()" style="width:65px" name="DisplayOrder[]" value="{$c.DisplayOrder}" />
+        </td>
+        <td>{$c.ValidateRule}</td>
+        </eq>
+        <td>
+        <eq name="c.IsValidate" value="1"><span style="color:green">正则验证</span></eq>&nbsp;
+        <eq name="c.IsRequire" value="1"><span style="color:#00F">必填</span></eq>&nbsp;
+        <eq name="c.IsSystem" value="1"><span style="color:#000">系统</span></eq>&nbsp;
+        <eq name="c.IsEnable" value="1"><span style="color:#000">启用</span>
+        <else/><span style="color:#F00">禁用</span></eq>
+        </td>
+        <td style="text-align:left;">
+<a style="float:left" href="{$Url}ModifyField/ChannelModelID/{$c.ChannelModelID}/AttributeID/{$c.AttributeID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    	<tr><td colspan="5" id="NoData">暂无信息！</td></tr>
+    </notempty>                                  
+    </table>
+         <div class="th">
+              <div class="form"   id="notice">
+				<b>说明：</b>[1]<span style="color:blue">蓝色</span>标题表示分组名称，最好不要修改属性为系统的字段！&nbsp;
+                [2]优先使用f1-f5扩展字段
+              </div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

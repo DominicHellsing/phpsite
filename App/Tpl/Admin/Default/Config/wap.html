@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>基本设置</title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<script type='text/javascript' src='{$WebPublic}ckfinder/ckfinder.js'></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">管理首页</dd>
+                <dd class="link">系统设置</dd>
+                <dd class="link">手机网站设置</dd>
+            </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type='text/javascript'>
+	function BrowserServer(){
+		var finder = new CKFinder();
+		finder.basePath = '{$WebPublic}ckfinder'; 
+		finder.selectActionFunction = SetFileField;
+		//alert('d'); //加上alert指令后，popup都能弹出对话框
+		finder.popup(); 
+	}
+	function SetFileField(fileUrl){
+		//如果执行抛出异常，则finder.popup()后的框不会关闭
+		document.getElementById('WAP_LOGO').value = fileUrl;
+	}
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmConfig').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}else if(data.status==2){
+				ErrorBox(data.info); //上传失败
+			}else if(data.status==3){
+				$('#WAP_LOGO').val(data.data);
+				SucceedBox(data.info); //上传成功
+			}
+		};
+		
+		 $('#btnUpload').click(function(){  
+		 	$('#frmConfig').attr('action','__GROUP__/public/upload/addwater/no');
+	     });
+		 
+		 $('#btnSubmit').click(function(){
+		 	$('#frmConfig').attr('action','{$Action}');
+	     });
+		
+		 $('#frmConfig').submit(function(){  // 提交表单
+	     	return false;
+	     });
+		 
+		 $("#WAP_LOGO").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "value",
+			position: "5-7"
+		});
+	});
+</script>
+<div class="wrap">
+    <div class="container">
+        
+        <div id="main">
+            <div class="con box-green">
+                <form enctype="multipart/form-data" id="frmConfig" method="post" action="{$Action}">    
+                
+			                <div class="box-header"  id="c7">
+                    <h4>手机网站设置</h4>
+                </div>
+                <div class="box-content">
+                    <table class="table-font">
+                        <tr>
+                            <th>手机网站状态</th>
+                            <td>
+<label><input type="radio" name="WAP_STATUS" value="1" <eq name="WapStatus" value="1">checked="checked"</eq> />打开</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="WAP_STATUS" value="0" <eq name="WapStatus" value="0">checked="checked"</eq> />关闭</label>
+							</td>
+                        </tr>
+                        
+                       <tr>
+                            <th>手机网站Logo</th>
+                            <td><input type="text" id="WAP_LOGO" class="textinput w450" name="WAP_LOGO" value="{$WapLogo}"  /><span class='Caution'>如果为空则使用电脑网站Logo</span><br/><input id='weblogofile' name ='weblogofile' type ='file'  size='70'  class='textinput' />&nbsp;&nbsp;<input id='btnUpload' name ='btnUpload'  type ='submit' value='上传图片'   />&nbsp;&nbsp;<input id='btnServer' onclick='BrowserServer()' name ='btnServer'  type ='button' value='选择图片'   />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>手机网站域名</th>
+                            <td><input type="text" class="textinput w450" name="WAP_URL" value="{$WapUrl}"  />
+                            <span class='Caution'><b>去掉</b>域名前缀http://，多域名之间以英文逗号分开，例如：www.baidu.mobi,wap.baidu.cn</span></td>
+                        </tr>
+ <tr>
+                            <th class="w120">是否自动跳转到手机网站</th>
+                            <td>
+                            <label><input type="radio" name="WAP_AUTO_REDIRECT" value="1" <eq name="WapAutoRedirect" value="1">checked="checked"</eq> />是</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="WAP_AUTO_REDIRECT" value="0" <eq name="WapAutoRedirect" value="0">checked="checked"</eq> />否</label>
+<span class='Caution'>启用后，在手机上访问电脑网站时，将自动跳转到手机网站，推荐设置为“否”</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="w120">是否禁止电脑访问手机网站</th>
+                            <td><label><input type="radio" name="WAP_PC_ACCESS" value="1" <eq name="WapPcAccess" value="1">checked="checked"</eq> />是</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="WAP_PC_ACCESS" value="0" <eq name="WapPcAccess" value="0">checked="checked"</eq> />否</label>
+<span class='Caution'>启用后，电脑端将无法访问手机网站，推荐设置为“否”</span>
+</td>
+                        </tr>
+                   </table>
+                </div>
+                
+                
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit"  type="submit" value="保存设置" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

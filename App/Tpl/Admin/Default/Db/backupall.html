@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>基本设置</title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">系统管理</dd>
+                <dd class="link">系统管理</dd>
+                <dd class="link">一键备份全站</dd>
+            </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type="text/javascript">
+	function backupDb(){
+		url = "{$Url}backupData"; //备份数据库
+		showtip("正在备份数据库...", true);
+		$.get(url, {}, DbComplete, "json");
+		return true;
+	}
+	
+	function delZip(){
+		url = "{$Url}delZip"; //备份数据库
+		showtip("正在删除备份文件...", true);
+		$.get(url, {}, DelComplete, "json");
+		return true;
+	}
+	
+	function DelComplete(data, textStatus){
+		if (data.status == 1){ //备份数据库成功
+			showtip("删除备份文件成功!", false);
+		}else{  //备份数据库失败
+			showtip("<b style='color:red'>删除备份文件失败!</b>", false);
+		}
+	}
+	
+	//数据库回调函数
+	function DbComplete(data, textStatus){
+		if (data.status == 1){ //备份数据库成功
+			showtip("数据库备份成功，正在压缩全站...", true);
+			url = "{$Url}backupAll/action/backupall"; //压缩整站
+			$.get(url, {}, ZipComplete, "json");
+		}else{  //备份数据库失败
+			showtip("", false);
+			ErrorBox(data.info);
+		}
+	}
+	
+	//回调函数
+	function ZipComplete(data, textStatus){
+		if (data.status == 1){ //备份数据库成功
+			var str = "压缩全站成功，准备自动下载！如果你的浏览器不支持自动下载，请";
+			str += "<a href='{$WebInstallDir}App/Runtime/"+data.data+"'";
+			str += " target='_self' style='color:red'>点击这里</a>下载！"
+			showtip(str, false);
+			//url = "{$Url}downloadAll?zipname="+data.data; //下载全站,bug会导致内存溢出
+			var url = "{$WebInstallDir}App/Runtime/"+data.data;
+			location.href = url;
+		}else{  //压缩全站失败
+			showtip("", false);
+			ErrorBox(data.info);
+		}
+	}
+	
+	function showtip(str, isanimation){
+		html = "";
+		if( isanimation ){
+			html = "<img src='{$WebPublic}Images/loading/9.gif' border='0' align='absmiddle'/>";
+		}
+		html += str;
+		$("#backuptip").html(html);		
+	}
+</script>
+<div class="wrap">
+    <div class="container">
+       
+        <div id="main">
+            <div class="con box-green">
+                <form enctype="multipart/form-data" id="frmConfig" method="post" action="{$Action}">  
+                
+                <div class="box-header"  id="c2">
+                    <h4>备份说明</h4>
+                </div>
+                <div class="box-content"  style="text-align:left">
+<span style="text-align:left">
+<b>1、</b><b style="color:blue">一键备份全站包含网站所有资料的备份，如：数据库、网站程序、上传的资料；</b><br/>
+<b>2、</b>系统自动将全站数据打包成zip压缩包格式，并下载到本地；<br/>
+<b>3、</b>由于全站备份数据过大，下载zip备份后，为了节约空间，请删除虚拟主机上的备份文件；<br/>
+</span>
+                </div>
+                
+                <div class="box-header"  id="c2">
+                    <h4>还原步骤</h4>
+                </div>
+                <div class="box-content"  style="text-align:left">
+<span style="text-align:left">
+<b>第1步：</b>通过FTP上传最新的zip备份压缩包，并解压；<br/>
+<b>第2步：</b>输入网站域名，将自动进入系统安装程序，按步骤开始安装；<br/>
+<b>第3步：</b>安装完成即网站还原成功。<br/>
+</span>
+                </div>
+                  
+                <div class="box-header"  id="c2">
+                    <h4>一键备份全站</h4>
+                </div>
+                <div class="box-content">
+<table class="table-font">
+<tr>
+    <th>一键备份全站并下载到本地</th>
+    <td style="height:35px">
+    <a style="float:left; margin-right:10px" onclick="backupDb()" id="btnPick" target="_blank">一键备份全站</a>
+    <a style="float:left" onclick="delZip()" id="btnCache" target="_blank">删除备份文件</a>
+    <span id="backuptip" style="padding-left:10px; font-weight:bold; color:#000"></span><br />
+    </td>
+</tr>
+<tr>
+	<th>注意：</th>
+    <td>
+        <span id="tip">
+     [1]全站备份会依次备份数据库、压缩全站、自动下载。请耐心等待！<br/>
+    [2]下载后，请点击<b>“删除备份文件”</b>按钮，删除虚拟主机上的临时备份文件，以节约空间！
+    </span>
+    </td>
+</tr>
+</table>
+                </div>
+                
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	
+                    </div>
+                </div>
+                
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

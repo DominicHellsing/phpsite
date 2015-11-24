@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="{$WebPublic}jquery/css/start/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-ui-1.8.22.custom.min.js"></script>
+<script  type="text/javascript">
+$(function(){
+	//属性批量设置对话框
+	$('#dlgAnswer').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 450,
+		height: 250,
+		open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+		buttons: {
+			'确定': function() { //批量移动
+				$('#frm').attr("action", "__URL__/AnswerMessage");
+				$('#frm').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+	
+});
+</script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">后台首页</dd>
+            		    <dd class="link">互动管理</dd><!--导航-->
+                        <dd class="link">我的留言</dd>
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delMessage/MessageID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+	
+	//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+	
+	function Answer(id){
+		var nameTitle = "#MessageTitle"+id;
+		var nameContent = "#AnswerContent"+id;
+		var title = $(nameTitle).html();
+		var content = $(nameContent).html();
+		
+		$('#dlgMessageID').val(id);
+		$('#dlgMessageTitle').html(title);
+		$('#dlgAnswerContent').html(content);
+		
+		$('#dlgAnswer').dialog('open');
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='MessageID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchDelMessage");
+		$('#frm').submit();
+		return true;
+	}
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                
+<div id="dlgAnswer" title="留言回复" style="display:none">
+<table>
+<tr>
+<td nowrap="nowrap"><span style="color:blue;font-weight:bold">留言标题</span>&nbsp;</td>
+<td valign="middle"><span id="dlgMessageTitle"></span></td>
+</tr>
+<tr>
+<td nowrap="nowrap"><span style="color:blue;font-weight:bold">回复内容</span>&nbsp;</td>
+<td valign="middle">
+<textarea style="width:335px;height:110px" name="dlgAnswerContent" id="dlgAnswerContent"></textarea>
+<input type="hidden" name="dlgMessageID" id="dlgMessageID" />
+</td>
+</tr>
+</table>
+</div>
+
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+                    </div>
+                    
+    <table class="admin-tb" id="js_data_source">
+    <tr>
+        <th width="35px"  nowrap="nowrap">选中</th>
+        <th width="50px" >留言ID</th>
+        <th>内容</th>
+        <th width="120px" >时间</th>
+        <th width="200px" >管理员回复</th>
+        <th width="100px" >留言IP</th>
+        <th width="70px" >是否审核</th>
+        <th  width="80px">操作</th>
+    </tr>
+    <notempty name="Message">  
+    <volist name="Message" id="m">
+    <tr id="tr{$m.MessageID}">
+    	<td><input type="checkbox" name="MessageID[]" value="{$m.MessageID}" /></td>
+    	<td>{$m.MessageID}</td>
+        <td style="text-align:left">{$m.AllInfo}</td>
+         <td>{$m.MessageTime|strtotime|yd_friend_date}</td>
+        <td>
+        <notempty name="m.AnswerContent">
+            <span id="AnswerContent{$m.MessageID}" style="color:#060">{$m.AnswerContent}&nbsp;&nbsp;</span>
+            <br/><span style="color:red; float:right"><b style="color:#000000">回复时间：</b>{$m.AnswerTime|strtotime|yd_friend_date}</span>
+        </notempty>
+        </td>
+        <td>{$m.GuestIP}</td>
+        <td>
+        <eq name="m.IsCheck" value="1"><span style="color:black">已审核</span>
+        <else/><span style="color:red">未审核</span>
+        </eq>
+        </td>
+        <td><a onclick="Del({$m.MessageID})" class="btnDel">删除</a></td>
+    </tr>
+    </volist>
+    <else/>
+    <tr>
+     <td colspan="7" style="text-align:left;color:red;font-weight:bold;padding-left:10px">暂无留言！</td>
+    </tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+			<div class="form" style="color:blue;font-weight:bold;text-align:left">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

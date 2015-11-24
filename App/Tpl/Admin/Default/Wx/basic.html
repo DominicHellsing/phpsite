@@ -1,0 +1,187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<script type='text/javascript' src='{$WebPublic}ckfinder/ckfinder.js'></script>
+
+<script type='text/javascript'>
+	function BrowserServer(type){
+		var finder = new CKFinder();
+		finder.basePath = '{$WebPublic}ckfinder'; 
+		if( type==1){
+			finder.selectActionFunction = SetWebLogoField;
+		}else{
+			finder.selectActionFunction = SetQrCodeField;
+		}
+		//alert('d'); //加上alert指令后，popup都能弹出对话框
+		finder.popup(); 
+	}
+	function SetWebLogoField(fileUrl){
+		document.getElementById('WX_LOGO').value = fileUrl;
+	}
+	
+	function SetQrCodeField(fileUrl){
+		document.getElementById('WX_QRCODE').value = fileUrl;
+	}
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmConfig').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+            }else if(data.status==0){
+				ErrorBox(data.info);
+			}else if(data.status==2){
+				ErrorBox(data.info); //上传失败
+			}else if(data.status==3){
+				$('#WX_LOGO').val(data.data);
+				SucceedBox(data.info); //上传成功
+			}else if(data.status==4){
+				$('#WX_QRCODE').val(data.data);
+				SucceedBox(data.info); //上传成功
+			}
+		};
+			 
+	     //上传提交表单,注意：这里的上传地址不能实用$UploadAction因为和上传设置config/upload冲突
+		 $('#btnUpload').click(function(){  
+		 	$('#frmConfig').attr('action','__GROUP__/public/upload/addwater/no/currentfile/wxlogofile');
+	     });
+		 
+		$('#btnQrUpload').click(function(){  
+		 	$('#frmConfig').attr('action','__GROUP__/public/upload/addwater/no/flag/4/currentfile/wxqrcode');
+	     });
+
+		 //保存提交
+		 $('#btnSubmit').click(function(){
+		 	$('#frmConfig').attr('action','{$Action}');
+	     });
+		 
+		 $('#frmConfig').submit(function(){  // 提交表单
+	     	return false;
+	     });
+		 
+		 $("#WX_LOGO").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "value",
+			position: "5-7"
+		});
+		
+		$("#WX_QRCODE").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "value",
+			position: "5-7"
+		});
+	});
+</script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">管理首页</dd>
+                <dd class="link">系统设置</dd>
+                <dd class="link">基本设置</dd>
+            </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<div class="wrap">
+    <div class="container">
+        
+        <div id="main">
+            <div class="con box-green">
+                <form id="frmConfig" method="post" action="{$Action}" enctype="multipart/form-data" >
+                <div class="box-header" id="c1">
+                    <h4>基本设置&nbsp;&nbsp;
+                    点击<a href="https://mp.weixin.qq.com/" target="_blank" style="color:#00F"><b>https://mp.weixin.qq.com</b></a>
+                            登录微信公众平台，进入<b style="color:#00F">“帐号信息”</b>页面，将对应信息填写到以下表单：</h4>
+                </div>
+                <div class="box-content">
+                    <table class="table-font">
+                                            <tr>
+                            <th>公众帐号</th>
+                            <td><input type="text" class="textinput w450" name="WX_ID" value="{$WxID}"  />
+                            <span class='Caution'>如：zsbank</span>
+                            </td>
+                        </tr>
+                         <tr>
+                            <th>公众帐号头像</th>
+                            <td><input type="text" id="WX_LOGO" class="textinput w450" name="WX_LOGO" value="{$WxLogo}"  />
+                            <br/><input id='wxlogofile' name ='wxlogofile' type ='file'  size='70'  class='textinput' />&nbsp;&nbsp;
+                            <input id='btnUpload' name ='btnUpload'  type ='submit' value='上传头像'   class='btnUpload'/>&nbsp;&nbsp;
+                            <input id='btnServer' onclick='BrowserServer(1)' name ='btnServer'  type ='button' value='选择头像'  class='btnUpload' />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>公众帐号名称</th>
+                            <td><input type="text" class="textinput w450" name="WX_NAME" value="{$WxName}" />
+                            <span class='Caution'>如：招商银行</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>公众帐号原始ID</th>
+                            <td><input type="text" class="textinput w450" name="WX_ORIGINAL_ID" value="{$WxOriginalID}"  />
+                            <span class='Caution'>登录微信公众平台，在帐号信息查看原始ID，如：gh_f2cb488a9658</span>
+                            </td>
+                        </tr>
+
+                         <tr>
+                            <th>公众帐号简介</th>
+                            <td><textarea class="w450" style="height:40px" name="WX_DESCRIPTION">{$WxDescription}</textarea></td>
+                        </tr> 
+                        <tr>
+                            <th>公众帐号二维码</th>
+                            <td><input type="text" id="WX_QRCODE" class="textinput w450" name="WX_QRCODE" value="{$WxQrcode}"  />
+                            <span class='Caution'>登录微信公众平台，上传帐号信息中的二维码</span>
+                            <br/>
+                            <input id='wxqrcode' name ='wxqrcode' type ='file'  size='70'  class='textinput' />&nbsp;&nbsp;
+                            <input id='btnQrUpload' name ='btnQrUpload'  type ='submit' value='上传二维码'  class='btnUpload' />&nbsp;&nbsp;
+                            <input id='btnQrServer' onclick='BrowserServer(2)' name ='btnQrServer'  type ='button' value='选择二维码'   class='btnUpload'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>是否保存用户消息</th>
+                            <td>
+<label><input type="radio" name="WX_SAVE_MSG" value="1" <eq name="WxSaveMsg" value="1">checked="checked"</eq> />是</label>
+&nbsp;&nbsp;&nbsp;&nbsp;<label><input type="radio" name="WX_SAVE_MSG" value="0" <eq name="WxSaveMsg" value="0">checked="checked"</eq> />否</label>
+<span class='Caution'>若启用，则保存用户向公众帐号发送的消息！若每天用户发送消息过多，建议关闭！</span>
+</td>
+                        </tr>
+                    </table>
+                </div> 
+                         
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input id="btnSubmit" type="submit" value="保存设置" />
+                    </div>
+                </div>
+                </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

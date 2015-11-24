@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    	<title>刮刮卡</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="format-detection" content="telephone=no">
+        <link href="{$AppCss}scratch.css" rel="stylesheet" type="text/css">
+	</head>
+	<body data-role="page" class="activity-scratch-card-winning">
+		<div class="main">
+        	<eq name="LotteryStatus" value="3">
+            <eq name="LotteryRepeat" value="0">
+                <div class="cover">
+                    <img src="{$AppImages}activity-scratch-card-bannerbg.png">
+                    <div id="prize"></div>
+                    <div id="scratchpad"></div>
+                </div>
+            </eq>
+            </eq>
+            
+			<!-- content start-->
+            <div class="content">
+                <!--活动未开始 start-->
+                <eq name="LotteryStatus" value="1">
+            	<div class="boxcontent boxwhite">
+					<div class="box">
+						<div class="title-brown"><span>活动未开始：</span></div>
+						<div class="Detail">
+                        	<p style="color:red">亲，活动尚未开始哦！</p>
+                        	<p style="color:red">活动时间：{$LotteryStartTime}到{$LotteryEndTime}</p>
+                        </div>
+					</div>
+				</div>
+                </eq>
+                <!--活动未开始 end-->
+            
+            	<!--活动结束 start-->
+                <eq name="LotteryStatus" value="2">
+                    <div class="boxcontent boxwhite">
+                        <div class="box">
+                            <div class="title-brown"><span>{$LotteryEndTitle}：</span></div>
+                            <div class="Detail"><p  style="color:red">{$LotteryEndDescription}</p></div>
+                        </div>
+                    </div>
+                </eq>
+                <!--活动结束 end-->
+                
+                <!--重复抽奖说明 start-->
+                <eq name="LotteryStatus" value="3">
+                <eq name="LotteryRepeat" value="1">
+                    <div class="boxcontent boxwhite">
+                        <div class="box">
+                            <div class="title-red"><span>重复抽奖说明</span></div>
+                            <div class="Detail">
+                            <p>本次活动每人最多允许抽<b style="color:red">{$LotteryMax}</b>次奖，你已经抽完了，欢迎下次再来！</p>
+                            </div>
+                        </div>
+                    </div>
+                </eq>
+                </eq>
+                <!--重复抽奖说明 end-->
+                
+            	<!--抽奖结果 start-->
+				<div id="zjl" style="display:none" class="boxcontent boxwhite">
+					<div class="box">
+						<div class="title-red"><span>恭喜你中奖了</span></div>
+						<div class="Detail">
+							<p>你中了：<span class="red">{$LotteryAwardText}</span></p>
+							<p>您的兑奖SN码：<span class="red" id="sncode">{$AwardSN}</span></p>
+							<p class="red">本次兑奖码已关联你的微信号，你可以向公众号发送 兑奖 进行查询！</p>
+                            <p><input name="username" class="px" id="username" type="text"  value="{$MemberRealName}" placeholder="输入您的姓名"></p>
+							<p><input name="mobile" class="px" id="mobile" value="" type="text"  value="{$MemberMobile}" placeholder="用户请输入您的手机号"></p>
+							<p><input name="pwd" class="px" id="pwd" type="password" value="" placeholder="商家输入兑奖密码"></p>
+                            <p><input name="btnSave" class="pxbtn" id="btnSave" type="button" value="用户提交"></p>
+						</div>
+					</div>
+				</div>
+                <!--抽奖结果 end-->
+                
+                <!--没有中奖 start-->
+				<div id="wzj" style="display:none" class="boxcontent boxwhite">
+					<div class="box">
+						<div class="title-red"><span>谢谢参与</span></div>
+						<div class="Detail">
+                             <gt name="LotteryNumberLeft" value="1">
+                                <p>呜呜呜~~，您已经刮了<b class="red">{$LotteryNumber+1}</b>次奖，还没有中奖哦！
+                                还有<b class="red">{$LotteryNumberLeft-1}</b>次机会，祝你好运哦！
+                                </p>
+                                <p><input name="btnTry" class="pxbtn" id="btnTry" type="button" value="我要再刮一次奖"></p>
+                            <else/>
+                                <p>呜呜呜~~，您已经刮了<b class="red">{$LotteryNumber+1}</b>次奖，还没有中奖哦！
+                                等待下一次机会吧，祝下次好运！
+                                </p>
+                            </gt>
+						</div>
+					</div>
+				</div>
+                <!--没有中奖 end-->
+                
+                <!--奖项设置 start-->
+				<div class="boxcontent boxwhite">
+					<div class="box">
+						<div class="title-brown"><span>奖项设置：</span></div>
+						<div class="Detail">
+							<p>一等奖： {$LotteryAward1}。奖品数量：<b style="color:red">{$LotteryAward1Num}</b></p>
+							<p>二等奖： {$LotteryAward2} 。奖品数量：<b style="color:red">{$LotteryAward2Num}</b></p>
+							<p>三等奖： {$LotteryAward3} 。奖品数量：<b style="color:red">{$LotteryAward3Num}</b></p>
+						</div>
+					</div>
+				</div>
+                <!--奖项设置 end-->
+                
+                <!--活动说明 start-->
+				<div class="boxcontent boxwhite">
+					<div class="box">
+						<div class="title-brown">活动说明：</div>
+						<div class="Detail">
+                        	<p>活动名称：{$LotteryName}</p>
+							<p>活动时间：{$LotteryStartTime}到{$LotteryEndTime}</p>
+							<p>每人最多允许抽奖次数：<b style="color:red">{$LotteryMax}</b></p>
+                            <p>{$LotteryDescription}</p>
+						</div>
+					</div>
+				</div>
+                <!--活动说明 end-->
+                
+          </div>
+          <!-- content end-->
+			<div style="clear:both;"></div>
+		</div>
+	</body>
+</html>
+<eq name="LotteryStatus" value="3">
+<eq name="LotteryRepeat" value="0">
+        <script src="{$AppJs}jquery.js" type="text/javascript"></script>
+		<script src="{$AppJs}wScratchPad.js" type="text/javascript"></script>
+		<script src="{$AppJs}alert.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			window.sncode = "null";
+			window.prize = "{$LotteryAwardText}";
+			document.getElementById('prize').innerHTML = "{$LotteryAwardText}";
+			var zjl = "{$LotteryAward}";  //是否中奖
+			var goon = true;   //是否继续
+			$(function() {
+				$("#scratchpad").wScratchPad({
+					width: 150,
+					height: 40,
+					color: "#a9a9a7",
+					scratchMove: function(e, percent) {
+						if ( percent > 20 && goon) {
+							if( zjl !="0" ){ //表示中奖了
+ 								$("#zjl").fadeIn();
+							}else{
+								$("#wzj").fadeIn();
+							}
+							goon = false;
+							$.post("__URL__/registerLottery", {action:"register",sn: $("#sncode").text(),}, function(data) {});
+							//$("#zjl").slideToggle(500);
+							//$("#outercont").slideUp(500)
+						}
+					}
+				});
+				//$("#prize").html("谢谢参与");
+				//loadingObj.hide();
+				//$(".loading-mask").remove();
+			});
+			
+			//再刮一次奖
+			$("#btnTry").bind("click", function() {
+				location.reload();
+			});
+
+			//保存用户手机号码
+			$("#btnSave").bind("click", function() {
+				var mobile = $("#mobile").val();
+				if (mobile == '') {
+					alert("请输入手机号");
+					return;
+				}
+				
+				var username= $("#username").val();
+				if (username == '') {
+					alert("请输入姓名");
+					return;
+				}
+
+				var postdata = {
+					appid: "{$AppID}",
+					sn: $("#sncode").text(),
+					mobile: mobile,
+					username:username,
+					pwd: $("#pwd").val(),
+					action: "set"
+				};
+				$.post("__URL__/registerMobile", postdata, function(data) {  
+					alert(data.info); 
+				},  "json");
+			});
+		</script>
+</eq>
+</eq>

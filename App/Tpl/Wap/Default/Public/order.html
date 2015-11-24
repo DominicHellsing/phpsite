@@ -1,0 +1,126 @@
+<neq name="OrderEnable" value="0">
+<!--在线订购 开始-->
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#frmOrder').ajaxForm({
+            success: complete,
+            dataType: 'json',
+			beforeSubmit: check
+        });
+		
+	  function check(){
+			<ordermodellist id="f">
+					<eq name="f.IsRequire" value="1">
+							if($("#{$f.FieldName}").val()==""){
+								alert("{$f.DisplayName}{$Think.lang.Required}");
+								$("#{$f.FieldName}").focus();
+								return false;
+							}
+					</eq>
+					
+					<eq name="f.IsValidate" value="1">
+					<notempty name="f.ValidateRule">
+							var re = new RegExp({$f.ValidateRule});
+							if(!re.test( $("#{$f.FieldName}").val() )){
+								alert("{$f.DisplayName}{$Think.lang.Invalid}");
+								$("#{$f.FieldName}").focus();
+								return false;
+							}
+					</notempty>
+					</eq>
+			</ordermodellist>
+			<eq name="OrderVerifyCode" value="1">
+				if( $("#verifycode").val() == ""){
+					alert("{$Think.lang.VerifyCodeRequired}");
+					$("#verifycode").focus();
+					return false;
+				}
+			</eq>
+			return true;
+		}
+        
+        function complete(data){
+            if (data.status==1){
+                alert(data.info);
+                $('#frmOrder').resetForm();
+				$("#ProductName").val("{$InfoTitle}");
+            }else if(data.status==0){
+                alert(data.info);
+            }
+            ChangeOrderCode();
+        };
+        
+         $('#frmOrder').submit(function(){  // 提交表单
+            //$('#frmAddBanner').ajaxSubmit();  
+            return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+         });
+		 
+		 $("#ProductName").val("{$InfoTitle}");
+    });
+</script>
+<script type='text/javascript'>
+	function ChangeOrderCode(){
+		var timenow = new Date().getTime();
+		var obj = document.getElementById('OrderCode'); 
+		if( obj ) obj.src = '__GROUP__/public/orderCode/'+timenow;
+	}
+</script>
+<div class="order">
+    <ul class="wxlist">
+        <li>
+            <div class="WantOrder">
+                <h1><notempty name="f1"><span class="f1">{$Think.lang.Price}：￥{$f1}</span></notempty>{$Think.lang.WantOrder}</h1>
+            </div>
+            <form method="post" id="frmOrder" action="{:OrderAddAction()}">
+                <table border="0px" cellpadding="0px" cellspacing="3px" class="order_table">
+                 <ordermodellist id="f">
+                    <tr>
+                        <td class="t1">
+                        <eq name="f.IsRequire" value="1"><span class="required">{$f.DisplayName}*</span><else/>{$f.DisplayName}</eq>
+                        </td>
+                        <td class="t2">
+                        <switch name="f.DisplayType">
+                            <case value="textarea"><textarea id="{$f.FieldName}"   name="{$f.FieldName}">{$f.DisplayValue}</textarea></case>
+                            <case value="radio">
+                                <volist name="f.Item" id="it">
+                                        <input id="{$f.FieldName}"  class="form_radio"  name="{$f.FieldName}" type="radio"  value="{$it.Value}"  {$it.Selected}  />{$it.Text}&nbsp;&nbsp;
+                                </volist>
+                            </case>
+                            <case value="checkbox">
+                                <volist name="f.Item" id="it">
+                                        <input id="{$f.FieldName}"   class="form_checkbox"   name="{$f.FieldName}[]" value="{$it.Value}" type="checkbox" {$it.Selected} />{$it.Text}&nbsp;&nbsp;
+                                </volist>
+                            </case>
+                            <case value="select">
+                                <select  id="{$f.FieldName}"  name="{$f.FieldName}" >
+                                    <volist name="f.Item" id="it">
+                                            <option  value="{$it.Value}"  {$it.Selected} />{$it.Text}</option>
+                                    </volist>
+                                 </select>
+                            </case>
+                            <case value="label">{$f.DisplayValue}</case>
+                            <case value="password"><input id="{$f.FieldName}" name="{$f.FieldName}" type="password"   value="{$f.DisplayValue}" /></case>
+                            <default /><input id="{$f.FieldName}" name="{$f.FieldName}" type="text"  maxlength="100"   value="{$f.DisplayValue}" />
+                         </switch>
+                         </td>
+                     </tr>
+                </ordermodellist>
+            
+                <eq name="OrderVerifyCode" value="1">
+                <tr>
+                    <td class="t1"><span class="required">{$Think.lang.Verifycode}*</span></td>
+                    <td class="t2">
+                    <input id="verifycode"  name="verifycode" type="text" maxlength="4"  class="form_text_verifycode" />&nbsp;
+                    <img  src='__GROUP__/public/orderCode/'  onclick='ChangeOrderCode()'  class="code_image" id='OrderCode'  align='absMiddle' />
+                    </td>
+                </tr>
+                </eq>
+                <tr><td colspan="2"><input  class="ui-btn-submit"  type="submit" name="submit" value="{$Think.lang.SubmitOrder}"  /></td></tr>
+            </table>
+        </form>
+    </li>
+    </ul>
+</div>
+<!--在线订购 结束-->
+</neq>

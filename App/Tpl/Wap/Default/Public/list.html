@@ -1,0 +1,336 @@
+<!-- 30文章模型  31图片模型  32单页模型  33	链接模型  34视频模型   35下载模型  36产品模型-->
+<!--频道样式微信样式  0默认, 1图文,  2文字,  3橱窗,   4相册-->
+<if condition="$ChannelModelID eq 30">
+	<!-- 文章模型-->
+    <switch name="ChannelStyle">
+         <case value="0" >
+        	 <!-- 默认样式列表 开始-->
+             <ul class="thumblist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li>
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <notempty name="n.InfoPicture">
+                              	   <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                              </notempty>
+                              <div class="InfoSContent"><notempty name="n.InfoSContent">{$n.InfoSContent}<else/>{$n.InfoContent|strip_tags|Left=50}</notempty></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 默认样式列表 结束-->
+        </case>
+        <case value="2" >
+        <!-- 文本样式 列表开始-->
+          <ul class="textlist">
+          	 <li class="first"><div class="ChannelName">{$ChannelName}</div></li>
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" ><li>{$n.InfoTitle}<span class="arrow"></span></li>	</a>
+            </infolist>
+            <li class="last"></li>
+          </ul>
+          <div class="page">{$Page}</div>
+        <!-- 文本样式 列表开始-->
+        </case>
+        <case value="3" >
+        <!-- 橱窗样式 列表开始-->
+          <ul class="gridlist">
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" >
+                 	<li>
+                        <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                        <div class="InfoTitle">{$n.InfoTitle}</div>
+                    </li>		
+                 </a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        <!-- 橱窗样式 列表开始-->
+        </case>
+        <case value="4"><include file="Public:album" /></case>
+        <default />
+            <!-- 图文样式 列表开始-->
+            <ul class="wxlist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li style="width:auto">
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <div class="InfoTime" >{$n.InfoTime}</div>
+                              <notempty name="n.InfoPicture"><div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div></notempty>
+                              <notempty name="n.InfoSContent">
+                                    <div class="InfoSContent">{$n.InfoSContent}</div>
+                              <else/>
+                                    <div class="InfoSContent">{$n.InfoContent|strip_tags|Left=50}</div>
+                              </notempty>
+                              <div class="ShowInfo">{$Think.lang.ClickToReadAll}>></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 图文样式 列表结束-->
+    </switch>
+<elseif condition="$ChannelModelID eq 31" />
+	<!-- 图片模型-->
+    <switch name="ChannelStyle">
+         <case value="2" >
+        	 <!-- 默认样式列表 开始-->
+             <ul class="thumblist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li>
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <notempty name="n.InfoPicture">
+                              	   <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                              </notempty>
+                              <div class="InfoSContent"><notempty name="n.InfoSContent">{$n.InfoSContent}<else/>{$n.InfoContent|strip_tags|Left=50}</notempty></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 默认样式列表 结束-->
+        </case>
+        <case value="3" >
+        <!-- 橱窗样式 列表开始-->
+          <ul class="gridlist">
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" >
+                 	<li>
+                        <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                        <div class="InfoTitle">{$n.InfoTitle}</div>
+                    </li>		
+                 </a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        <!-- 橱窗样式 列表开始-->
+        </case>
+        <case value="4"><include file="Public:album" /></case>
+        <default />
+            <!-- 图文样式 列表开始-->
+            <ul class="wxlist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li style="width:auto">
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <div class="InfoTime" >{$n.InfoTime}</div>
+                              <notempty name="n.InfoPicture"><div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div></notempty>
+                              <notempty name="n.InfoSContent">
+                                    <div class="InfoSContent">{$n.InfoSContent}</div>
+                              <else/>
+                                    <div class="InfoSContent">{$n.InfoContent|strip_tags|Left=50}</div>
+                              </notempty>
+                              <div class="ShowInfo">{$Think.lang.ClickToReadAll}>></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 图文样式 列表结束-->
+    </switch>
+<elseif condition="$ChannelModelID eq 34" />
+	<!-- 视频模型-->
+    <switch name="ChannelStyle">
+         <case value="1" >
+        	 <!-- 图文样式 列表开始-->
+             <ul class="thumblist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li>
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <notempty name="n.InfoPicture">
+                              	   <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                              </notempty>
+                              <div class="InfoSContent">{$n.InfoContent|strip_tags|Left=50}</div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 图文样式 列表结束-->
+        </case>
+        <case value="2" >
+        <!-- 文本样式 列表开始-->
+          <ul class="textlist">
+             <li class="first"><div class="ChannelName">{$ChannelName}</div></li>
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" ><li>{$n.InfoTitle}</li>	</a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        <!-- 文本样式 列表开始-->
+        </case>
+        <case value="3" >
+        <!-- 橱窗样式 列表开始-->
+          <ul class="gridlist">
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" >
+                 	<li>
+                        <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                        <div class="InfoTitle">{$n.InfoTitle}</div>
+                    </li>		
+                 </a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        <!-- 橱窗样式 列表开始-->
+        </case>
+        <default />
+            <!-- 图文样式 列表开始-->
+            <ul class="wxlist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li style="width:auto">
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <div class="InfoTime" >{$n.InfoTime}</div>
+                              <notempty name="n.InfoPicture"><div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div></notempty>
+                              <div class="InfoSContent">{$n.InfoContent|strip_tags|Left=50}</div>
+                              <div class="ShowInfo">{$Think.lang.ClickToViewDetail}>></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 图文样式 列表结束-->
+    </switch>
+<elseif condition="$ChannelModelID eq 35" />
+	<!-- 下载模型-->
+    <switch name="ChannelStyle">
+         <case value="1" >
+        	 <!-- 默认样式列表 开始-->
+             <ul class="thumblist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li>
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                               <notempty name="n.InfoPicture">
+                              	   <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                              </notempty>
+                              <div class="InfoSContent"><notempty name="n.InfoSContent">{$n.InfoSContent}<else/>{$n.InfoContent|strip_tags|Left=50}</notempty></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 默认样式列表 结束-->
+        </case>
+        <case value="2" >
+        <!-- 文本样式 列表开始-->
+          <ul class="textlist">
+             <li class="first"><div class="ChannelName">{$ChannelName}</div></li>
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" ><li>{$n.InfoTitle}</li>	</a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        <!-- 文本样式 列表开始-->
+        </case>
+        <case value="3" >
+        <!-- 橱窗样式 列表开始-->
+          <ul class="gridlist">
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" >
+                 	<li>
+                        <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                        <div class="InfoTitle">{$n.InfoTitle}</div>
+                    </li>		
+                 </a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        <!-- 橱窗样式 列表开始-->
+        </case>
+        <default />
+            <!-- 图文样式 列表开始-->
+            <ul class="wxlist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li style="width:auto">
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <div class="InfoTime" >{$n.InfoTime}</div>
+                              <notempty name="n.InfoPicture"><div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div></notempty>
+                              <notempty name="n.InfoSContent">
+                                    <div class="InfoSContent">{$n.InfoSContent}</div>
+                              <else/>
+                                    <div class="InfoSContent">{$n.InfoContent|strip_tags|Left=50}</div>
+                              </notempty>
+                              <div class="ShowInfo">{$Think.lang.ClickToViewDetail}>></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+            <!-- 图文样式 列表结束-->
+    </switch>
+<elseif condition="$ChannelModelID eq 36" />
+	<!-- 产品模型-->
+    <switch name="ChannelStyle">
+         <case value="1" >
+             <ul class="thumblist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li>
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <notempty name="n.InfoPicture">
+                              	   <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                              </notempty>
+                              <div class="InfoSContent">
+                              <notempty name="n.InfoSContent">{$n.InfoSContent}<else/>{$n.InfoContent|strip_tags|Left=50}</notempty>
+                              <notempty name="n.f1"><br/><span class="price">{$Think.lang.Price}：￥{$n.f1}</span></notempty>
+                              </div>
+                          </li>
+                    </a>
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+        </case>
+        <case value="2" >
+          <ul class="textlist">
+             <li class="first"><div class="ChannelName">{$ChannelName}</div></li>
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" >
+                 	<li><notempty name="n.f1"><span class="price">￥{$n.f1}</span></notempty>{$n.InfoTitle}</li>
+                 </a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        </case>
+        <case value="3" >
+          <ul class="gridlist">
+             <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                 <a href="{$n.InfoUrl}" >
+                 	<li>
+                        <div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div>
+                        <div class="InfoTitle"><notempty name="n.f1"><span class="price">￥{$n.f1}</span></notempty>{$n.InfoTitle}</div>
+                    </li>		
+                 </a>
+            </infolist>
+          </ul>
+          <div class="page">{$Page}</div>
+        </case>
+        <case value="4"><include file="Public:album" /></case>
+        <default />
+            <ul class="wxlist">
+                 <infolist id="n" channelid='$ChannelID' timeformat="Y-m-d" NowPage="$NowPage" empty="$Think.lang.NoInformation">
+                     <a href="{$n.InfoUrl}" >
+                          <li style="width:auto">
+                              <div class="InfoTitle">{$n.InfoTitle}</div>
+                              <notempty name="n.InfoPicture"><div class="InfoPicture"><img src="{$n.InfoPicture}"  /></div></notempty>
+                              <notempty name="n.InfoSContent">
+                                    <div class="InfoSContent">{$n.InfoSContent}</div>
+                              <else/>
+                                    <div class="InfoSContent">{$n.InfoContent|strip_tags|Left=50}</div>
+                              </notempty>
+                              <div class="ShowInfo"><notempty name="n.f1"><span class="price">{$Think.lang.Price}：￥{$n.f1}</span></notempty>{$Think.lang.ClickToViewDetail}>></div>
+                          </li>
+                    </a>		
+                </infolist>
+            </ul>
+            <div class="page">{$Page}</div>
+    </switch>
+<else/>
+</if>
+<div class="clear"></div>
+<include file="Public:search" />

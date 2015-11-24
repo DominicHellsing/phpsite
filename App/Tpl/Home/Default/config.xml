@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config version="1.0">
+	<groups>
+		<group id="1" name="基本设置" order="0"/>
+	</groups>
+	<global>
+		<var title="是否显示页面顶部条" name="TShowTop" value="1" type="radio" parameter="1|是|1@@@0|否" help="" groupid="1" order="1"/>
+	</global>
+	<cn>
+		<var title="幻灯片分组" name="T1" value="1" type="bannergroupselect" help="" groupid="1" order="9"/>
+		<var title="幻灯片高度" name="TBannerHeight" value="460" width="100px" type="text" help="单位：像素；" groupid="1" order="11"/>
+		<var title="幻灯片下面第一个文字滚动板块" name="T2" value="33" type="channelselect" help="向上滚动显示文章；" groupid="1" order="12"/>
+		<var title="左侧第一个板块" name="T3" value="15" type="channelselect" help="必须为单页频道，显示单页频道详细内容；" groupid="1" order="14"/>
+		<var title="左侧第二个板块" name="T4" value="23" type="channelselect" help="" groupid="1" order="16"/>
+		<var title="右侧第一个幻灯片板块" name="T5" value="32" type="channelselect" help="以幻灯片的形式显示信息缩略图；" groupid="1" order="18"/>
+		<var title="右侧第三个板块" name="T6" value="20" type="channelselect" help="" groupid="1" order="20"/>		
+		<var1 title="新闻子频道1" name="T7" value="21" type="channelselect" help="" groupid="1" order="22"/>
+		<var1 title="新闻子频道2" name="T8" value="22" type="channelselect" help="" groupid="1" order="24"/>
+		<var1 title="下载频道" name="T9" value="30" type="channelselect" help="" groupid="1" order="26"/>
+		<var1 title="视频频道" name="T10" value="55" type="channelselect" help="" groupid="1" order="28"/>
+		<var1 title="在线留言" name="T11" value="9" type="channelselect" help="" groupid="1" order="30"/>
+		<var1 title="人才招聘" name="T12" value="8" type="channelselect" help="" groupid="1" order="32"/>
+		<var1 title="保留变量2" name="T13" value="" type="channelselect" help="" groupid="1" order="34"/>
+		<var1 title="保留变量3" name="T14" value="" type="channelselect" help="" groupid="1" order="36"/>
+		<var1 title="保留变量4" name="T15" value="" type="channelselect" help="" groupid="1" order="38"/>
+	</cn>
+	<en>
+		<var title="幻灯片分组" name="T1" value="2" type="bannergroupselect" help="" groupid="1" order="9"/>
+		<var title="幻灯片高度" name="TBannerHeight" value="460" width="100px" type="text" help="单位：像素；" groupid="1" order="11"/>
+		<var title="幻灯片下面第一个文字滚动板块" name="T2" value="34" type="channelselect" help="向上滚动显示文章；" groupid="1" order="12"/>
+		<var title="左侧第一个板块" name="T3" value="35" type="channelselect" help="必须为单页频道，显示单页频道详细内容；" groupid="1" order="14"/>
+		<var title="左侧第二个板块" name="T4" value="43" type="channelselect" help="" groupid="1" order="16"/>
+		<var title="右侧第一个幻灯片板块" name="T5" value="50" type="channelselect" help="以幻灯片的形式显示信息缩略图；" groupid="1" order="18"/>
+		<var title="右侧第三个板块" name="T6" value="40" type="channelselect" help="" groupid="1" order="20"/>		
+		<var1 title="新闻子频道1" name="T7" value="41" type="channelselect" help="" groupid="1" order="22"/>
+		<var1 title="新闻子频道2" name="T8" value="42" type="channelselect" help="" groupid="1" order="24"/>
+		<var1 title="下载频道" name="T9" value="51" type="channelselect" help="" groupid="1" order="26"/>
+		<var1 title="视频频道" name="T10" value="56" type="channelselect" help="" groupid="1" order="28"/>
+		<var1 title="在线留言" name="T11" value="15" type="channelselect" help="" groupid="1" order="30"/>
+		<var1 title="人才招聘" name="T12" value="4" type="channelselect" help="" groupid="1" order="32"/>
+		<var1 title="保留变量2" name="T13" value="" type="channelselect" help="" groupid="1" order="34"/>
+		<var1 title="保留变量3" name="T14" value="" type="channelselect" help="" groupid="1" order="36"/>
+		<var1 title="保留变量4" name="T15" value="" type="channelselect" help="" groupid="1" order="38"/>
+	</en>
+</config>

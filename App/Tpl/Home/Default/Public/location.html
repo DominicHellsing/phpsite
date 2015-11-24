@@ -1,0 +1,12 @@
+<notin name="ChannelID" value="1,2">
+	<!--当前位置 开始-->
+	<div  id="location_main">
+        <div id="location"><b>{$Think.lang.CurrentPosition}：</b>
+        <volist name="SitePath" id="p">
+        	<a href="{$p.PathUrl}" target="_self">{$p.PathName}</a>
+            <eq name="p.HasNext" value="1">&nbsp;>>&nbsp;</eq>
+        </volist>
+        </div>
+    </div>
+    <!--当前位置 结束-->
+</notin>

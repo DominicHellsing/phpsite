@@ -1,0 +1,376 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link type="text/css" href="{$WebPublic}jquery/css/start/jquery-ui-1.8.22.custom.css" rel="stylesheet" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-ui-1.8.22.custom.min.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+            		    <dd class="link">会员管理</dd><!--导航-->
+            		    <dd class="link">会员信息</dd><!--导航-->
+                        <dd class="link">会员管理</dd>
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}del/MemberID/"+id+"/p/{$NowPage}";
+		location.href = url;
+		return true;
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+		//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='MemberID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchDel");
+		$('#frm').submit();
+		return true;
+	}
+	
+		//批量审核
+	function BatchCheck(bCheck){
+		//先必须选中记录==============================================
+		var arrChk = $("input[name='MemberID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		//=========================================================
+		if( bCheck == 1 ){
+			if( !confirm("确定审核通过吗?") ) return false;
+			$('#frm').attr("action", "{$Url}batchCheck/Check/1");
+		}else{
+			if( !confirm("确定取消审核吗?") ) return false;
+			$('#frm').attr("action", "{$Url}batchCheck/Check/0");
+		}
+		
+		$('#frm').submit();
+		return true;
+	}
+	
+	function BatchLock(bLock){
+		//先必须选中记录==============================================
+		var arrChk = $("input[name='MemberID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		//=========================================================
+		if( bLock == 1 ){
+			if( !confirm("确定锁定吗?") ) return false;
+			$('#frm').attr("action", "{$Url}batchLock/Lock/1");
+		}else{
+			if( !confirm("确定取消锁定吗?") ) return false;
+			$('#frm').attr("action", "{$Url}batchLock/Lock/0");
+		}
+		
+		$('#frm').submit();
+		return true;
+	}
+	
+	function SetAdmin(id){
+		$('#dlgMemberID').val(id);
+		$('#dlgSetAdmin').dialog('open');
+		return false;
+	}
+	
+		//查询
+	function Search(){
+		$('#frm').attr("action", "__URL__/index");
+		$('#frm').submit();
+		return true;
+	}	
+</script>
+<script  type="text/javascript">
+$(function(){
+	// Dialog
+	$('#dlgPwd').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 310,
+		height: 165,
+		open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+		buttons: {
+			'确定': function() { //批量修改密码
+				if( $('#pwd1').val() == "" ){
+					WarnBox("密码不能为空！");
+					$('#pwd1').focus();
+					return;
+				}
+				if( $('#pwd2').val() == "" ){
+					WarnBox("密码不能为空！");
+					$('#pwd2').focus();
+					return;
+				}
+				
+				if( $('#pwd1').val() != $('#pwd2').val() ){
+					WarnBox("两次输入的密码不同，请重新输入！");
+					return;
+				}
+				$('#frm').attr("action", "{$Url}batchModifyPwd");
+				$('#frm').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+	
+	$('#btnPwd').click(function(){
+		var arrChk = $("input[name='MemberID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请先选中记录!");
+			return;
+		}
+		
+		$('#dlgPwd').dialog('open');
+		return false;
+	});
+	
+	$('#dlgSetAdmin').dialog({
+		modal: true,
+		autoOpen: false,
+		width: 340,
+		height: 240,
+		open: function () { $("body > div[role=dialog]").appendTo("form#frm");},
+		buttons: {
+			'确定': function() { //批量修改密码
+				if( $('#dlgAdminName').val() == "" ){
+					WarnBox("管理员名称不能为空！");
+					$('#dlgAdminName').focus();
+					return;
+				}
+				
+				if( $('#pwd3').val() == "" ){
+					WarnBox("密码不能为空！");
+					$('#pwd3').focus();
+					return;
+				}
+				if( $('#pwd4').val() == "" ){
+					WarnBox("密码不能为空！");
+					$('#pwd4').focus();
+					return;
+				}
+				
+				if( $('#pwd3').val() != $('#pwd4').val() ){
+					WarnBox("两次输入的密码不同，请重新输入！");
+					return;
+				}
+				$('#frm').attr("action", "{$Url}SetAdmin");
+				$('#frm').submit();
+			},
+			'关闭': function() { $(this).dialog("close");}
+		}
+	});
+})
+</script>
+<div id="dlgPwd" title="批量修改会员密码" style="display:none">
+<table>
+<tr>
+   <th width="80px" nowrap="nowrap" align="right"><span style="font-weight:bold;color:blue">密码</span></th>
+   <th align="left">
+   <input type="password" id = "pwd1" name="pwd1"  maxlength="20" class="textinput" style="width:175px" />
+   </th>
+</tr>
+<tr>
+    <td nowrap="nowrap" align="right"><span style="font-weight:bold;color:blue">重复密码</span></td>
+    <td align="left">
+    <input type="password"  id = "pwd2"  maxlength="20" name="pwd2" class="textinput" style="width:175px" />
+    </td>
+</tr>
+</table>
+</div>
+
+<div id="dlgSetAdmin" title="设为管理员" style="display:none">
+<table cellpadding="5px" cellspacing="5px" border="0">
+<tr>
+    <td nowrap="nowrap" align="right">
+    <span style="font-weight:bold;color:blue">管理员名称</span>
+    </td>
+    <td align="left">
+    <input type="hidden" id = "dlgMemberID"  name="dlgMemberID" />
+    <input type="text"  id = "dlgAdminName"  maxlength="20" name="dlgAdminName" class="textinput" style="width:175px" />
+    </td>
+</tr>
+<tr>
+    <td nowrap="nowrap" align="right">
+    <span style="font-weight:bold;color:blue">管理组</span>
+    </td>
+    <td align="left"><AdminGroupSelect id="dlgAdminGroupID" name="dlgAdminGroupID" /></td>
+</tr>
+<tr>
+   <th width="80px" nowrap="nowrap" align="right"><span style="font-weight:bold;color:blue">密码</span></th>
+   <th align="left">
+   <input type="password" id = "pwd3" name="pwd3"  maxlength="20" class="textinput" style="width:175px" />
+   </th>
+</tr>
+<tr>
+    <td nowrap="nowrap" align="right">
+    <span style="font-weight:bold;color:blue">重复密码</span>
+    </td>
+    <td align="left">
+    <input type="password"  id = "pwd4"  maxlength="20" name="pwd4" class="textinput" style="width:175px" />
+    </td>
+</tr>
+
+</table>
+</div>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add"  title="添加会员信息" target="_self">添加会员信息</a></li>
+<li class="toolbar"><a id="btnSave" href="{$Url}Export"  title="导出所有会员为CSV" target="_self">导出所有会员</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="btnCheck" onclick="BatchCheck(1)" title="批量通过审核">审核</a></li>
+<li class="toolbar"><a id="btnUnCheck" onclick="BatchCheck(0)" title="批量取消审核">取消审核</a></li>
+<li class="toolbar"><a id="btnLock" onclick="BatchLock(1)" title="批量锁定">锁定</a></li>
+<li class="toolbar"><a id="btnUnlock" onclick="BatchLock(0)" title="批量取消锁定">取消锁定</a></li>
+<li class="toolbar"><a id="btnPwd" title="批量修改密码">修改密码</a></li>
+<li>
+&nbsp;&nbsp;&nbsp;&nbsp;<label>姓名/手机/Email</label><input type="text" class='textinput' name="Keywords" style="width:80px" value="{$Keywords}" id="Keywords" placeholder=""/>&nbsp;
+<select name="MemberGroupID"  >
+<option value="-1"  <eq name="MemberGroupID" value="-1">selected="selected"</eq>>
+全部分组
+</option>
+<volist id="mg" name="MemberGroup">
+<option value="{$mg.MemberGroupID}"  <eq name="MemberGroupID" value="$mg.MemberGroupID">selected="selected"</eq> >
+{$mg.MemberGroupName}
+</option>
+</volist>
+</select>&nbsp;
+<select name="IsCheck">
+<option value="-1" <eq name="IsCheck" value="-1">selected="selected"</eq> >全部</option>
+<option value="1"  <eq name="IsCheck" value="1">selected="selected"</eq>>已审核</option>
+<option value="0" <eq name="IsCheck" value="0">selected="selected"</eq>>未审核</option>
+</select>&nbsp;
+<input id="btnSeek" type="submit" value="查询" onclick="Search()">
+</li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="45px" >会员ID</th>
+                        <th width="100px" >会员名称</th>
+                        <th width="80px" >会员分组</th>
+                        <th width="35px" >性别</th>
+                        
+                        <th width="85px" >真实姓名</th>
+                        <th width="120px">注册时间</th>
+                        
+                        <th width="120px" >属性</th>
+                        <th style="text-align:left;padding-left:20px">操作</th>
+                    </tr>  
+    <volist name="Member" id="m">
+    <tr id="tr{$m.MemberID}">
+    	<td><input type="checkbox" name="MemberID[]" value="{$m.MemberID}" /></td>
+    	<td>{$m.MemberID}</td>
+        <td>{$m.MemberName}<present name="m.AdminID"><b style="color:red;">[管理员]</b></present></td>
+        <td><b>{$m.MemberGroupName}</b></td>
+        <td><eq name="m.MemberGender" value="0">男<else/>女</eq></td>
+        
+        <td>{$m.MemberRealName}</td>
+        <td>{$m.RegisterTime|strtotime|yd_friend_date}</td>
+        
+        <td><eq name="m.IsLock" value="1"><B style="color:#F00">锁定&nbsp;</B></eq>
+        <eq name="m.IsSystem" value="1"><span style="color:#000">系统&nbsp;</span></eq>
+        <eq name="m.IsCheck" value="0">
+        <B style="color:#F00">未审核&nbsp;</B>
+        <else/>
+        <span style="color:#000">已审核&nbsp;</span>
+        </eq>
+        </td>
+        
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" id="btnEdit" name="btnEdit" href="{$Url}Modify/MemberID/{$m.MemberID}">修改</a>
+<neq name="m.IsSystem" value="1">
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$m.MemberID})" class="btnDel">删除</a>
+</neq>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" href="{$Url}Take/MemberID/{$m.MemberID}" id="btnTake" target="_blank">代管</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<notpresent name="m.AdminID">
+<a  style="float:left" id="btnAdmin" onclick="SetAdmin({$m.MemberID})" title="批量设为管理员">设为管理员</a>
+</notpresent>
+        </td>
+    </tr>
+    </volist>                                
+    </table>
+         <div class="th">
+			<div class="page">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

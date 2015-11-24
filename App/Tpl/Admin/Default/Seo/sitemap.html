@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>基本设置</title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">网站优化</dd>
+                <dd class="link">网站优化</dd>
+                <dd class="link">生成网站地图</dd>
+            </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+<script type="text/javascript">
+	function makeSiteMap(type){
+		url = "{$Url}makeSiteMap/type/"+type;
+		msg = "<img src='{$WebPublic}Images/loading/9.gif' border='0' align='absmiddle'/>";
+		if(type!='all'){msg+=type;}
+		msg += "生成地图中，请稍后...";
+		
+		$("#"+type).html(msg);
+		$.get(url, {}, Complete, "json");
+		return true;
+	}
+	
+	function delSiteMap(){
+		url = "{$Url}delSiteMap";
+		msg = "<img src='{$WebPublic}Images/loading/9.gif' border='0' align='absmiddle'/>";
+		msg += "删除网站地图中，请稍后...";
+		$("#deltip").html(msg);
+		$.get(url, {}, DelComplete, "json");
+		return true;
+	}
+	
+		//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$("#deltip").html("一键删除所有网站地图成功！");
+		}else{ 
+			//删除失败
+			$("#deltip").html('');
+			ErrorBox(data.info);
+		}
+	}
+	
+	//回调函数
+	function Complete(data, textStatus){
+		if (data.status == 1){
+			if( data.data != 'all'){
+				msg = "&nbsp;生成地图成功，";
+				msg += "<a href='{$WebInstallDir}sitemap."+data.data+"' ";
+				msg += "target='_blank'>点击查看网站地图sitemap."+data.data+"</a>";
+			}else{
+				msg = "&nbsp;生成所有地图成功";
+			}
+			$("#"+data.data).html(msg);
+		}else{ 
+			//删除失败
+			$("#"+data.data).html('');
+			ErrorBox(data.info);
+		}
+	}
+</script>
+<div class="wrap">
+    <div class="container">
+       
+        <div id="main">
+            <div class="con box-green">
+                <form enctype="multipart/form-data" id="frmConfig" method="post" action="{$Action}">  
+                
+                <div class="box-header"  id="c2">
+                    <h4>说明</h4>
+                </div>
+                <div class="box-content"  style="text-align:left">
+                <span style="text-align:left">
+Sitemaps 服务旨在使用地图文件通知搜索引擎(爬虫)网站上哪些文件需要索引、这些文件的最后修订时间、更改频度、文件位置、相对优先索引权，这些信息将帮助搜索引擎建立索引范围和索引的行为习惯。<br/>
+通过Sitemaps，您可以获得：<br/>
+1、更大的抓取范围，更新的搜索结果 – 帮助网友找到更多您的网页。<br/>
+2、更为智能的抓取 – 因为我们可以得知您网页的最新修改时间或网页的更改频率。<br/>
+不同格式的地图适合不同的搜索引擎！<br/>
+如何提交sitemap.xml? <br/>
+    向Google提交：<b><a href="http://www.google.com/webmasters" target="_blank">http://www.google.com/webmasters</b></a>&nbsp;&nbsp;需要申请google帐号登录后操作<br/>
+    向百度baidu提交：<b><a href="http://zhanzhang.baidu.com/sitemap/index" target="_blank">http://zhanzhang.baidu.com/sitemap/index</a></b><br/>
+</span>
+                </div>
+
+
+<div class="box-header"  id="c2">
+    <h4>删除网站地图</h4>
+</div>
+<div class="box-content">
+<table class="table-font" >
+<tr  style="height:30px">
+    <th>一键删除所有网站地图</th>
+    <td><a style="float:left" onclick="delSiteMap()" id="btnCache">删除网站地图</a>&nbsp;
+    <span id="deltip"></span>
+    </td>
+</tr>     
+</table>
+</div>  
+                  
+<div class="box-header"  id="c2">
+    <h4>生成网站地图</h4>
+</div>
+<div class="box-content">
+<table class="table-font" >
+<tr  style="height:30px">
+    <th>生成xml网站地图</th>
+    <td><a style="float:left" onclick="makeSiteMap('xml')" id="btnPick" >生成xml地图</a>&nbsp;
+    <span id="xml">
+    <notempty name="XmlSiteMapTime">
+    <a href="{$WebInstallDir}sitemap.xml" target="_blank">点击查看xml网站地图sitemap.xml</a>
+    &nbsp;&nbsp;生成时间：<b style="font-weight:bold; color:red">{$XmlSiteMapTime|yd_friend_date}</b>
+    <else/><b style="font-weight:bold; color:red">没有生成xml地图文件</b>
+    </notempty>
+    </span>
+    </td>
+</tr>
+<tr style="height:30px">
+    <th>生成txt网站地图</th>
+    <td><a style="float:left" onclick="makeSiteMap('txt')" id="btnPick" >生成txt地图</a>&nbsp;
+    <span id="txt">
+    <notempty name="TxtSiteMapTime">
+    <a href="{$WebInstallDir}sitemap.txt" target="_blank">点击查看txt网站地图sitemap.txt</a>
+    &nbsp;&nbsp;生成时间：<b style="font-weight:bold; color:red">{$TxtSiteMapTime|yd_friend_date}</b>
+    <else/><b style="font-weight:bold; color:red">没有生成txt地图文件</b>
+    </notempty>
+    </span>
+    </td>
+</tr>
+<tr style="height:30px">
+    <th>生成html网站地图</th>
+    <td><a style="float:left" onclick="makeSiteMap('html')" id="btnPick" >生成html地图</a>&nbsp;
+    <span id="html">
+    <notempty name="HtmlSiteMapTime">
+    <a href="{$WebInstallDir}sitemap.html" target="_blank">点击查看html网站地图sitemap.html</a>
+    &nbsp;&nbsp;生成时间：<b style="font-weight:bold; color:red">{$HtmlSiteMapTime|yd_friend_date}</b>
+    <else/><b style="font-weight:bold; color:red">没有生成html地图文件</b>
+    </notempty>
+    </span>
+    </td>
+</tr>
+<tr  style="height:30px">
+    <th>一键生成所有网站地图</th>
+    <td><a style="float:left" onclick="makeSiteMap('all')" id="btnPick" >生成所有地图</a>&nbsp; 			    <span id="all">
+    <notempty name="LastSiteMapTime">
+    &nbsp;&nbsp;最后一次生成网站地图时间：<b style="color:red">{$LastSiteMapTime|yd_friend_date}</b>
+    ，到目前为止，
+    <gt name="NewCount" value="0">共有<b style="color:red;">{$NewCount}</b>条新信息发布，请重新生成网站地图！
+    <else/>暂无新信息发布，无需生成网站地图！
+    </gt>
+    </notempty>
+    </span>
+    </td>
+</tr>
+</table>
+                </div>
+                       
+                
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    </div>
+                </div>
+                
+              </form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

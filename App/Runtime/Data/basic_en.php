@@ -1,0 +1,2 @@
+<?php
+return array ( 'WEB_URL' => 'http://www.xx.com', 'WEB_STATUS' => '1', 'WEB_BAD_WORDS' => '他妈的=***', 'WEB_NAME' => ' web name', 'WEB_ICP' => 'ICP 123456789', 'WEB_CLOSE_REASON' => 'Sorry, the website is maintenance!', 'WEB_BAD_IP' => '', 'WEB_LOGO' => '/Upload/public/logo.png', 'EMAIL_SENDER' => '', 'EMAIL_ACCOUNT' => '', 'EMAIL_SMTP' => '', 'EMAIL_PASSWORD' => '', 'WEB_ICON' => '', ); ?>

@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$Title}-{$WebName}</title>
+<include file="Public:meta" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<script type=text/javascript>
+	$(document).ready(function(){
+		$("#MemberCode").click( ChangeVerify );
+		
+		function ChangeVerify(){
+			var timenow = new Date().getTime();
+		    $("#MemberCode").attr("src", "{$Url}memberCode/d/" + timenow);
+		};
+		
+		$('#frm').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==0){  //用户不存在
+				alert(data.info);
+            }else if(data.status==1){  //回答问题
+				$("#Step").val(2);
+				$("#MemberName1").val(data.data.MemberName);
+				$("#MemberQuestion").val(data.data.MemberQuestion);
+				$("#Step1").hide();
+				$("#Step2").show();
+				ChangeVerify();
+			}else if(data.status==2){  //密码已重置
+				alert(data.info);
+			}else{
+				alert(data.info);
+				$('#frm').resetForm();
+			}
+		};
+		
+		 $('#frm').submit(function(){  // 提交表单
+	     	return false; //返回false  
+	     });
+	});
+</script>
+</head>
+<body class="body_article">
+	<include file="Public:header" />
+    <!--主体部分 开始-->
+    <div class="article">
+    	<!--左侧区域 开始-->
+        <div id="left">
+            <include file="Public:search" />
+            <include file="Public:contact" />
+        </div>   
+        <!--左侧区域 结束-->
+        
+        <!--右侧区域 开始-->       
+        <div id="right">
+        	<div class="right_title">
+                <h2>{$Think.lang.ForgetPassword}</h2>
+            </div>
+            <div class="right_body">
+                <form enctype="multipart/form-data" id="frm" method="post" action="{:MemberForgetUrl()}" >   
+                	<input id="Step" name="Step" type="hidden" value="1"/>        
+                    <div id="Step1">    
+                    	<table  class="forget_table1">            
+                            <tr>
+                                <th>{$Think.lang.UserName}<span class="required">*</span></th>
+                                <td><input name="MemberName" type="text" class="form_text" /></td>
+                            </tr>
+                            <tr>
+                                <td  colspan="2"  class="operation">
+                                	<input class="form_button" type="submit" name="nextstep" value="{$Think.lang.NextStep}" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="Step2" class="hide">
+                    	<table  class="forget_table2" > 
+                            <tr>
+                                <th>{$Think.lang.UserName}</th>
+                                <td><input id="MemberName1" name="MemberName1" type="text" class="form_text" readonly="readonly"/></td>
+                            </tr>
+                            <tr>
+                                <th width="120" align="center"><b>{$Think.lang.PasswordQuestion}</b></th>
+                                <td><input id="MemberQuestion" name="MemberQuestion" readonly="readonly"  type="text" class="form_text" /></td>
+                            </tr>
+                            <tr>
+                            <th>{$Think.lang.PasswordAnswer}</th>
+                            <td><input class="form_text" name="MemberAnswer"  type="text" /></td>
+                            </tr>
+                            <tr>
+                                <th>{$Think.lang.Verifycode}</th>
+                                <td>
+                                	<input name="MemberCode" type="text" class="form_text_verifycode" maxlength="4" />
+                                	&nbsp;<img class="code_image" id="MemberCode" title="{$Think.lang.ChangeVerifycode}" src="{$Url}/verify/" align="absMiddle" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="operation">
+                                    <input class="form_button" type="submit" name="resetpwd" value="{$Think.lang.ResetPwd}" />&nbsp;
+                                    <a href="{:MemberRegUrl()}" target="_blank">{$Think.lang.WantReg}</a>&nbsp;
+                                    <a href="{:MemberLoginUrl()}" target="_blank">{$Think.lang.WantLogin}</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="right_bottom"></div>
+        </div>
+        <!--右侧区域 结束-->
+        <div class="clear"></div>
+    </div>
+    <!--主体部分 结束-->
+    <include file="Public:footer" />
+</body>
+</html>

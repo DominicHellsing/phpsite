@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<link href="{$WebPublic}jquery/jquery.powerFloat.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.powerFloat.min.js"></script>
+<style>
+#InfoHit{
+	color:#00F;
+	font-weight:bold;
+}
+label{
+	color:#00F; 
+	line-height:21px; 
+	font-weight:bold; 
+	height:21px; 
+	vertical-align:middle;
+	font-size:12px;
+}
+.s-1, .s1{color:red}
+</style>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+            <dl>
+                <dt>当前位置：</dt>
+                <dd class="link">微信接口</dd><!--导航-->
+                <dd class="link">微信应用</dd><!--导航-->
+                <dd class="link">微会员卡</dd>
+                <dd class="link">礼品券管理</dd>
+            </dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript">
+	//排序
+	function BatchSort(){
+		if( !confirm("确定对记录排序吗?") ) return false;
+		$('#frm').attr("action", "__URL__/batchSortGift");
+		$('#frm').submit();
+		return true;
+	}	
+	
+	//查询
+	function Search(){
+		$('#frm').attr("action", "__URL__/gift");
+		$('#frm').submit();
+		return true;
+	}	
+	
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Edit(id){
+		url = "{$Url}modifyGift/GiftID/"+id;
+		location.href = url;
+	}
+	
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}delGift/GiftID/"+id+"/NowPage/{$NowPage}/Keywords/{$Keywords}";
+		location.href = url;
+		return true;
+	}
+	
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='GiftID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "__URL__/DelGift");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+	//查看礼品兑换记录
+	function GiftMember(id){
+		var url = "{$Url}giftMember/GiftID/"+id;
+		location.href = url;
+	}
+</script>
+<script type="text/javascript" charset="utf-8">
+	//提示信息
+	$(document).ready(function(){
+		$(".TagTip").powerFloat({
+			targetMode: "ajax",
+			targetAttr: "alt"
+		});
+		
+		//选中操作
+		$("#Keywords").focus();
+	});
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data"  method="post" id="frm">
+                <input type="hidden" name="Keywords" id="Keywords" value="{$Keywords}" />
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+<div class="table">
+<div style="padding:0px; height:28px;">
+<li class="toolbar"><a id="btnBack" href="{$Url}card" title="返回">返回</a></li>   
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}AddGift"  title="添加礼品券" target="_self">添加礼品券</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+<li>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>礼品券名称</label><input type="text" class='textinput' name="Keywords" style="width:150px" value="{$Keywords}" id="Keywords"/>&nbsp;
+<input id="btnSeek" type="submit" value="查询" onclick="Search()">
+</li>
+</div>
+                   
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                        <th width="35px"  nowrap="nowrap">选中</th>
+                        <th width="40px" nowrap="nowrap">礼品ID</th>
+                        <th width="45px" nowrap="nowrap">排序</th>
+                        <th  width="150px">礼品名称</th>
+                        <th width="200px" >有效期</th>
+                        
+                        <th width="80px">被兑换次数</th>
+                        <th width="85px">兑换所需积分</th>
+                        <th>使用说明</th>
+                        <th width="80px" >属性</th>
+                        <th width="150px">操作</th>
+                    </tr>  
+    <notempty name="Gift">                
+    <volist name="Gift" id="g">
+    <tr>
+    	<td><input type="checkbox" name="GiftID[]" value="{$g.GiftID}" /></td>
+        <td>{$g.GiftID}</td>
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:45px" name="GiftOrder[]" value="{$g.GiftOrder}" />
+        <input type="hidden" class='textinput' style="width:50px" name="GiftOrderID[]" value="{$g.GiftID}" /></td>
+        <td><b class="s{$g.Flag}">{$g.GiftName}</b></td>
+        <td><b>开始时间：</b>{$g.StartTime}<br />
+        <b>结束时间：</b>{$g.EndTime}
+        </td>
+        
+        <td><b style="color:#F30">{$g.GiftUsed}</b>
+        <br /><a onclick="GiftMember({$g.GiftID})">查看兑换会员<a>
+        </td>
+        <td style="color:#0000FF">{$g.Score}</td>
+        <td style="text-align:left">{$g.Remark}</td>
+        <td>
+        <b style="color:red">
+            <switch name="g.Flag">
+                <case value="-1">未开始</case>
+                <case value="0"></case>
+                <case value="1">已过期</case>
+            </switch>
+        </b>&nbsp;&nbsp;
+            <eq name="g.IsEnable" value="1">
+                <span style="color:#000">启用</span><else/><span style="color:#F00">禁用</span>
+            </eq>
+        </td>
+        <td  style="text-align:left">
+<a style="float:left" onclick="Edit({$g.GiftID})" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$g.GiftID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="8" id="NoData">暂无信息！</td></tr>
+    </notempty>                                
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>

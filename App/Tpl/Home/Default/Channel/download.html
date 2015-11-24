@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>{$ChannelName}|{$Title}-{$WebName}</title>
+    <include file="Public:meta" />
+</head>
+<body class="body_download">
+	<include file="Public:header" />
+    <!--主体内容 开始-->
+    <div class="download">
+    		<!--左侧区域 开始-->
+			<div id="left">
+                <include file="Public:subchannel" />
+                <include file="Public:search" />
+                <include file="Public:contact" />
+			</div>
+            <!--左侧区域 结束-->
+            
+            <!--右侧区域 开始-->
+            <div id="right">
+                <eq name="HasChild" value="1">
+                    <NavigationList id="n" channelid='$ChannelID' prefix="&nbsp;&nbsp;" depth="1">
+                         <div class="right_title">
+                             <span class="more"><a href="{$n.ChannelUrl}" target="_blank">{$Think.lang.More}...</a></span>
+                            <h2>{$n.ChannelName}</h2>
+                        </div>
+                         <div class="right_body">
+                         	<eq name="n.ChannelModelID" value="32">
+                           		{$n.ChannelContent}
+                           <else/>
+                                <ul class="textlist">
+                                    <!--循环开始-->
+                                    <infolist id="f" channelid='$n.ChannelID'  top="7" timeformat="Y-m-d"   empty="$Think.lang.NoInformation">
+                                        <li>
+                                            <span class="float_right">
+                                            	<eq name="n.ChannelModelID" value="35">
+                                                	<a class="btn" href="{$f.InfoAttachment}" target="_self">{$Think.lang.Download}</a>
+                                                <else/>
+                                            		{$f.InfoTime}
+                                                </eq>
+                                            </span>
+                                            <a  href="{$f.InfoUrl}" target="_blank" title="{$f.InfoTitle}">{$f.InfoSTitle}</a>
+                                        </li>
+                                    </infolist>
+                                    <!--循环结束-->
+                                </ul>
+                            </eq>									
+                        </div>
+                         <div class="right_bottom"></div>
+                    </NavigationList>
+                <else/>			
+                    <div class="right_title">
+                        <h2>{$ChannelName}</h2>
+                    </div>
+                    <div class="right_body">
+                        <ul class="textlist">
+                            <!--循环开始-->
+                            <infolist id="f" channelid='$ChannelID' timeformat="Y-m-d"  NowPage="$NowPage"  empty="$Think.lang.NoInformation">
+                                <li>
+                                    <span class="float_right"><a class="btn" href="{$f.InfoAttachment}" target="_self">{$Think.lang.Download}</a></span>
+                                    <a  href="{$f.InfoUrl}" target="_blank" title="{$f.InfoTitle}">{$f.InfoSTitle}</a>
+                                </li>
+                            </infolist>
+                            <!--循环结束-->
+                        </ul>
+                        <div class="page">{$Page}</div>
+                    </div>
+                    <div class="right_bottom"></div>
+                </eq>
+        	</div>
+        	<!--右侧区域 结束-->
+			<div class="clear"></div>    
+	</div>
+    <!--主体内容 结束-->
+    <include file="Public:footer" />
+</body>
+</html>

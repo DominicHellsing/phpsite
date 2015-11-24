@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/jquery.form.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">修改密码</dd>
+        </dl>
+		</div>
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+
+
+</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#frmSave').ajaxForm({
+			success: complete,
+			dataType: 'json'
+		});
+		
+		function complete(data){
+			if (data.status==1){
+				SucceedBox(data.info);
+            }else{ //添加频道失败
+				ErrorBox(data.info);
+			}
+		};
+		
+		 $('#frmSave').submit(function(){  // 提交表单
+	     	return false;  //为了防止普通浏览器进行表单提交和产生页面导航（防止页面刷新？）返回false  
+	     });
+	});
+</script>
+<div class="wrap">
+    <div class="container">
+        <div id="main">
+            <div class="con box-green">
+                <form enctype="multipart/form-data" action="{$Action}" method="post" id="frmSave">
+                <input type='hidden' name='Action' value="save" />         
+                <div class="box-header"><h4>修改密码</h4></div>
+                    <div class="box-content"><table class="table-font">
+<tr>
+<th class="w120">原密码</th>
+   <td><input type='password' style='width:230px;' class='textinput' name = 'pwd1' /></td>
+</tr>
+<tr>
+    <th class="w120">新密码</th>
+    <td><input type="password" style='width:230px;'  class='textinput' name = 'pwd2' /></td>
+</tr>
+<tr>
+    <th class="w120">新密码确认</th>
+    <td><input type='password' style='width:230px;'  class='textinput' name = 'pwd3' /></td>
+</tr>
+</table></div> 
+                <div class="box-footer">
+                    <div class="box-footer-inner">
+                    	<input  id="btnSubmit"  type="submit" value="保存" />
+                    </div>
+                </div>
+                <input type="hidden" name="__hash__" value="daba3f9a4b6f7ff2079ecc61b062be62_f055fe7c59c8f7a02581e06fdf96d658" /></form>
+            </div><!--/ con-->
+            
+        </div>    
+    </div><!--/ container-->
+</div><!--/ wrap-->
+</body>
+</html>

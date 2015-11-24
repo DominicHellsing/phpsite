@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link href="{$Css}style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/jquery-1.7.2.min.js"></script>
+<link href="{$WebPublic}jquery/artDialog/skins/green.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/jquery.artDialog.min.js"></script>
+<script type="text/javascript" src="{$WebPublic}jquery/artDialog/artDialog.plugins.min.js"></script>
+<script type="text/javascript" src="{$Js}common.js"></script>
+</head>
+<body id="main_page">
+		<div id="nav" style="display:none;">
+		<dl>
+		<dt>当前位置：</dt>
+        <dd class="link">广告管理</dd>
+            		    <dd class="link">友情链接</dd><!--导航-->
+            		    <dd class="link">友情链接管理</dd><!--导航-->
+            		</dl>
+		</div>
+
+<script type="text/javascript">
+	if ($.browser.msie) {
+		document.execCommand("BackgroundImageCache", false, true);
+	}
+	var nav = document.getElementById("nav");
+	var pnav = window.parent.document.getElementById("nav")
+	pnav.innerHTML = nav.innerHTML;
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	function Del(id){
+		if( !confirm("确定删除吗?") ) return false;
+		url = "{$Url}del?LinkID="+id+"&p={$NowPage}&LinkClassID={$LinkClassID}";
+		location.href = url;
+		return true;
+	}
+	
+	//回调函数
+	function DelComplete(data, textStatus){
+		if (data.status == 1){
+			$(data.data).css("display","none");
+		}else{ 
+			//删除失败
+			ErrorBox(data.info);
+		}
+	}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+	//全选
+	function CheckAll(){
+		var title = $("#selectall").attr('title');
+		if(title == "全选"){
+			$(":checkbox").attr('checked', true);
+			$("#selectall").attr('title','取消');
+			$("#selectall").html('取消');
+		}else{
+			$(":checkbox").attr('checked', false);
+			$("#selectall").attr('title','全选');
+			$("#selectall").html('全选');
+		}
+	}
+	
+	//批量删除
+	function BatchDel(){
+		//var arrChk = $("input[name='InfoID[]'][checked]"); //在高速浏览器长度总是返回0
+		var arrChk = $("input[name='LinkID[]']");
+		var n = 0;
+		for(var i = 0; i < arrChk.length; i++){
+			if(arrChk[i].checked) n++;
+		}
+		
+		if( n == 0 ) {
+			WarnBox("请选中要删除的记录!");
+			return;
+		}
+		
+		if( !confirm("确定删除吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchDel");
+		$('#frm').submit();
+		return true;
+	}
+	
+	//排序
+	function BatchSort(){
+		if( !confirm("确定保存排序吗?") ) return false;
+		$('#frm').attr("action", "{$Url}batchSort");
+		$('#frm').submit();
+		return true;
+	}	
+	
+		//查询
+	function Search(){
+		$('#frm').attr("action", "{$Url}index");
+		$('#frm').submit();
+		return true;
+	}	
+</script>
+
+<div class="wrap">
+    <div class="container">
+        <div id="main"> 
+            <div class="con">
+            	<form enctype="multipart/form-data" method="post" id="frm">
+                <input type="hidden" name="NowPage" id="NowPage" value="{$NowPage}" />
+                  <div class="table">
+                   <div style="vertical-align:middle;height:30px">
+<li class="toolbar"><a id="btnSaveAll" href="{$Url}Add"  title="添加友情链接" target="_self">添加友情链接</a></li>
+<li class="toolbar"><a id="selectall" onclick="CheckAll()"  title="全选">全选</a></li>
+<li class="toolbar"><a id="del" onclick="BatchDel()" title="批量删除">删除</a></li>
+<li class="toolbar"><a id="sortall" onclick="BatchSort()" title="批量排序">排序</a></li>
+<li class="toolbar">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<label>友情链接分类</label>
+<select name="LinkClassID" id="LinkClassID">
+<option value="-1">全部</option>
+<LinkClassList id="lc">
+<eq name="lc.LinkClassID" value="$LinkClassID">
+<option value="{$lc.LinkClassID}" selected="selected">
+<else/>
+<option value="{$lc.LinkClassID}">
+</eq>
+{$lc.LinkClassName}</option>
+</LinkClassList>
+</select>&nbsp;
+<input id="btnSeek" type="submit" value="查询" onclick="Search()">
+</li>
+                    </div>
+                    
+                    <table class="admin-tb" id="js_data_source">
+                    <tr>
+                    	<th width="40px"  nowrap="nowrap">选中</th>
+                        <th width="55px" >链接ID</th>
+                        <th width="220px" >链接名称</th> 
+                        <th width="65px" >链接排序</th>
+                        <th width="88px" >链接Logo</th>
+                        <th width="100px" >链接分类</th>
+                        <th width="60px" >链接类型</th>
+                        <th>链接地址</th>
+                        <th width="65px" >是否启用</th>
+                        <th width="150px">操作</th>
+                    </tr>
+    <notempty name="Link">  
+    <volist name="Link" id="lk">
+    <tr id="tr{$lk.LinkID}">
+    	<td><input type="checkbox" name="LinkID[]" value="{$lk.LinkID}" /></td>
+    	<td>{$lk.LinkID}</td>
+        <td style="text-align:left; word-break : break-all">{$lk.LinkName}</td>
+        
+        <td><input type="text" class='textinput' onclick="this.select()" style="width:62px" name="LinkOrder[]" value="{$lk.LinkOrder}" />
+        <input type="hidden" class='textinput' name="LinkOrderID[]" value="{$lk.LinkID}" />
+        </td>
+        <td>
+        <eq name="lk.LinkType" value="2">
+        <img src="{$lk.LinkLogo}" width="88px" height="31px"/>
+        </eq>
+        </td>
+		<td style="color:#00F;font-weight:bold">{$lk.LinkClassName}</td>        
+        <td><eq name="lk.LinkType" value="1">文字<else/>图片</eq></td>
+        <td style="text-align:left"><a href="{$lk.LinkUrl}" target="_blank">{$lk.LinkUrl}</a></td>
+        <td><eq name="lk.IsEnable" value="1"><span style="color:black">启用</span>
+        <else/><span style="color:red">禁用</span></eq></td>
+        <td style="text-align:left;padding-left:5px">
+<a style="float:left" href="{$Url}Modify/LinkID/{$lk.LinkID}" id="btnEdit">修改</a>
+<div style="float:left;width:3px">&nbsp;</div>
+<a style="float:left" onclick="Del({$lk.LinkID})" class="btnDel">删除</a>
+        </td>
+    </tr>
+    </volist>
+    <else/>
+    <tr><td colspan="10" id="NoData">暂无信息！</td></tr>
+    </notempty>                                 
+    </table>
+         <div class="th">
+              <div class="page">{$Page}</div>
+         </div>
+                </div>
+				</form>
+            </div><!--/ con-->
+        </div>    
+    </div><!--/ container-->
+    </div><!--/ wrap-->
+</body>
+</html>
